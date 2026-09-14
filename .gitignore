@@ -1,0 +1,17 @@
+/target/
+/scratch/
+/coreflex_backup/
+/niikhilworkspaceForGit_NEW/
+/maven/
+/Users/
+.svn/
+*.class
+*.zip
+*.jar
+*.log
+.settings/
+.classpath
+.project
+.springBeans
+cookies.txt
+localhost-rsa.jks
