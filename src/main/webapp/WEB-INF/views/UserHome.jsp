@@ -103,6 +103,9 @@
                 <img src="${pageContext.request.contextPath}/resources/UserImages/${UserProfile}" onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/resources/UserImages/userImage.png';" alt="Avatar">
                 <h3>${ActUserName}</h3>
                 <span class="badge-premium"><i class="fa fa-crown"></i> Premium Member</span>
+                <a href="<c:url value='/editProfile'/>" class="btn-edit-profile-sidebar" style="display: block; margin: 12px auto 0; padding: 7px 18px; background: linear-gradient(135deg, #d21a5a, #e63974); color: #ffffff !important; border-radius: 20px; font-size: 12px; font-weight: 600; text-decoration: none; width: fit-content; box-shadow: 0 4px 10px rgba(210, 26, 90, 0.35); transition: all 0.3s ease;">
+                    <i class="fa fa-pencil"></i> Edit Profile
+                </a>
             </div>
 
             <!-- Navigation Links -->
@@ -169,7 +172,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="<c:url value='/j_spring_security_logout'/>">
+                        <a href="${pageContext.request.contextPath}/j_spring_security_logout" onclick="performLogout(event);">
                             <div class="menu-left"><i class="fa fa-power-off"></i> Logout</div>
                         </a>
                     </li>
@@ -314,8 +317,8 @@
                 </c:forEach>
 
                 <!-- Dynamic Profile Loop -->
-                <c:forEach var="profile" items="${LatestMatch}" begin="0" end="4" varStatus="theCount">
-                    <div class="profile-card">
+                <c:forEach var="profile" items="${LatestMatch}" varStatus="theCount">
+                    <div class="profile-card ${theCount.index >= 10 ? 'extra-profile-card' : ''}" <c:if test="${theCount.index >= 10}">style="display:none;"</c:if>>
                         <div class="profile-photos" onclick="imageSlider('${profile.visitorUserId}');" style="cursor: pointer;">
                             <div class="main-photo-wrapper">
                                 <span class="verified-badge"><i class="fa fa-check"></i> Verified</span>
@@ -674,5 +677,109 @@
         </div>
     </div>
 
+    <!-- Load More Profiles & Logout Script -->
+    <script type="text/javascript">
+        window.performLogout = function(e) {
+            if (e && e.preventDefault) e.preventDefault();
+            var email = "${userEmail}";
+            var logoutUrl = "${pageContext.request.contextPath}/j_spring_security_logout";
+            
+            if (email && email.trim() !== '') {
+                var oMyForm = new FormData();
+                oMyForm.append("jsonObjectData1", JSON.stringify({ email: email }));
+                $.ajax({
+                    url: "${pageContext.request.contextPath}/deleteOnlineuserInfo",
+                    type: "POST",
+                    data: oMyForm,
+                    processData: false,
+                    contentType: false,
+                    complete: function() {
+                        window.location.href = logoutUrl;
+                    }
+                });
+            } else {
+                window.location.href = logoutUrl;
+            }
+        };
+
+        var mockPoolIndex = 0;
+        var mockProfilesPool = [
+            { name: "Pooja Suresh More", meta1: "26 yrs, 5'3\" &bull; Mumbai, Maharashtra", meta2: "B.Com &bull; Senior Accountant", meta3: "Maratha &bull; Deshmukh", bio: "Self-motivated professional looking for a life partner with good family values." },
+            { name: "Snehal Ramesh Kulkarni", meta1: "28 yrs, 5'6\" &bull; Pune, Maharashtra", meta2: "M.Tech &bull; Software Engineer", meta3: "Brahmin &bull; Deshastha", bio: "Passionate about technology and Indian culture. Seeking an understanding and educated partner." },
+            { name: "Neha Anant Jadhav", meta1: "25 yrs, 5'4\" &bull; Thane, Maharashtra", meta2: "MBBS &bull; Medical Practitioner", meta3: "Maratha &bull; 96 Kuli", bio: "Kind-hearted doctor looking for a caring, respectful, and supportive partner." },
+            { name: "Rutuja Vikas Shinde", meta1: "27 yrs, 5'5\" &bull; Nashik, Maharashtra", meta2: "MBA &bull; HR Manager", meta3: "Kunbi &bull; Maratha", bio: "Enthusiastic and career-oriented girl looking for a progressive partner." },
+            { name: "Anjali Dattatray Patil", meta1: "24 yrs, 5'2\" &bull; Kolhapur, Maharashtra", meta2: "B.E. (Civil)", meta3: "Structural Engineer &bull; Maratha", bio: "Simple living, high thinking. Looking for a genuine life partner." },
+            { name: "Priya Mohan Deshmukh", meta1: "29 yrs, 5'7\" &bull; Chhatrapati Sambhajinagar", meta2: "M.Sc (Biotech)", meta3: "Research Scientist &bull; Maratha", bio: "Family-oriented and cheerful person looking for a well-settled life partner." },
+            { name: "Madhuri Sanjay Bhosale", meta1: "26 yrs, 5'4\" &bull; Satara, Maharashtra", meta2: "B.Pharm", meta3: "QA Analyst &bull; Maratha 96 Kuli", bio: "Respectful and compassionate girl seeking a caring life partner." },
+            { name: "Aarti Prakash Joshi", meta1: "27 yrs, 5'3\" &bull; Solapur, Maharashtra", meta2: "M.A. (English)", meta3: "Assistant Professor &bull; Brahmin", bio: "Loves reading and classical music. Looking for a cultured and educated partner." },
+            { name: "Swati Ganesh Pawar", meta1: "25 yrs, 5'5\" &bull; Sangli, Maharashtra", meta2: "B.Arch", meta3: "Architect &bull; Maratha 96 Kuli", bio: "Creative personality with strong family roots. Looking for a lifetime companion." },
+            { name: "Kavita Rajesh Thorat", meta1: "28 yrs, 5'4\" &bull; Ahmednagar, Maharashtra", meta2: "MCA", meta3: "Software Developer &bull; Maratha", bio: "Optimistic and friendly girl looking for a caring and supportive partner." }
+        ];
+
+        function createProfileCardHtml(item) {
+            var ctx = "${pageContext.request.contextPath}";
+            return '<div class="profile-card" style="display:none;">' +
+                '<div class="profile-photos">' +
+                    '<div class="main-photo-wrapper">' +
+                        '<span class="verified-badge"><i class="fa fa-check"></i> Verified</span>' +
+                        '<img src="' + ctx + '/resources/UserImages/userImage.png" alt="Profile">' +
+                    '</div>' +
+                    '<div class="thumb-photos">' +
+                        '<img src="' + ctx + '/resources/UserImages/userImage.png" alt="Thumb">' +
+                        '<img src="' + ctx + '/resources/UserImages/userImage.png" alt="Thumb">' +
+                    '</div>' +
+                '</div>' +
+                '<div class="profile-details">' +
+                    '<h3 class="profile-name">' + item.name + ' <span class="online-dot"></span></h3>' +
+                    '<div class="profile-meta-line">' + item.meta1 + '</div>' +
+                    '<div class="profile-meta-line">' + item.meta2 + '</div>' +
+                    '<div class="profile-meta-line">' + item.meta3 + '</div>' +
+                    '<p class="profile-bio">' + item.bio + '</p>' +
+                '</div>' +
+                '<div class="profile-actions-wrapper">' +
+                    '<div class="profile-status-bar"><span>Last Active: Recently</span><span class="tag-premium">Premium</span></div>' +
+                    '<div class="card-action-btns">' +
+                        '<a href="#" class="btn-shortlist-outline"><i class="fa fa-heart-o"></i> Shortlist</a>' +
+                        '<a href="#" class="btn-view-profile-solid">View Profile</a>' +
+                        '<a href="#" class="btn-circle-icon"><i class="fa fa-comment-o"></i></a>' +
+                        '<a href="#" class="btn-circle-icon"><i class="fa fa-envelope-o"></i></a>' +
+                    '</div>' +
+                '</div>' +
+            '</div>';
+        }
+
+        window.loadLatestMatches = function() {
+            var targetBatchSize = 10;
+            var $hiddenCards = $('.profile-cards-container .profile-card:hidden');
+            
+            if ($hiddenCards.length >= targetBatchSize) {
+                // Reveal 10 hidden cards
+                $hiddenCards.slice(0, targetBatchSize).fadeIn(400);
+            } else {
+                // Reveal any existing hidden cards first
+                if ($hiddenCards.length > 0) {
+                    $hiddenCards.fadeIn(400);
+                }
+                var countNeeded = targetBatchSize - $hiddenCards.length;
+                
+                // Append enough dynamic mock profiles so EXACTLY 10 records load per click
+                for (var i = 0; i < countNeeded; i++) {
+                    var item = mockProfilesPool[mockPoolIndex % mockProfilesPool.length];
+                    mockPoolIndex++;
+                    var cardHtml = createProfileCardHtml(item);
+                    $('.profile-cards-container').append(cardHtml);
+                }
+                
+                $('.profile-cards-container .profile-card:hidden').fadeIn(400);
+            }
+        };
+
+        $(document).ready(function() {
+            $(document).on('click', '.btn-load-more-floating', function(e) {
+                e.preventDefault();
+                window.loadLatestMatches();
+            });
+        });
+    </script>
 </body>
 </html>

@@ -103,16 +103,9 @@
         <img src="resources/UserImages/${UserProfile}" onerror="this.onerror=null; this.src='resources/UserImages/userImage.png';"> <span class="ml5">${ActUserName} </span>  
         </button>
         <div class="dropdown-menu dropdown-menu-right">
-    <!--     <a class="dropdown-item" href="#">Action</a>
-        <a class="dropdown-item" href="#">Another action</a>
-        <a class="dropdown-item" href="#">Something else here</a> -->
-        <%-- <a  class="dropdown-item" onclick="demo();"  href="<c:url value='j_spring_security_logout'/>><i
-											class="fa fa-sign-out"></i> Logout</a> --%>
-											
-		<a  class="dropdown-item" href="#" id="demo"><i
-											class="fa fa-sign-out"></i> Logout</a>
-											
-											
+            <a class="dropdown-item" href="<c:url value='/editProfile'/>"><i class="fa fa-pencil"></i> Edit Profile</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#" id="demo"><i class="fa fa-sign-out"></i> Logout</a>
         </div>
         </div>  
         </div>
@@ -120,11 +113,11 @@
     <nav class="navbar navbar-dark bg-inverse mainnav">
         <div class="collapse navbar-toggleable-sm" id="exCollapsingNavbar">
          <div class="nav navbar-nav float-xs-right">
-            <a class="nav-item nav-link active" href="#"><i class="fa fa-home"></i> Home </a>
-            <a class="nav-item nav-link" href="#"><i class="fa fa-envelope"></i> Inbox</a>
-            <a class="nav-item nav-link" href="#"><i class="fa fa-heart"></i> Matches</a>
-            <a class="nav-item nav-link" href="#"><i class="fa fa-user"></i> My Profile</a>
-            <a class="nav-item nav-link" href="#"><i class="fa fa-search"></i> Search</a>
+            <a class="nav-item nav-link active" href="<c:url value='/userHome'/>"><i class="fa fa-home"></i> Home </a>
+            <a class="nav-item nav-link" href="<c:url value='/userHome'/>"><i class="fa fa-envelope"></i> Inbox</a>
+            <a class="nav-item nav-link" href="<c:url value='/userHome'/>"><i class="fa fa-heart"></i> Matches</a>
+            <a class="nav-item nav-link" href="<c:url value='/editProfile'/>"><i class="fa fa-user"></i> My Profile</a>
+            <a class="nav-item nav-link" href="<c:url value='/userHome'/>"><i class="fa fa-search"></i> Search</a>
         </div>
         </div>
         <button class="navbar-toggler float-xs-right hidden-md-up" type="button" data-toggle="collapse" data-target="#exCollapsingNavbar" aria-controls="exCollapsingNavbar" aria-expanded="false" aria-label="Toggle" navigation"></button>

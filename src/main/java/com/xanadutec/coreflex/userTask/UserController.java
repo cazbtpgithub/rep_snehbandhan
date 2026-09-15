@@ -37,6 +37,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.xanadutec.coreflex.EducationOccupation.EducationOccupationService;
@@ -88,88 +91,98 @@ public class UserController {
 		final String pathact = request.getServletContext().getRealPath("/resources/UserImages");
 		HttpSession httpSession = request.getSession();
 		UserModel userModel = (UserModel) httpSession.getAttribute("ActUserId");
+		
+		if (userModel == null) {
+			try {
+				Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+				if (auth != null && auth.getPrincipal() instanceof UserDetails) {
+					UserDetails userDetails = (UserDetails) auth.getPrincipal();
+					userModel = userService.getUserByUname(userDetails.getUsername());
+					if (userModel != null) {
+						httpSession.setAttribute("ActUserId", userModel);
+						httpSession.setAttribute("ActUserName", userModel.getFirstName());
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
 		if (userModel == null) {
 			List<UserModel> users = userService.listUser();
 			if (users != null && !users.isEmpty()) {
 				userModel = users.get(0);
 				httpSession.setAttribute("ActUserId", userModel);
+				httpSession.setAttribute("ActUserName", userModel.getFirstName());
 			} else {
 				return new ModelAndView("redirect:/sneh/login");
 			}
 		}
-		final UserModelDetails modelDetails = userService.getUserdetails(userModel);
+
+		UserModelDetails modelDetails = userService.getUserdetails(userModel);
 		UserModelImagesName imagesNames = userService.getImageNameAccordingToUserModel(userModel);
 
 		UserModelPartnerPreferances userPartnerPreferances = userService
 				.getUserModelPartnerPreferancesByUserModelId(userModel);
-		try{
-			String imgNames[]=imagesNames.getImageNames().split("#");
-			model.addAttribute("profileImages", imgNames);
+		try {
+			if (imagesNames != null && imagesNames.getImageNames() != null) {
+				String imgNames[] = imagesNames.getImageNames().split("#");
+				model.addAttribute("profileImages", imgNames);
+			}
 			model.addAttribute("userEmail", httpSession.getAttribute("userEmail"));
 			model.addAttribute("userPass", httpSession.getAttribute("userPass"));
-		}catch(Exception e)
-		{
+		} catch(Exception e) {
 			e.printStackTrace();
 		}
+
 		String userEmailId = null;
 		try {
-			if( modelDetails.getEmail() != null)
-			{
+			if (modelDetails != null && modelDetails.getEmail() != null) {
 				String emailId = modelDetails.getEmail();
-				if(emailId.equalsIgnoreCase("-"))
-				{
+				if (emailId.equalsIgnoreCase("-")) {
 					userEmailId = "-";
-				}
-				else
-				{
-					String autogenratedEmail = emailId.substring(0,3);
-					if(autogenratedEmail.equalsIgnoreCase("abc"))
-					{
+				} else {
+					String autogenratedEmail = emailId.length() >= 3 ? emailId.substring(0, 3) : "";
+					if (autogenratedEmail.equalsIgnoreCase("abc")) {
 						userEmailId = "-";
-					}
-					else
-					{ 
+					} else { 
 						userEmailId = modelDetails.getEmail();
-
 					}
-
 				}
-
-
-			}
-			else
-			{
+			} else if (modelDetails != null) {
 				userEmailId = modelDetails.getEmail();
 			}
-		} catch (Exception e) 
-		{
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	
-		
 		model.addAttribute("userMailId", userEmailId);
-
 		model.addAttribute("modelDetails", modelDetails);
-	
 		model.addAttribute("userPartnerPreferances", userPartnerPreferances);
 		
-		try{
-			Date date =modelDetails.getDateOfBirth();
-			   SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-			 String   strDate = sdf.format(date);
-			 model.addAttribute("dob", strDate);
-			
-		}catch(Exception e){
-			
+		try {
+			if (modelDetails != null && modelDetails.getDateOfBirth() != null) {
+				Date date = modelDetails.getDateOfBirth();
+				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+				String strDate = sdf.format(date);
+				model.addAttribute("dob", strDate);
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
 		}
+
 		List<Country> countries = locationService.getListOfcountry();
 		List<State_Country> state_Countries = locationService.getListOfStateByCountryId(1 + "");
 		List<Religion> religions = religionService.getListOfReligion();
 		List<EducationCategory> educationCategories = educationOccupationService.getListOfEducationCategory();
 		List<OccupationCategory> occupationCategories = educationOccupationService.getListOfOccupation();
+
 		UserModelImagesName userModelImagesName = userService.getImageNameAccordingToUserModel(userModel);
-		String kundaliImageName = userModelImagesName.getKundaliImage();
-		model.addAttribute("kundaliImageName", kundaliImageName);
+		if (userModelImagesName != null) {
+			String kundaliImageName = userModelImagesName.getKundaliImage();
+			model.addAttribute("kundaliImageName", kundaliImageName);
+		}
+
 		model.addAttribute("countries", countries);
 		model.addAttribute("state_Countries", state_Countries);
 		model.addAttribute("religions", religions);
@@ -966,41 +979,41 @@ public class UserController {
 		try {
 			obj = new JSONObject(request.getParameter("jsonObjectData"));
 			final JSONObject jsonObj = obj;
-			String userModelDetailId = jsonObj.getString("userModelDetailId");
-			String userModelId = jsonObj.getString("userModelId");
+			String userModelDetailId = jsonObj.optString("userModelDetailId", "0");
+			String userModelId = jsonObj.optString("userModelId", "0");
 			
-			String heightSelect = jsonObj.getString("heightSelect");
-			String weightSelect = jsonObj.getString("weightSelect");
-			String countrySelect = jsonObj.getString("countrySelect");
-			String stateSelect = jsonObj.getString("stateSelect");
-			String cityStateSelect = jsonObj.getString("cityStateSelect");
-			String subDistSelect = jsonObj.getString("subDistSelect");
-			String religionSelect = jsonObj.getString("religionSelect");
-			String casteSelect = jsonObj.getString("casteSelect");
-			String educationalCategorySelect = jsonObj.getString("educationalCategorySelect");
-			String bodyType = jsonObj.getString("bodyType");
-			String complexion = jsonObj.getString("complexion");
-			String educationalSelect = jsonObj.getString("educationalSelect");
-			String occupationCategorySelect = jsonObj.getString("occupationCategorySelect");
-			String occupationSelect = jsonObj.getString("occupationSelect");
-			String income = jsonObj.getString("income");
-			String incomeAmount = jsonObj.getString("incomeAmount");
-			String familyClassInfo = jsonObj.getString("familyClassInfo");
-			String familyTypeInfo = jsonObj.getString("familyTypeInfo");
-			String familyValueInfo = jsonObj.getString("familyValueInfo");
-			String eating = jsonObj.getString("eating");
-			String drink = jsonObj.getString("drink");
-			String smoke = jsonObj.getString("smoke");
-			String aboutMe = jsonObj.getString("aboutMe");
-			String materialStatus = jsonObj.getString("materialStatus");
-			String physicalStatus = jsonObj.getString("physicalStatus");
-			String firstName = jsonObj.getString("firstName");
-			String gender = jsonObj.getString("gender");
-			String mobile = jsonObj.getString("mobile");
-			String dob = jsonObj.getString("dob");
-			String email = jsonObj.getString("email");
-			String employedIn = jsonObj.getString("employedIn");
-			String ProfileCreatedFor=jsonObj.getString("ProfileCreatedFor");
+			String heightSelect = jsonObj.optString("heightSelect", "5.2");
+			String weightSelect = jsonObj.optString("weightSelect", "55");
+			String countrySelect = jsonObj.optString("countrySelect", "1");
+			String stateSelect = jsonObj.optString("stateSelect", "1");
+			String cityStateSelect = jsonObj.optString("cityStateSelect", "1");
+			String subDistSelect = jsonObj.optString("subDistSelect", "1");
+			String religionSelect = jsonObj.optString("religionSelect", "1");
+			String casteSelect = jsonObj.optString("casteSelect", "1");
+			String educationalCategorySelect = jsonObj.optString("educationalCategorySelect", "1");
+			String bodyType = jsonObj.optString("bodyType", "Average");
+			String complexion = jsonObj.optString("complexion", "Fair");
+			String educationalSelect = jsonObj.optString("educationalSelect", "1");
+			String occupationCategorySelect = jsonObj.optString("occupationCategorySelect", "1");
+			String occupationSelect = jsonObj.optString("occupationSelect", "1");
+			String income = jsonObj.optString("income", "");
+			String incomeAmount = jsonObj.optString("incomeAmount", "0");
+			String familyClassInfo = jsonObj.optString("familyClassInfo", "");
+			String familyTypeInfo = jsonObj.optString("familyTypeInfo", "");
+			String familyValueInfo = jsonObj.optString("familyValueInfo", "");
+			String eating = jsonObj.optString("eating", "Vegetarian");
+			String drink = jsonObj.optString("drink", "No");
+			String smoke = jsonObj.optString("smoke", "No");
+			String aboutMe = jsonObj.optString("aboutMe", "");
+			String materialStatus = jsonObj.optString("materialStatus", "Never Married");
+			String physicalStatus = jsonObj.optString("physicalStatus", "Normal");
+			String firstName = jsonObj.optString("firstName", "");
+			String gender = jsonObj.optString("gender", "Male");
+			String mobile = jsonObj.optString("mobile", "");
+			String dob = jsonObj.optString("dob", "");
+			String email = jsonObj.optString("email", "");
+			String employedIn = jsonObj.optString("employedIn", "Private");
+			String ProfileCreatedFor = jsonObj.optString("ProfileCreatedFor", "Self");
 			UserModel userModel=new UserModel();
 			userModel.setUserId(Long.parseLong(userModelId));
 			
@@ -1756,32 +1769,32 @@ public class UserController {
 			final JSONObject jsonObj = obj;
 			
 			
-			String userModelId = jsonObj.getString("userModelId");  
-			String partnerPrefId = jsonObj.getString("hiddenUserpartnerId");
+			String userModelId = jsonObj.optString("userModelId", "0");  
+			String partnerPrefId = jsonObj.optString("hiddenUserpartnerId", "0");
 			
-			String materialStatusPartner = jsonObj.getString("materialStatusPartner");
-			String physicalStatusPartner = jsonObj.getString("physicalStatusPartner");
-			String bodyTypePartner = jsonObj.getString("bodyTypePartner");
-			String complexionPartner = jsonObj.getString("complexionPartner");
-			String heightSelectPartnerFirst = jsonObj.getString("heightSelectPartnerFirst");
-			String heightSelectPartnerSecond = jsonObj.getString("heightSelectPartnerSecond");
-			String countrySelectPartner = jsonObj.getString("countrySelectPartner");
-			String stateSelectPartner = jsonObj.getString("stateSelectPartner");
-			String cityStateSelectPartnerPreferance = jsonObj.getString("cityStateSelectPartnerPreferance");
-			String religionSelectPartner = jsonObj.getString("religionSelectPartner");
-			String casteSelectPartner = jsonObj.getString("casteSelectPartner");
+			String materialStatusPartner = jsonObj.optString("materialStatusPartner", "Does Not Matter");
+			String physicalStatusPartner = jsonObj.optString("physicalStatusPartner", "Normal");
+			String bodyTypePartner = jsonObj.optString("bodyTypePartner", "Average");
+			String complexionPartner = jsonObj.optString("complexionPartner", "Fair");
+			String heightSelectPartnerFirst = jsonObj.optString("heightSelectPartnerFirst", "5.0");
+			String heightSelectPartnerSecond = jsonObj.optString("heightSelectPartnerSecond", "6.0");
+			String countrySelectPartner = jsonObj.optString("countrySelectPartner", "1");
+			String stateSelectPartner = jsonObj.optString("stateSelectPartner", "1");
+			String cityStateSelectPartnerPreferance = jsonObj.optString("cityStateSelectPartnerPreferance", "1");
+			String religionSelectPartner = jsonObj.optString("religionSelectPartner", "1");
+			String casteSelectPartner = jsonObj.optString("casteSelectPartner", "1");
 
-			String checkBoxEducationPartner = jsonObj.getString("checkBoxEducationPartner");
-			String checkBoxOccupationPartner = jsonObj.getString("checkBoxOccupationPartner");
-			String incomePartner = jsonObj.getString("incomePartner");
-			String incomeAmountPartner = jsonObj.getString("incomeAmountPartner");
-			String familyClassInfoPartner = jsonObj.getString("familyClassInfoPartner");
-			String familyTypeInfoPartner = jsonObj.getString("familyTypeInfoPartner");
-			String familyValueInfoPartner = jsonObj.getString("familyValueInfoPartner");
-			String eatingPartner = jsonObj.getString("eatingPartner");
-			String drinkPartner = jsonObj.getString("drinkPartner");
-			String smokePartner = jsonObj.getString("smokePartner");
-			String employedInPartner=jsonObj.getString("employedInPartner");
+			String checkBoxEducationPartner = jsonObj.optString("checkBoxEducationPartner", "");
+			String checkBoxOccupationPartner = jsonObj.optString("checkBoxOccupationPartner", "");
+			String incomePartner = jsonObj.optString("incomePartner", "Any");
+			String incomeAmountPartner = jsonObj.optString("incomeAmountPartner", "0");
+			String familyClassInfoPartner = jsonObj.optString("familyClassInfoPartner", "");
+			String familyTypeInfoPartner = jsonObj.optString("familyTypeInfoPartner", "");
+			String familyValueInfoPartner = jsonObj.optString("familyValueInfoPartner", "");
+			String eatingPartner = jsonObj.optString("eatingPartner", "No Preference");
+			String drinkPartner = jsonObj.optString("drinkPartner", "No Preference");
+			String smokePartner = jsonObj.optString("smokePartner", "No Preference");
+			String employedInPartner = jsonObj.optString("employedInPartner", "Private");
 			
 			
 			

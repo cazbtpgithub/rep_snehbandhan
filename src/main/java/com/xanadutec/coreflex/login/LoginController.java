@@ -144,9 +144,18 @@ public class LoginController {
 		return "landing";
 	}
 
-	@RequestMapping(value = "/logout", method = RequestMethod.GET)
-	public String logout(ModelMap model) {
-		return "logout";
+	@RequestMapping(value = "/logout", method = {RequestMethod.GET, RequestMethod.POST})
+	public String logout(ModelMap model, HttpServletRequest request) {
+		try {
+			HttpSession session = request.getSession(false);
+			if (session != null) {
+				session.invalidate();
+			}
+			SecurityContextHolder.clearContext();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "redirect:/login";
 	}
 
 	@RequestMapping(value = "/home", method = RequestMethod.GET)

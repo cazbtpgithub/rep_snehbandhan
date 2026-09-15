@@ -1,0 +1,223 @@
+@import url('https://fonts.googleapis.com/css?family=Lato:400,700');
+body{font-family: 'Lato', sans-serif; font-size: 0.8rem;}
+a{color:#d23779; text-decoration: none;}
+a:hover{text-decoration: none; color: #8c8c8c}
+.logo{background: url(../images/logo.png) contain no-repeat; width: auto; height:100%;}
+.maincontainer {background: #f2f2f2;}
+.custom-breadcrumb {background: #f2f2f2; margin-bottom: 0;}
+.custom-breadcrumb .breadcrumb-item{color: #666666;}
+.custom-breadcrumb .breadcrumb-item+.breadcrumb-item::before{content: ">"}
+.rightpanel {background: #fff; border-top: 3px solid #d23779; padding: 0 10px 10px 10px; margin-bottom: 20px;}
+body ul {list-style-type: none; padding: 0; margin: 0; text-decoration: none;}
+ul.usermenu, ul.messagemenu{}
+.nopad{padding: 0 !important;}
+.mb30{margin-bottom: 30px;}
+.mb10{margin-bottom: 10px;}
+.filter-box{height: 300px; position: relative; overflow: auto; padding-right: 5px;}
+.update-box{height: 200px; position: relative; overflow: auto; padding-right: 5px; border: 1px solid #e4e4e4;}
+.update-box li{margin-bottom: 10px; border-bottom: 1px solid #e4e4e4; padding: 10px;}
+.update-box li span{color:#b5b5b5; font-style: italic; margin-top: 5px; display: block;}
+.online-chat {background: #fff; padding: 0px; position: relative;}
+.chatbox{padding: 10px; position: relative; height: 100%;}
+.chatbox h5{font-size: .8rem; font-weight: bold;}
+.shortlisted-profile .nav-pills .nav-link{border-radius: 0; padding: 5px; color:#666666; position: relative; border: 1px solid #fff; border-radius:10px;}
+.shortlisted-profile .nav-pills .nav-item+.nav-item{margin-left: .5rem}
+.shortlisted-profile .nav-pills .nav-link.active{background: #d23779; border: 1px solid #d23779; color: #fff;}
+.shortlisted-profile .nav-pills .nav-link{background: #3c8dbc; border: 1px solid #3c8dbc; color: #fff;}
+.shortlisted-profile .nav-pills .nav-link.active:after {
+    content:"";
+    border-color: #fff transparent transparent;
+    border-style:solid;
+    border-width: 15px;
+    width:0;
+    height:0;
+    position:absolute;
+    bottom: -29px;
+    left: 41%;
+ 
+}
+.shortlisted-profile .nav-pills .nav-link.active:before {
+    content:"";
+    border-color: #d23779 transparent transparent;
+    border-style:solid;
+    border-width: 15px;
+    width:0;
+    height:0;
+    position:absolute;
+    bottom: -30px;
+    left: 41%;
+     
+}
+.shortlisted-profile .nav-item li a{color: #ffffff;}
+.shortlisted-profile .nav-item{background: #fff; border-radius: 0; width: 19%; text-align: center;background-color: #d23779; border-radius:10px;}
+.shortlisted-profile .nav-item .nav-link span{display: block; font-size: 1.2rem;}
+.user-profile {background:#fff; padding-top: 15px; padding-bottom: 15px; margin-bottom: 15px;}
+.mr5{margin-right: 5px;}
+.ml5{margin-left: 5px;}
+.wid45{width: 45%}
+.chatheader {background:#d23779; padding: 10px; position: relative;}
+.rightpanel h3{text-transform: uppercase; color:#d23779; font-size: 1rem; font-weight: bold; margin: 20px 0 10px 0;}
+.profile-section{margin-bottom: 10px;}
+.profile-section .usermenu li{line-height: 1.8rem; text-decoration: underline; margin-left: 10px;}
+.profile-section .usermenu li a{color: #797979; font-weight: bold;}
+.menu-section .messagemenu li a{background:#f2f2f2; border: 1px solid #e4e4e4; margin-bottom: 5px; padding: 5px 20px; line-height: 1.8rem; color: #8c8c8c; font-size: 1rem; display: block; text-decoration: none;}
+.menu-section .messagemenu li a.active{color: #d23779}
+.mt20{margin-top: 20px;}
+.filter-box{border: 1px solid #e4e4e4; padding: 10px;}
+.filter-box legend{font-weight: bold; color: #6d6d6d; font-size: 1rem;}
+.iconbtn{color: #666666; text-decoration: none; padding:  0rem; border: none; line-height: 30px; background: transparent;}
+.iconbtn:hover, .iconbtn:focus{background: transparent;}
+.about-info .similarpro{display: block;}
+.circle{border-radius: 15px;border: 1px solid #d23779;display: block;width: 30px;text-align: center;float: left;margin-right: 10px;font-size: 1.2rem;}
+.mainnav{text-transform: uppercase; font-size: 0.8rem; padding-top: 0; padding-bottom: 0; position: relative; border-radius: 0; background: #364252 !important}
+.mainnav .navbar-nav .nav-item+.nav-item{margin-left: 2rem;}
+.chatheader h3{color:#fff; font-size: 1rem; margin: 5px 0;}
+.chatheader .iconbtn{position: absolute; right: 0; top: 0; margin-top: 5px; margin-right: 15px; color:#fff;}
+.contactedusers, .onlineusers{margin-bottom: 10px;}
+.pinkbtn{background:#fff; border-color: #d23779; color:#d23779; text-transform: uppercase;}
+.onlineusersearch{position: absolute; bottom: 0; left: 0; width: 100%;}
+.onlineusersearch input{border-radius: 0; border-right: none; border-left: none; border-bottom: none;}
+.page-link{color:#666666;}
+.page-link.active{color:#d23779;}
+.status-online{background:#1fca3e; border-radius: 20px; width: 10px; height: 10px; display: block; float: right; margin-top: 12px;}
+.adminmenu {margin-top: 35px; position:relative; }
+.adminmenu a.navbar-text{line-height: 30px; margin-left: 20px; position: relative; color: #666666; font-size: 1rem;}
+.adminmenu a.navbar-text:hover, .adminmenu a.navbar-text:focus{text-decoration: none;}
+.notify{position: absolute;top: 0;right: 0;color: #fff;background: #d23779;border-radius: 20px;height: 15px;width: 15px;line-height: 14px;font-size: .7rem;text-align: center;display: inline-block;}
+.member-name{color:#d23779; font-weight: bold; font-size: 1rem; margin-top: 0;}
+
+.chatpopup{position: fixed; right: 16.66%; bottom: 0; height: 250px; width: 250px; background: #fff; border: 1px solid #ddd; margin-right: 15px;}
+.pophead{background: #d23779; padding: 10px;  color: #fff;}
+.pophead h5{margin: 0px; font-size: 1rem; float: left;}
+.pophead .closechat{float: right;}
+.msgarea{height: 186px; overflow: auto;}
+.typemsg input{border-left: none; border-right: none; border-radius: 0;}
+.usermsg{background:#f2f2f2; border-radius: 10px; padding: 10px; margin: 10px 15px;}
+.usermsg span{font-size: .6rem; font-style: italic; color: #d5d5d5; float: right}
+#userChat{display: none;}
+.adminbox{position: absolute; width: 200px; height: 100px; right: 0; top: 0; margin-right: 70px;  margin-top: 45px; background: #fff; border: 1px solid #ddd; z-index: 1010; overflow: auto; display: none;}
+.adminbox ul li a{display: block; border-bottom: 1px solid #ddd; padding: 5px 10px;}
+.btn-none{border: none; background: transparent;}
+.open>.btn-none.dropdown-toggle:focus, .btn-none.dropdown-toggle:active, .btn-none:hover, .btn-none:focus{border: none; background: transparent;}
+.nocaret .dropdown-toggle::after{display:none;}
+.pagefooter{background: #364252; text-align: center; padding: 0px 0; color: #fff;}
+.pagefooter a{color: #fff;}
+.pagefooter p{margin-bottom: 25px;}
+.footerlinks a:after{content: "|"; margin-left: 10px;}
+.footerlinks a:last-child:after{display: none;}
+.social-circle{border-radius: 15px; width: 30px; height: 30px; line-height: 30px; font-size: 1rem; background:#d23779; margin-right: 10px; display: inline-block; color:#fff;}
+.mt10 {margin-top: 10px;}
+.mt20 {margin-top: 20px;}
+.mt30 {margin-top: 30px;}
+
+
+
+
+.user-slider .carousel-indicators{bottom: -40px; margin-bottom: 0; left: 0;width: 100%; padding-left: 0; margin-left: 0;}
+.user-slider .carousel-indicators li{border-radius: 0;border: none;width: 25%;height: 30px;text-indent: inherit;margin: 0 2% 0 0;}
+.user-slider .carousel-indicators li.active{background: transparent;width: 25%;height: 30px;}
+.user-slider .carousel-control.left, .user-slider .carousel-control.right{background: none;}
+.thumbnail-slider{-webkit-transform: scale(1);
+    transform: scale(1);}
+.ninja-slider{padding-top: 10px; border: 1px solid #666; background: #fff;}
+#ninja-slider-prev, #ninja-slider-next{display: none;}
+.similaruser.usermenu li{text-decoration: none}
+.similaruser.usermenu li:first-child{text-decoration:underline; font-weight: bold;}
+.similaruser.usermenu li:last-child a{text-decoration:underline; color: #d23779;}
+.matchprofile{margin-bottom: 10px;}
+.infosection, .prefmatchsection, .userinformation, .imageslider {background: #fff; border: 1px solid #ddd; padding: 10px; margin-bottom: 20px; position: relative;}
+.imageslider .slider, .succes-story .flexslider .slides > li{position: relative;}
+.infosection h3, .galleryaboutinfo h3{font-size: 1rem; text-transform: uppercase; color: #d23779; font-weight: bold; margin: 0;}
+.infosection h3 span{background: #364250;color: #fff;border-radius: 30px;width: 40px;height: 40px;display: inline-block;font-size: 20px;line-height: 36px;text-align: center; margin-right: 20px;}
+.infosection ul li{line-height: 2rem;}
+.infosection .listlabel{margin-left: 60px; display: inline-block; width: 110px; color: #a5a5a5;}
+.infosection .personalinfo, .infosection .relinfo, .infosection .profinfo, .infosection .locationinfo{margin-bottom: 30px;}
+.titleheading{font-size: 1rem; text-transform: uppercase; color: #d23779; font-weight: bold; margin: 0;}
+
+.chart {
+  position: relative;
+  display: inline-block;
+  width: 100px;
+  height:100px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  text-align: center;
+  color: #d23779;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+.chart canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.percent {
+  display: inline-block;
+  line-height: 100px;
+  z-index: 2;
+}
+.percent:after {
+  content: '%';
+  margin-left: 0.1em;
+  font-size: .8em;
+}
+.matchcount{margin-bottom: 10px}
+.matchcount .txtp{width: 75%; padding-top: 20px; text-align: left; font-size: 1rem; text-transform: uppercase; padding-left: 20px;}
+.matchcount .txtp a{display: block; margin-top: 15px; text-decoration: underline;}
+.nomar{margin: 0;}
+.mb5{margin-bottom: 5px;}
+.rounded-circle{border: 3px solid #d23779; margin-bottom: 10px;}
+.txtmatch{font-size: 1.2rem; line-height: 80px;}
+.txtmatch .outof{color:#d23779}
+.nopadr{padding-right: 0;}
+.nopadl{padding-left: 0;}
+.featurematch  ul li{line-height: 3rem;}
+.listlabel{color: #8c8c8c;}
+.matchstatus{color: #cccccc; font-size: 2rem}
+.matchstatus .matchcheck{color: #93c93d;}
+#slider ul.slides{background: #364252;}
+.infoslider{position: absolute;left: 0;bottom: 0;background: transperant;
+padding:10px;width: 100%;
+margin-bottom:80px;
+color: #fff;line-height: 1.5rem;border: 3px solid #fff; border-top: none;}
+.infoslider h3{color:#fff; margin-bottom: 10px;}
+.matchprofile .img-fluid{height: 140px; width: 100%}
+#slider .flex-direction-nav{display: none;}
+.fullpageslider{position: relative;}
+.succes-story{position: absolute; z-index: 2; background: rgba(255,255,255,.5); width: 50%; height: 400px; right: 0; top: 0; margin-top: 50px; margin-right: 50px;}
+.login-register{position: absolute; z-index: 2; background: rgba(255,255,255,.5); width: 50%; right: 0; top:0; margin-top: 475px; margin-right: 50px; padding: 10px;}
+.flex-caption {
+    position: absolute;
+      width: 96%;
+    height: 400px;
+      padding: 2%;
+      right: 0;
+    margin-right: -50%;
+      bottom: 0;
+      background: rgba(0,0,0,.5);
+      color: #fff;
+      text-shadow: 0 -1px 0 rgba(0,0,0,.3);
+      font-size: 14px;
+      line-height: 18px;
+    }
+.flex-control-nav.flex-control-paging{display: none;}
+.storytxt{color: #000;}
+.storytxt h3{color:#000; font-size: 1rem; margin: 10px 0;}
+.login-register h2{font-size: 1.5rem; text-transform: uppercase; line-height: 2.5rem; margin: 0; }
+.offertxt{width: 100%; border: 1px solid #d23779; border-radius: 10px; padding: 15px 50px; text-align: center; color: #d23779; margin-top: 15px;}
+.offertxt p{margin: 0; font-size: 1rem; font-style: italic;}
+.form-group{margin-bottom: 10px;}
+.formheading{font-size: 1rem; color:#d23779; text-transform: uppercase;}
+.registerinfo{text-align: center; background: #f2f2f2; padding: 15px 15px 65px 15px;}
+.registerinfo h5{margin: 10px auto;}
+.ptb15{padding-top: 15px; padding-bottom: 15px; }
+.usppoints{text-align: left; margin-top: 30px; padding: 0 50px;}
+.usppoints h6{text-align: center; font-weight: bold;}
+.usppoints ul{margin-top: 30px;}
+.usppoints li{float: left; width: 100%; margin-bottom: 20px;}
+.usppoints span.firstcolor{background:#ccbe5d;}
+.usppoints span.secondcolor{background:#7fa5b8;}
+.usppoints span.thirdcolor{background:#c274a6;}
+.usppoints p{font-style: italic; font-size: .7rem;}
+.usppoints span{width: 40px; height: 40px; display: block; border-radius: 20px; background: #f00; font-size: 2rem; text-align: center; color: #fff; line-height: 40px; float: left; margin-right: 10px;}
+.forgotlink{line-height: 22px;}

@@ -31,10 +31,11 @@
 
 	
 	
-<% session.invalidate(); %>
-<% RequestDispatcher dispatcher=request.getRequestDispatcher("/login"); 
-System.out.print("logout");
-dispatcher.forward(request, response);
+<% 
+    if (session != null) {
+        session.invalidate(); 
+    }
+    response.sendRedirect(request.getContextPath() + "/login"); 
 %>
 </body>
 </html>

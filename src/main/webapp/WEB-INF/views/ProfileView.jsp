@@ -646,7 +646,7 @@ body {
                 <span style="font-weight: 600; font-size: 14px;">${ActUserName}</span>
             </div>
             <div class="dropdown-menu dropdown-menu-right">
-                <a class="dropdown-item" href="<c:url value='j_spring_security_logout'/>><i class="fa fa-sign-out"></i> Logout</a>
+                <a class="dropdown-item" href="<c:url value='/j_spring_security_logout'/>"><i class="fa fa-sign-out"></i> Logout</a>
             </div>
         </div>
     </div>

@@ -84,10 +84,10 @@
             <i class="fa fa-angle-down" style="color:#6B7280; font-size:12px;"></i>
         </div>
         <div class="dropdown-menu dropdown-menu-right">
-            <a class="dropdown-item" href="<c:url value='userHome'/>"><i class="fa fa-home"></i> Home</a>
+            <a class="dropdown-item" href="<c:url value='/userHome'/>"><i class="fa fa-home"></i> Home</a>
             <a class="dropdown-item" href="KitUpgradeAndPayment"><i class="fa fa-star"></i> Upgrade Plan</a>
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="<c:url value='j_spring_security_logout'/>"><i class="fa fa-sign-out"></i> Logout</a>
+            <a class="dropdown-item" href="<c:url value='/j_spring_security_logout'/>"><i class="fa fa-sign-out"></i> Logout</a>
         </div>
     </div>
 </header>
@@ -507,7 +507,7 @@
                                 <select id="educationalCategorySelect" name="educationalCategorySelect" class="ep-v3-select" onchange="loadEducationAccordingToEduCategory(this.value);">
                                     <option value="0">Select Category</option>
                                     <c:forEach var="eduCat" items="${educationCategories}">
-                                        <option value="${eduCat.edu_cat_id}" ${modelDetails.education != null && modelDetails.education.educationCategory != null && modelDetails.education.educationCategory.edu_cat_id == eduCat.edu_cat_id ? 'selected' : ''}>${eduCat.edu_cat_name}</option>
+                                        <option value="${eduCat.edu_cat_id}" ${modelDetails.education != null && modelDetails.education.edu_cat_id != null && modelDetails.education.edu_cat_id.edu_cat_id == eduCat.edu_cat_id ? 'selected' : ''}>${eduCat.edu_cat_name}</option>
                                     </c:forEach>
                                 </select>
                             </div>
@@ -525,7 +525,7 @@
                                 <select id="occupationCategorySelect" name="occupationCategorySelect" class="ep-v3-select" onchange="loadOccupationAccordingToOccuCategory(this.value);">
                                     <option value="0">Select Category</option>
                                     <c:forEach var="occCat" items="${occupationCategories}">
-                                        <option value="${occCat.occupation_category_id}" ${modelDetails.occupation != null && modelDetails.occupation.occupationCategory != null && modelDetails.occupation.occupationCategory.occupation_category_id == occCat.occupation_category_id ? 'selected' : ''}>${occCat.occupation_category_name}</option>
+                                        <option value="${occCat.occu_id}" ${modelDetails.occupation != null && modelDetails.occupation.occ_cat_id != null && modelDetails.occupation.occ_cat_id.occu_id == occCat.occu_id ? 'selected' : ''}>${occCat.occu_name}</option>
                                     </c:forEach>
                                 </select>
                             </div>
@@ -541,9 +541,9 @@
                             <div class="ep-v3-field ep-v3-col-1">
                                 <label class="ep-v3-label">Employed In</label>
                                 <div class="ep-v3-radio-group">
-                                    <label class="ep-v3-radio"><input type="radio" name="employedIn" value="Private" ${modelDetails.employedIn == 'Private' || empty modelDetails.employedIn ? 'checked' : ''}> Private</label>
-                                    <label class="ep-v3-radio"><input type="radio" name="employedIn" value="Government" ${modelDetails.employedIn == 'Government' ? 'checked' : ''}> Government</label>
-                                    <label class="ep-v3-radio"><input type="radio" name="employedIn" value="Business" ${modelDetails.employedIn == 'Business' ? 'checked' : ''}> Business</label>
+                                    <label class="ep-v3-radio"><input type="radio" name="employedIn" value="Private" ${modelDetails.employeedIn == 'Private' || empty modelDetails.employeedIn ? 'checked' : ''}> Private</label>
+                                    <label class="ep-v3-radio"><input type="radio" name="employedIn" value="Government" ${modelDetails.employeedIn == 'Government' ? 'checked' : ''}> Government</label>
+                                    <label class="ep-v3-radio"><input type="radio" name="employedIn" value="Business" ${modelDetails.employeedIn == 'Business' ? 'checked' : ''}> Business</label>
                                 </div>
                             </div>
                             <div class="ep-v3-field ep-v3-col-1">
@@ -722,7 +722,7 @@
                                 <select id="occupationCategorySelectPartner" name="occupationCategorySelectPartner" class="ep-v3-select">
                                     <option value="0">Any</option>
                                     <c:forEach var="occCat" items="${occupationCategories}">
-                                        <option value="${occCat.occupation_category_id}">${occCat.occupation_category_name}</option>
+                                        <option value="${occCat.occu_id}">${occCat.occu_name}</option>
                                     </c:forEach>
                                 </select>
                             </div>
@@ -900,7 +900,9 @@
 </div>
 
 <script>
-    showStep(2); // Default to Step 2 (Personal Information)
+    $(document).ready(function() {
+        showStep(2); // Default to Step 2 (Personal Information)
+    });
 </script>
 
 </body>

@@ -1,0 +1,239 @@
+.form-control, input {
+	border: none;
+	border-bottom: solid 1px #dddddd;
+	border-top: solid 1px #dddddd;
+	box-shadow: none;
+	border-radius: 0;
+	background-color: #f2f2f2;
+}
+
+.form-control:focus, input :focus {
+	border-color: #cc0001;
+	box-shadow: none;
+}
+
+/* button style */
+.btn {
+	padding: 10px 15px;
+	border-radius: 0;
+}
+
+.btn-primary {
+	background: #c5161d;
+	color: #ffffff;
+	text-align: center;
+	border-color: #c5161d;
+}
+
+.btn-primary:hover {
+	background: #d6272e;
+	border-color: #d6272e;
+}
+
+.link {
+	color: #092d3d;
+}
+
+.errorMessage {
+	color: #c5161d;
+	font-size: 12px;
+	left: 18px;
+	padding: 0 10px;
+	position: absolute;
+	text-align: left;
+	top: 55px;
+}
+
+body {
+	background: #ffffff;
+	font-family: arial;
+}
+
+.headerWrap {
+	background: #fff;
+	height: 100px;
+	border-bottom: solid 1px #dddddd;
+}
+
+.headerWrap h1 {
+	margin: 10px 0;
+}
+
+h3 {
+	color: #c82868;
+}
+
+.containerBg {
+	background-color: #f4f4f4;
+	height: 280%;
+	width: 100%;
+}
+
+.loginWrap {
+	width: 100%;
+	margin: 0px auto;
+	text-align: center;
+	position: relative;
+	background: #f4f4f4;
+	padding: 15px 0px 1px;
+	margin: 0;
+	color: #ffffff;
+	text-align: center;
+	border-top: solid 3px #c82868;
+	border-width: 25px;
+	border-radius: 4px 4px 0 0;
+}
+
+.loginWrap form {
+	margin-bottom: 0;
+}
+
+.loginWrap h5 {
+	background: #092d3d;
+	padding: 15px 0;
+	border-bottom: solid 3px #cc0001;
+	border-radius: 4px 4px 0 0;
+	margin: 0;
+	color: #ffffff;
+	text-align: center;
+}
+
+.loginWrap .formWrap {
+	background-color: #ffffff;
+	background: #ffffff;
+	padding: 40px 15px 15px 15px;
+	border-radius: 0 0 5px 5px;
+	background: #ffffff;
+}
+
+.loginWrap .form-group {
+	margin-bottom: 20px;
+	position: relative;
+}
+
+.loginWrap .form-group .forgotPassword {
+	position: absolute;
+	right: 10px;
+	top: 53px;
+	font-size: 11px;
+	text-decoration: underline;
+}
+
+.loginWrap .fa-times {
+	color: #ffffff;
+	float: right;
+	margin: 0 20px;
+	font-size: 18px;
+}
+
+.rememberMeWrap {
+	margin-top: 15px;
+	text-align: left;
+}
+
+.rememberMeWrap label {
+	font-weight: normal;
+	cursor: pointer;
+}
+
+.loginWrap .btn-primary {
+	width: 180px;
+	margin: 0 auto;
+}
+
+.footerWrap {
+	padding: 25px 0;
+	text-align: center;
+	color: #FFFFFF;
+}
+
+.button:hover {
+	background-color: rgb(9, 45, 61)
+}
+
+.button {
+	border-radius: 4px;
+	background-color: #c82868;
+	border: none;
+	color: #FFFFFF;
+	text-align: center;
+	font-size: 18px;
+	padding: 15px;
+	width: 110px;
+	transition: all 0.5s;
+	cursor: pointer;
+	margin: 5px;
+}
+
+.button span {
+	cursor: pointer;
+	display: inline-block;
+	position: relative;
+	transition: 0.5s;
+}
+
+.button span:after {
+	content: ">>";
+	position: absolute;
+	opacity: 0;
+	top: 0;
+	right: -20px;
+	transition: 0.5s;
+}
+
+.button:hover span {
+	padding-right: 25px;
+}
+
+.button:hover span:after {
+	opacity: 1;
+	right: 0;
+}
+
+
+
+
+
+
+.button1:hover {
+	background-color: rgb(9, 45, 61)
+}
+
+.button1 {
+	border-radius: 4px;
+	background-color: #c82868;
+	border: none;
+	color: #FFFFFF;
+	text-align: center;
+	font-size: 18px;
+	padding: 15px;
+	width: 110px;
+	transition: all 0.5s;
+	cursor: pointer;
+	margin: 5px;
+}
+
+.button1 span {
+	cursor: pointer;
+	display: inline-block;
+	position: relative;
+	transition: 0.5s;
+}
+
+.button1 span:after {
+	content: "<<";
+	position: absolute;
+	opacity: 0;
+	top: 0;
+	left: -80px;
+	transition: 0.5s;
+}
+
+.button1:hover span {
+	padding-left: 15px;
+}
+
+.button1:hover span:after {
+	opacity: 1;
+	right: 0;
+}

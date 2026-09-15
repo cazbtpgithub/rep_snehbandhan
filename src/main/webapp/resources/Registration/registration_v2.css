@@ -1,0 +1,336 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap');
+
+:root {
+    --primary: #85002C; /* Maroon */
+    --primary-light: #FBEFF2;
+    --bg-page: #FFF9F7;
+    --bg-surface: #FFFFFF;
+    --text-main: #333333;
+    --text-muted: #666666;
+    --border-color: #E0E0E0;
+    --border-focus: #85002C;
+}
+
+body.v2-registration-body {
+    background-color: var(--bg-page);
+    font-family: 'Inter', sans-serif;
+    color: var(--text-main);
+    margin: 0;
+    padding: 0;
+}
+
+/* Header & Typography */
+.v2-title {
+    font-family: 'Playfair Display', serif;
+    color: var(--primary);
+    text-align: center;
+    font-size: 2.5rem;
+    margin-top: 2rem;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+}
+
+.v2-subtitle {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 1rem;
+    max-width: 600px;
+    margin: 0 auto 3rem auto;
+    line-height: 1.5;
+}
+
+/* Stepper */
+.v2-stepper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 4rem;
+}
+
+.v2-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+}
+
+.v2-step-number {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 1.1rem;
+    background-color: #EAEAEA;
+    color: var(--text-main);
+    margin-bottom: 0.5rem;
+}
+
+.v2-step.active .v2-step-number {
+    background-color: var(--primary);
+    color: white;
+}
+
+.v2-step-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.v2-step.active .v2-step-label {
+    color: var(--primary);
+}
+
+.v2-step-line {
+    height: 1px;
+    width: 120px;
+    background-color: #D6D6D6;
+    margin: 0 1rem;
+    position: relative;
+    top: -10px;
+    z-index: 1;
+}
+
+/* Form Container */
+.v2-form-container {
+    background-color: var(--bg-surface);
+    max-width: 800px;
+    margin: 0 auto 4rem auto;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    padding: 3rem 4rem;
+}
+
+.v2-section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1rem;
+}
+
+.v2-section-title i {
+    margin-right: 0.75rem;
+    font-size: 1.2rem;
+}
+
+/* Grid Layout */
+.v2-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem 2rem;
+    margin-bottom: 3rem;
+}
+
+.v2-grid-full {
+    grid-column: 1 / -1;
+}
+
+/* Form Groups & Inputs */
+.v2-form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.v2-form-group label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 0.5rem;
+}
+
+.v2-form-control {
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    color: var(--text-main);
+    transition: all 0.2s ease;
+    background-color: #FFFFFF;
+    width: 100%;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+.v2-form-control:focus {
+    outline: none;
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+.v2-form-control::placeholder {
+    color: #A0A0A0;
+}
+
+select.v2-form-control {
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1em;
+}
+
+/* Custom Input Groups (like Mobile +91) */
+.v2-input-group {
+    display: flex;
+}
+.v2-input-group select {
+    width: 30%;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-right: none;
+    background-color: #F9F9F9;
+}
+.v2-input-group input {
+    width: 70%;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+/* Radio Buttons */
+.v2-radio-group {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    height: 44px; /* Match input height */
+}
+
+.v2-radio-item {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.v2-radio-item input[type="radio"] {
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 2px solid #ccc;
+    border-radius: 50%;
+    margin-right: 0.5rem;
+    outline: none;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.v2-radio-item input[type="radio"]:checked {
+    border-color: var(--primary);
+}
+
+.v2-radio-item input[type="radio"]:checked::after {
+    content: '';
+    width: 8px;
+    height: 8px;
+    background-color: var(--primary);
+    border-radius: 50%;
+}
+
+.v2-radio-item label {
+    font-size: 0.95rem;
+    font-weight: 400;
+    margin-bottom: 0;
+    cursor: pointer;
+}
+
+/* Pill Selectors */
+.v2-pill-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.v2-pill-group input[type="radio"] {
+    display: none;
+}
+
+.v2-pill-group label {
+    display: inline-block;
+    padding: 0.5rem 1.25rem;
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-main);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-bottom: 0;
+}
+
+.v2-pill-group input[type="radio"]:checked + label {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: #FFFFFF;
+}
+
+/* Action Buttons */
+.v2-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.v2-btn {
+    padding: 0.75rem 2rem;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: 'Inter', sans-serif;
+}
+
+.v2-btn-outline {
+    background-color: transparent;
+    border: 1px solid var(--primary);
+    color: var(--primary);
+}
+
+.v2-btn-outline:hover {
+    background-color: var(--primary-light);
+}
+
+.v2-btn-primary {
+    background-color: var(--primary);
+    border: 1px solid var(--primary);
+    color: #FFFFFF;
+}
+
+.v2-btn-primary:hover {
+    background-color: #6A0022;
+}
+
+/* Password Input with Eye Icon */
+.v2-password-wrapper {
+    position: relative;
+}
+.v2-password-wrapper i {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #A0A0A0;
+    cursor: pointer;
+}
+
+/* Error states */
+.v2-form-control.is-invalid {
+    border-color: #DC3545;
+}
+.v2-error-text {
+    color: #DC3545;
+    font-size: 0.8rem;
+    margin-top: 0.25rem;
+}

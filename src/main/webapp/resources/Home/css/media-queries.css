@@ -1,0 +1,47 @@
+@media (max-width: 543px) { 
+    body, html { overflow-x: hidden; }
+    .shortlisted-profile, .about-info  {margin-top: 20px;}
+    .detail-profile{margin-top: 70px;}
+    .shortlisted-profile .nav-pills .nav-item+.nav-item {margin-left: .2rem;}
+    .shortlisted-profile .nav-pills .nav-link {height: 110px;} 
+    .adminmenu, .shortlisted-profile .nav-pills .nav-link.active:before, .shortlisted-profile .nav-pills .nav-link.active:after{display: none;}
+    .mainnav .navbar-nav{width: 100%;}
+    .mainnav .nav-item.nav-link{display: block; margin: 0;}
+    .mainnav .navbar-nav .nav-item+.nav-item{margin: 0;}
+    .chatpopup{display: none !important;}
+}
+
+@media (min-width: 544px) and (max-width: 767px) {
+    body, html { overflow-x: hidden; }
+    .about-info {margin-top: 20px;} 
+    .shortlisted-profile .nav-pills .nav-item+.nav-item {margin-left: .25rem;}
+    .shortlisted-profile .nav-pills .nav-link {height: 100px;}  
+    .adminmenu{display: none;}
+    .mainnav .navbar-nav{width: 100%;}
+    .mainnav .nav-item.nav-link{display: block; margin: 0;}
+    .mainnav .navbar-nav .nav-item+.nav-item{margin: 0;}
+    .chatpopup{display: none !important;}
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+    .shortlisted-profile .nav-pills .nav-item+.nav-item {margin-left: .38rem;}
+    .shortlisted-profile .nav-pills .nav-link {height: 80px;} 
+    .chatpopup{right: 0;}
+}
+
+@media (min-width: 992px) and (max-width: 1199px) { 
+    .shortlisted-profile .nav-pills .nav-item+.nav-item {margin-left: .4rem;}
+    .shortlisted-profile .nav-pills .nav-link {height: 80px;}
+    .pinkbtn{font-size: .7rem}
+    .user-slider{padding-right: 0;}
+    .chatbox ul li{position: relative;}
+    .status-online{ 
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin-top: 12px;
+    margin-right: 5px;
+}
+}
+
+@media (min-width: 1200px) { ... }
