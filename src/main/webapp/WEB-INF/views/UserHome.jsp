@@ -197,9 +197,9 @@
         <!-- Column 2: Center Main Content -->
         <main class="dash-main" id="mainDivForUser">
 
-            <!-- 5 Stat Cards Bar -->
-            <div class="stats-grid">
-                <div class="stat-card">
+            <!-- 5 White Stat Cards Bar (Main Interactive Filter Cards) -->
+            <div class="stats-grid" id="mainStatGrid">
+                <div class="stat-card active" onclick="switchMatchTab('allMatches', this);">
                     <div class="icon-circle"><i class="fa fa-users"></i></div>
                     <div class="stat-info">
                         <h3><fmt:formatNumber value="${latestMatchCount != null ? latestMatchCount : 30519}"/></h3>
@@ -207,7 +207,7 @@
                     </div>
                 </div>
 
-                <div class="stat-card">
+                <div class="stat-card" onclick="switchMatchTab('latestUpgraded', this);">
                     <div class="icon-circle"><i class="fa fa-shield"></i></div>
                     <div class="stat-info">
                         <h3><fmt:formatNumber value="${latestUpgraded != null ? latestUpgraded : 2458}"/></h3>
@@ -215,7 +215,7 @@
                     </div>
                 </div>
 
-                <div class="stat-card">
+                <div class="stat-card" onclick="switchMatchTab('viewedYet', this);">
                     <div class="icon-circle"><i class="fa fa-eye"></i></div>
                     <div class="stat-info">
                         <h3><fmt:formatNumber value="${seenyet != null ? seenyet : 792}"/></h3>
@@ -223,7 +223,7 @@
                     </div>
                 </div>
 
-                <div class="stat-card">
+                <div class="stat-card" onclick="switchMatchTab('shortlisted', this);">
                     <div class="icon-circle"><i class="fa fa-heart"></i></div>
                     <div class="stat-info">
                         <h3><fmt:formatNumber value="${sortlisted != null ? sortlisted : 305}"/></h3>
@@ -231,7 +231,7 @@
                     </div>
                 </div>
 
-                <div class="stat-card">
+                <div class="stat-card" onclick="switchMatchTab('notSeenYet', this);">
                     <div class="icon-circle"><i class="fa fa-star"></i></div>
                     <div class="stat-info">
                         <h3><fmt:formatNumber value="${notseenyet != null ? notseenyet : 4}"/></h3>
@@ -240,42 +240,55 @@
                 </div>
             </div>
 
-            <!-- "Find Your Perfect Match" Filter Card -->
+            <!-- "Find Your Perfect Match" Filter Card with Advance Filter -->
             <div class="filter-card">
                 <h3>Find Your Perfect Match</h3>
+                
+                <!-- Quick Filters Row -->
                 <div class="filter-row">
                     <div class="filter-group">
                         <label>Age</label>
                         <div style="display: flex; align-items: center; gap: 6px;">
-                            <select style="min-width: 65px;">
-                                <option>22</option>
-                                <option>18</option>
-                                <option>20</option>
-                                <option>25</option>
+                            <select id="filterAgeMin" style="min-width: 65px;">
+                                <option value="18">18</option>
+                                <option value="20">20</option>
+                                <option value="22" selected>22</option>
+                                <option value="25">25</option>
+                                <option value="30">30</option>
                             </select>
                             <span style="font-size: 11px; color: #888;">to</span>
-                            <select style="min-width: 65px;">
-                                <option>32</option>
-                                <option>28</option>
-                                <option>30</option>
-                                <option>35</option>
+                            <select id="filterAgeMax" style="min-width: 65px;">
+                                <option value="25">25</option>
+                                <option value="30">30</option>
+                                <option value="32" selected>32</option>
+                                <option value="35">35</option>
+                                <option value="40">40</option>
+                                <option value="50">50</option>
                             </select>
                         </div>
                     </div>
 
                     <div class="filter-group">
                         <label>Height</label>
-                        <select style="min-width: 100px;">
-                            <option>Any</option>
-                            <option>5'0" to 5'5"</option>
-                            <option>5'6" to 6'0"</option>
+                        <select id="filterHeight" style="min-width: 100px;">
+                            <option value="">Any Height</option>
+                            <option value="4'6 to 5'0">4'6" to 5'0"</option>
+                            <option value="5'0 to 5'5">5'0" to 5'5"</option>
+                            <option value="5'6 to 6'0">5'6" to 6'0"</option>
+                            <option value="6'0+">6'0" & Above</option>
                         </select>
                     </div>
 
                     <div class="filter-group">
                         <label>Religion</label>
-                        <select style="min-width: 100px;">
-                            <option>Any</option>
+                        <select id="filterReligion" style="min-width: 100px;">
+                            <option value="">Any Religion</option>
+                            <option value="Hindu">Hindu</option>
+                            <option value="Jain">Jain</option>
+                            <option value="Buddhist">Buddhist</option>
+                            <option value="Sikh">Sikh</option>
+                            <option value="Christian">Christian</option>
+                            <option value="Muslim">Muslim</option>
                             <c:forEach var="religion" items="${religions}">
                                 <option value="${religion.religion_id}">${religion.religion_name}</option>
                             </c:forEach>
@@ -284,27 +297,189 @@
 
                     <div class="filter-group">
                         <label>Caste</label>
-                        <select style="min-width: 100px;">
-                            <option>Any</option>
-                            <option>Maratha</option>
-                            <option>Baniya</option>
-                            <option>Brahmin</option>
+                        <select id="filterCaste" style="min-width: 100px;">
+                            <option value="">Any Caste</option>
+                            <option value="Maratha">Maratha</option>
+                            <option value="Kunbi">Kunbi</option>
+                            <option value="Brahmin">Brahmin</option>
+                            <option value="Baniya">Baniya</option>
+                            <option value="Lingayat">Lingayat</option>
+                            <option value="Dhangar">Dhangar</option>
                         </select>
                     </div>
 
                     <div class="filter-group" style="flex: 1; min-width: 140px;">
                         <label>Location</label>
-                        <input type="text" placeholder="Enter city or district">
+                        <input type="text" id="filterLocation" placeholder="Enter city, district or state">
                     </div>
                 </div>
 
+                <!-- Advance Filter Drawer / Collapsible Panel -->
+                <div class="advance-filter-panel" id="advanceFilterPanel">
+                    <div style="font-weight: 700; font-size: 13px; color: var(--primary); margin-bottom: 14px; display: flex; align-items: center; gap: 6px;">
+                        <i class="fa fa-sliders"></i> Advanced Search Criteria
+                    </div>
+
+                    <div class="advance-filter-grid">
+                        <div class="advance-filter-group">
+                            <label>Marital Status</label>
+                            <select id="advMaritalStatus">
+                                <option value="">Any Marital Status</option>
+                                <option value="Never Married">Never Married</option>
+                                <option value="Divorced">Divorced</option>
+                                <option value="Widowed">Widowed</option>
+                                <option value="Awaiting Divorce">Awaiting Divorce</option>
+                            </select>
+                        </div>
+
+                        <div class="advance-filter-group">
+                            <label>Mother Tongue</label>
+                            <select id="advMotherTongue">
+                                <option value="">Any Language</option>
+                                <option value="Marathi">Marathi</option>
+                                <option value="Hindi">Hindi</option>
+                                <option value="Gujarati">Gujarati</option>
+                                <option value="English">English</option>
+                                <option value="Kannada">Kannada</option>
+                                <option value="Telugu">Telugu</option>
+                            </select>
+                        </div>
+
+                        <div class="advance-filter-group">
+                            <label>Education Level</label>
+                            <select id="advEducation">
+                                <option value="">Any Education</option>
+                                <option value="Engineering">B.E / B.Tech / M.Tech</option>
+                                <option value="Medical">MBBS / MD / Dental</option>
+                                <option value="Post Graduate">Master's / M.Sc / M.Com</option>
+                                <option value="Graduate">Bachelor's / B.Com / B.Sc</option>
+                                <option value="Management">MBA / PGDM</option>
+                                <option value="Doctorate">Doctorate / Ph.D</option>
+                            </select>
+                        </div>
+
+                        <div class="advance-filter-group">
+                            <label>Occupation / Industry</label>
+                            <select id="advOccupation">
+                                <option value="">Any Profession</option>
+                                <option value="Software Engineer">Software / IT Professional</option>
+                                <option value="Doctor">Doctor / Healthcare</option>
+                                <option value="Civil Services">Govt / Civil Services</option>
+                                <option value="Banking">Banking & Finance</option>
+                                <option value="Business">Business / Entrepreneur</option>
+                                <option value="Teacher">Teaching / Education</option>
+                            </select>
+                        </div>
+
+                        <div class="advance-filter-group">
+                            <label>Annual Income</label>
+                            <select id="advIncome">
+                                <option value="">Any Income Range</option>
+                                <option value="Up to 3 Lakhs">Up to ₹3 Lakhs</option>
+                                <option value="3 - 5 Lakhs">₹3 - ₹5 Lakhs</option>
+                                <option value="5 - 10 Lakhs">₹5 - ₹10 Lakhs</option>
+                                <option value="10 - 20 Lakhs">₹10 - ₹20 Lakhs</option>
+                                <option value="20+ Lakhs">₹20 Lakhs & Above</option>
+                            </select>
+                        </div>
+
+                        <div class="advance-filter-group">
+                            <label>Horoscope / Manglik</label>
+                            <select id="advManglik">
+                                <option value="">Doesn't Matter</option>
+                                <option value="Non-Manglik">Non-Manglik</option>
+                                <option value="Manglik">Manglik</option>
+                                <option value="Anshik Manglik">Anshik Manglik</option>
+                            </select>
+                        </div>
+
+                        <div class="advance-filter-group">
+                            <label>Dietary Habits</label>
+                            <select id="advDiet">
+                                <option value="">Any Diet</option>
+                                <option value="Vegetarian">Vegetarian</option>
+                                <option value="Non-Vegetarian">Non-Vegetarian</option>
+                                <option value="Eggetarian">Eggetarian</option>
+                                <option value="Jain">Jain</option>
+                            </select>
+                        </div>
+
+                        <div class="advance-filter-group">
+                            <label>State</label>
+                            <select id="advState">
+                                <option value="">Any State</option>
+                                <option value="Maharashtra">Maharashtra</option>
+                                <option value="Karnataka">Karnataka</option>
+                                <option value="Gujarat">Gujarat</option>
+                                <option value="Goa">Goa</option>
+                                <option value="Delhi">Delhi</option>
+                            </select>
+                        </div>
+
+                        <div class="checkbox-group-row">
+                            <label class="custom-checkbox-label">
+                                <input type="checkbox" id="chkPhotoOnly" checked>
+                                With Photo Only
+                            </label>
+
+                            <label class="custom-checkbox-label">
+                                <input type="checkbox" id="chkVerifiedOnly">
+                                Verified Profiles Only
+                            </label>
+
+                            <label class="custom-checkbox-label">
+                                <input type="checkbox" id="chkOnlineOnly">
+                                Currently Online Only
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Search by Details Section (Matching Mockup Image) -->
+                    <div class="search-details-card">
+                        <h4 class="search-details-title">Search by Details</h4>
+                        
+                        <div class="search-details-grid">
+                            <div class="search-details-group">
+                                <label for="searchProfileId">Profile ID</label>
+                                <input type="text" id="searchProfileId" placeholder="Enter ID">
+                            </div>
+
+                            <div class="search-details-group">
+                                <label for="searchName">Name</label>
+                                <input type="text" id="searchName" placeholder="Enter Name">
+                            </div>
+
+                            <div class="search-details-group">
+                                <label for="searchRegDate">Reg Date</label>
+                                <input type="date" id="searchRegDate">
+                            </div>
+
+                            <div class="search-details-group">
+                                <label for="searchDob">DOB</label>
+                                <input type="date" id="searchDob">
+                            </div>
+                        </div>
+
+                        <div class="search-details-actions">
+                            <button type="button" class="btn-details-search" onclick="applySearchByDetails();">Search</button>
+                            <button type="button" class="btn-details-clear" onclick="clearSearchByDetails();">Clear<br>All</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Active Filter Badges / Chips -->
+                <div class="filter-chips-container" id="filterChipsContainer" style="display: none;">
+                    <span class="filter-chips-title">Active Filters:</span>
+                    <div id="chipsList" style="display: flex; gap: 6px; flex-wrap: wrap;"></div>
+                </div>
+
                 <div class="filter-actions">
-                    <button class="btn-more-filters">
-                        <i class="fa fa-sliders"></i> More Filters
+                    <button class="btn-more-filters" id="btnToggleAdvance" onclick="toggleAdvanceFilter();">
+                        <i class="fa fa-sliders"></i> <span id="advanceBtnText">More Filters</span>
                     </button>
                     <div>
-                        <button class="btn-search-submit">Search</button>
-                        <a href="#" class="btn-clear-all">Clear All</a>
+                        <button class="btn-search-submit" onclick="applyAdvanceSearch();">Search</button>
+                        <a href="javascript:void(0);" class="btn-clear-all" onclick="clearAllAdvanceFilters();">Clear All</a>
                     </div>
                 </div>
             </div>
@@ -773,6 +948,296 @@
                 $('.profile-cards-container .profile-card:hidden').fadeIn(400);
             }
         };
+
+        // Switch Dashboard View Mode (Pink Image 1 Tabs vs White Image 2 Stat Cards)
+        window.switchDashboardView = function(viewType) {
+            if (viewType === 'pink') {
+                $('#pinkTabGrid').slideDown(250);
+                $('#whiteStatGrid').slideUp(250);
+                $('#btnPinkView').addClass('active');
+                $('#btnWhiteView').removeClass('active');
+            } else {
+                $('#pinkTabGrid').slideUp(250);
+                $('#whiteStatGrid').slideDown(250);
+                $('#btnWhiteView').addClass('active');
+                $('#btnPinkView').removeClass('active');
+            }
+        };
+
+        // Switch Match Category Stat Card
+        window.currentTabKey = 'allMatches';
+        window.switchMatchTab = function(tabKey, elem) {
+            window.currentTabKey = tabKey;
+            
+            // Remove active class from all stat cards
+            $('.stat-card').removeClass('active');
+            
+            // Add active class to clicked stat card
+            if (elem) {
+                $(elem).addClass('active');
+            }
+
+            // AJAX endpoints mapping
+            var endpointMap = {
+                'allMatches': 'loadLatestMatches',
+                'latestUpgraded': 'loadLatestUpgraded',
+                'notSeenYet': 'NotSeenYetProfilesView',
+                'viewedYet': 'ViewedyetProfilesView',
+                'shortlisted': 'ShortlistedOrIntrestedView'
+            };
+
+            var endpoint = endpointMap[tabKey] || 'loadLatestMatches';
+
+            // Show subtle overlay / spinner
+            $('.profile-cards-container').css('opacity', '0.5');
+
+            var oMyForm = new FormData();
+            var payload = {
+                latestMatchVisitorIds: "[]",
+                latestUpgradedVisitorIds: "[]",
+                NotSeenYetProfiles: "[]",
+                ViewedyetProfiles: "[]",
+                ShortlistedOrIntrested: "[]",
+                length: 10
+            };
+            oMyForm.append("jsonObjectData", JSON.stringify(payload));
+
+            $.ajax({
+                url: "${pageContext.request.contextPath}/" + endpoint,
+                type: "POST",
+                data: oMyForm,
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    $('.profile-cards-container').css('opacity', '1');
+                    if (data && data.trim().length > 50) {
+                        $('.profile-cards-container').html(data);
+                    } else {
+                        // Filter client mock profiles if backend returns empty snippet
+                        filterClientMockProfiles();
+                    }
+                },
+                error: function() {
+                    $('.profile-cards-container').css('opacity', '1');
+                    filterClientMockProfiles();
+                }
+            });
+        };
+
+        // Advance Filter Toggle
+        window.toggleAdvanceFilter = function() {
+            var $panel = $('#advanceFilterPanel');
+            if ($panel.is(':visible')) {
+                $panel.slideUp(250);
+                $('#advanceBtnText').text('More Filters');
+                $('#btnToggleAdvance i').removeClass('fa-angle-up').addClass('fa-sliders');
+            } else {
+                $panel.slideDown(300);
+                $('#advanceBtnText').text('Fewer Filters');
+                $('#btnToggleAdvance i').removeClass('fa-sliders').addClass('fa-angle-up');
+            }
+        };
+
+        // Apply Advance Search & Generate Filter Chips
+        window.applyAdvanceSearch = function() {
+            var chips = [];
+
+            var ageMin = $('#filterAgeMin').val();
+            var ageMax = $('#filterAgeMax').val();
+            if (ageMin || ageMax) chips.push({ key: 'Age', label: 'Age: ' + ageMin + '-' + ageMax });
+
+            var height = $('#filterHeight').val();
+            if (height) chips.push({ key: 'filterHeight', label: 'Height: ' + height });
+
+            var religion = $('#filterReligion').val();
+            if (religion) chips.push({ key: 'filterReligion', label: 'Religion: ' + religion });
+
+            var caste = $('#filterCaste').val();
+            if (caste) chips.push({ key: 'filterCaste', label: 'Caste: ' + caste });
+
+            var location = $('#filterLocation').val();
+            if (location) chips.push({ key: 'filterLocation', label: 'Loc: ' + location });
+
+            var marital = $('#advMaritalStatus').val();
+            if (marital) chips.push({ key: 'advMaritalStatus', label: 'Status: ' + marital });
+
+            var lang = $('#advMotherTongue').val();
+            if (lang) chips.push({ key: 'advMotherTongue', label: 'Language: ' + lang });
+
+            var edu = $('#advEducation').val();
+            if (edu) chips.push({ key: 'advEducation', label: 'Edu: ' + edu });
+
+            var occ = $('#advOccupation').val();
+            if (occ) chips.push({ key: 'advOccupation', label: 'Occ: ' + occ });
+
+            var income = $('#advIncome').val();
+            if (income) chips.push({ key: 'advIncome', label: 'Income: ' + income });
+
+            var manglik = $('#advManglik').val();
+            if (manglik) chips.push({ key: 'advManglik', label: 'Horoscope: ' + manglik });
+
+            var diet = $('#advDiet').val();
+            if (diet) chips.push({ key: 'advDiet', label: 'Diet: ' + diet });
+
+            var profId = $('#searchProfileId').val();
+            if (profId) chips.push({ key: 'searchProfileId', label: 'ID: ' + profId });
+
+            var profName = $('#searchName').val();
+            if (profName) chips.push({ key: 'searchName', label: 'Name: ' + profName });
+
+            var regDate = $('#searchRegDate').val();
+            if (regDate) chips.push({ key: 'searchRegDate', label: 'Reg: ' + regDate });
+
+            var dob = $('#searchDob').val();
+            if (dob) chips.push({ key: 'searchDob', label: 'DOB: ' + dob });
+
+            if ($('#chkPhotoOnly').is(':checked')) chips.push({ key: 'chkPhotoOnly', label: 'Photo Only' });
+            if ($('#chkVerifiedOnly').is(':checked')) chips.push({ key: 'chkVerifiedOnly', label: 'Verified Only' });
+            if ($('#chkOnlineOnly').is(':checked')) chips.push({ key: 'chkOnlineOnly', label: 'Online Only' });
+
+            // Render Chips
+            var $chipsList = $('#chipsList');
+            $chipsList.empty();
+
+            if (chips.length > 0) {
+                $('#filterChipsContainer').slideDown(200);
+                chips.forEach(function(item) {
+                    var chipHtml = '<div class="filter-chip">' +
+                        '<span>' + item.label + '</span>' +
+                        '<i class="fa fa-times" onclick="removeFilterChip(\'' + item.key + '\');"></i>' +
+                    '</div>';
+                    $chipsList.append(chipHtml);
+                });
+            } else {
+                $('#filterChipsContainer').slideUp(200);
+            }
+
+            // Fire AJAX Refine Search
+            var oMyForm = new FormData();
+            var searchData = {
+                refineheightSelectPartnerFirst: height ? height.split(' to ')[0] || '' : '',
+                refineheightSelectPartnerSecond: height ? height.split(' to ')[1] || '' : '',
+                refineageFrom: ageMin || '18',
+                refineageTo: ageMax || '50',
+                refinematerialStatus: marital || '',
+                refinereligionSelectPartner: religion || '',
+                casteSelect: caste || '',
+                refineoccupationCategorySelect: occ || '',
+                checkBoxDistrict: location || '',
+                profileId: profId || '',
+                nameSearch: profName || '',
+                regDate: regDate || '',
+                dob: dob || '',
+                RefineSearchProfile: "[]"
+            };
+            oMyForm.append("jsonObjectData", JSON.stringify(searchData));
+
+            $('.profile-cards-container').css('opacity', '0.5');
+
+            $.ajax({
+                url: "${pageContext.request.contextPath}/loadRefineSearchProfile",
+                type: "POST",
+                data: oMyForm,
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    $('.profile-cards-container').css('opacity', '1');
+                    if (data && data.trim().length > 50) {
+                        $('.profile-cards-container').html(data);
+                    } else {
+                        filterClientMockProfiles();
+                    }
+                },
+                error: function() {
+                    $('.profile-cards-container').css('opacity', '1');
+                    filterClientMockProfiles();
+                }
+            });
+        };
+
+        // Search by Details Specific Action
+        window.applySearchByDetails = function() {
+            applyAdvanceSearch();
+        };
+
+        // Clear Search by Details Inputs
+        window.clearSearchByDetails = function() {
+            $('#searchProfileId').val('');
+            $('#searchName').val('');
+            $('#searchRegDate').val('');
+            $('#searchDob').val('');
+            applyAdvanceSearch();
+        };
+
+        // Remove Individual Filter Chip
+        window.removeFilterChip = function(key) {
+            if (key === 'Age') {
+                $('#filterAgeMin').val('18');
+                $('#filterAgeMax').val('50');
+            } else if (key.startsWith('chk')) {
+                $('#' + key).prop('checked', false);
+            } else {
+                $('#' + key).val('');
+            }
+            applyAdvanceSearch();
+        };
+
+        // Clear All Advance Filters
+        window.clearAllAdvanceFilters = function() {
+            $('#filterAgeMin').val('18');
+            $('#filterAgeMax').val('32');
+            $('#filterHeight').val('');
+            $('#filterReligion').val('');
+            $('#filterCaste').val('');
+            $('#filterLocation').val('');
+            $('#advMaritalStatus').val('');
+            $('#advMotherTongue').val('');
+            $('#advEducation').val('');
+            $('#advOccupation').val('');
+            $('#advIncome').val('');
+            $('#advManglik').val('');
+            $('#advDiet').val('');
+            $('#advState').val('');
+            $('#searchProfileId').val('');
+            $('#searchName').val('');
+            $('#searchRegDate').val('');
+            $('#searchDob').val('');
+            $('#chkPhotoOnly').prop('checked', false);
+            $('#chkVerifiedOnly').prop('checked', false);
+            $('#chkOnlineOnly').prop('checked', false);
+
+            $('#filterChipsContainer').slideUp(200);
+            $('#chipsList').empty();
+            
+            // Reload default tab
+            switchMatchTab(window.currentTabKey || 'allMatches');
+        };
+
+        // Client Mock Profile Filter Fallback
+        function filterClientMockProfiles() {
+            var locationFilter = ($('#filterLocation').val() || '').toLowerCase();
+            var casteFilter = ($('#filterCaste').val() || '').toLowerCase();
+            var religionFilter = ($('#filterReligion').val() || '').toLowerCase();
+            var nameFilter = ($('#searchName').val() || '').toLowerCase();
+            var idFilter = ($('#searchProfileId').val() || '').toLowerCase();
+
+            $('.profile-cards-container .profile-card').each(function() {
+                var text = $(this).text().toLowerCase();
+                var match = true;
+
+                if (locationFilter && text.indexOf(locationFilter) === -1) match = false;
+                if (casteFilter && text.indexOf(casteFilter) === -1) match = false;
+                if (religionFilter && text.indexOf(religionFilter) === -1) match = false;
+                if (nameFilter && text.indexOf(nameFilter) === -1) match = false;
+                if (idFilter && text.indexOf(idFilter) === -1) match = false;
+
+                if (match) {
+                    $(this).fadeIn(300);
+                } else {
+                    $(this).fadeOut(300);
+                }
+            });
+        }
 
         $(document).ready(function() {
             $(document).on('click', '.btn-load-more-floating', function(e) {

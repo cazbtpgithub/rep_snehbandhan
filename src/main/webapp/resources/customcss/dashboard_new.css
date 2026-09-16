@@ -371,6 +371,22 @@ body {
     display: flex;
     align-items: center;
     gap: 10px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    user-select: none;
+}
+
+.stat-card:hover {
+    border-color: var(--primary-border);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(210, 26, 90, 0.12);
+}
+
+.stat-card.active {
+    background: #fff5f8;
+    border-color: var(--primary);
+    box-shadow: 0 4px 16px rgba(210, 26, 90, 0.2);
+    transform: translateY(-2px);
 }
 
 .stat-card .icon-circle {
@@ -384,6 +400,12 @@ body {
     justify-content: center;
     font-size: 16px;
     flex-shrink: 0;
+    transition: all 0.25s ease;
+}
+
+.stat-card.active .icon-circle {
+    background: var(--primary);
+    color: #ffffff;
 }
 
 .stat-card .stat-info h3 {
@@ -840,3 +862,362 @@ body {
 .dash-footer a:hover {
     color: var(--primary);
 }
+
+/* ==========================================
+   IMAGE 1 MATCH TABS STYLES (Pink/Red Cards)
+   ========================================== */
+.pink-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.pink-tab-card {
+    background: #d21a5a;
+    border-radius: 12px;
+    overflow: hidden;
+    color: #ffffff;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 12px rgba(210, 26, 90, 0.22);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    user-select: none;
+}
+
+.pink-tab-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(210, 26, 90, 0.35);
+}
+
+.pink-tab-card .tab-top-block {
+    background: #d21a5a;
+    padding: 14px 8px 10px 8px;
+    transition: background 0.25s ease;
+}
+
+.pink-tab-card .tab-bottom-block {
+    background: #b8144b;
+    height: 16px;
+    transition: background 0.25s ease;
+}
+
+.pink-tab-card .tab-count {
+    font-size: 22px;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 6px;
+    color: #ffffff;
+}
+
+.pink-tab-card .tab-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #ffffff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Active State matching Image 1 dark red top header */
+.pink-tab-card.active {
+    box-shadow: 0 6px 18px rgba(183, 28, 28, 0.4);
+    transform: translateY(-2px);
+}
+
+.pink-tab-card.active .tab-top-block {
+    background: #b71c1c; /* Dark crimson red from Image 1 */
+}
+
+.pink-tab-card.active .tab-bottom-block {
+    background: #d21a5a;
+}
+
+/* View Switcher Bar (Pink Tabs vs White Cards) */
+.tab-view-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.tab-view-header h4 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin: 0;
+}
+
+.tab-view-toggle {
+    display: flex;
+    gap: 4px;
+    background: #f0e4e8;
+    padding: 3px;
+    border-radius: 20px;
+}
+
+.tab-view-toggle button {
+    border: none;
+    background: transparent;
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.tab-view-toggle button.active {
+    background: #ffffff;
+    color: var(--primary);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* ==========================================
+   ADVANCE FILTER STYLES
+   ========================================== */
+.advance-filter-panel {
+    display: none;
+    background: #ffffff;
+    border: 1px solid var(--primary-border);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    margin-top: 16px;
+    box-shadow: 0 6px 20px rgba(210, 26, 90, 0.06);
+    animation: fadeInSlideDown 0.3s ease forwards;
+}
+
+@keyframes fadeInSlideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.advance-filter-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+
+.advance-filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.advance-filter-group label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+}
+
+.advance-filter-group select,
+.advance-filter-group input[type="text"] {
+    width: 100%;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background: #faf6f7;
+    font-size: 12px;
+    color: var(--text-dark);
+    outline: none;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+.advance-filter-group select:focus,
+.advance-filter-group input[type="text"]:focus {
+    border-color: var(--primary);
+    background: #ffffff;
+}
+
+.checkbox-group-row {
+    grid-column: span 4;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--border-color);
+    margin-top: 8px;
+}
+
+.custom-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-dark);
+    cursor: pointer;
+}
+
+.custom-checkbox-label input[type="checkbox"] {
+    accent-color: var(--primary);
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.filter-chips-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border-color);
+}
+
+.filter-chips-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-muted);
+    margin-right: 4px;
+}
+
+.filter-chip {
+    background: #fdf0f4;
+    border: 1px solid #f7d6e2;
+    color: var(--primary);
+    padding: 4px 10px;
+    border-radius: 16px;
+    font-size: 11px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+}
+
+.filter-chip i {
+    cursor: pointer;
+    font-size: 12px;
+    opacity: 0.75;
+}
+
+.filter-chip i:hover {
+    opacity: 1;
+    color: #b71c1c;
+}
+
+/* ==========================================
+   SEARCH BY DETAILS STYLES (Matching Mockup)
+   ========================================== */
+.search-details-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 24px;
+    margin-top: 18px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+
+.search-details-title {
+    color: #d21a5a;
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0 0 18px 0;
+    padding-bottom: 6px;
+    border-bottom: 2px solid #f7d6e2;
+    display: inline-block;
+}
+
+.search-details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px 24px;
+    max-width: 540px;
+}
+
+.search-details-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.search-details-group label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #444444;
+}
+
+.search-details-group input[type="text"],
+.search-details-group input[type="date"] {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid #dcdcdc;
+    background: #ffffff;
+    font-size: 13px;
+    color: #333333;
+    outline: none;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+.search-details-group input[type="text"]:focus,
+.search-details-group input[type="date"]:focus {
+    border-color: #d21a5a;
+    box-shadow: 0 0 0 3px rgba(210, 26, 90, 0.1);
+}
+
+.search-details-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 22px;
+}
+
+.btn-details-search {
+    background: linear-gradient(135deg, #e55385 0%, #d21a5a 100%);
+    color: #ffffff !important;
+    border: none;
+    padding: 10px 26px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(210, 26, 90, 0.3);
+    transition: all 0.2s ease;
+}
+
+.btn-details-search:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(210, 26, 90, 0.4);
+}
+
+.btn-details-clear {
+    background: #ffffff;
+    color: #d21a5a !important;
+    border: 2px solid #d21a5a;
+    padding: 8px 20px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: center;
+    line-height: 1.2;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-details-clear:hover {
+    background: #fdf0f4;
+}
+
+
