@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lifestyle Preferences - Premium UI Redesign</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="resources/Registration/edit_profile_v3.css">
+    <style>
+        body {
+            background-color: #FAF7F9;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            padding: 40px 20px;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
+        .demo-container {
+            max-width: 820px;
+            width: 100%;
+        }
+        .demo-header {
+            margin-bottom: 24px;
+            text-align: center;
+        }
+        .demo-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: #1F2937;
+            margin-bottom: 6px;
+        }
+        .demo-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #D91E68 0%, #FF4D8D 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+
+<div class="demo-container">
+    <div class="demo-header">
+        <span class="demo-badge">Premium UI Upgrade</span>
+        <h1 class="demo-title">Lifestyle Preferences</h1>
+    </div>
+
+    <!-- SECTION 5: LIFESTYLE PREFERENCES -->
+    <div class="ep-v3-lifestyle-section">
+        <div class="ep-v3-sec-header">
+            <div class="ep-v3-sec-icon-wrapper">
+                <i class="fa fa-heart ep-v3-sec-icon"></i>
+            </div>
+            <div>
+                <div class="ep-v3-sec-title">Lifestyle Preferences</div>
+                <div class="ep-v3-sec-subtitle">Set your lifestyle choices & expectations for ideal match recommendations</div>
+            </div>
+        </div>
+
+        <div class="ep-v3-lifestyle-grid">
+            <!-- EATING HABITS -->
+            <div class="ep-v3-lifestyle-group">
+                <label class="ep-v3-lifestyle-label">
+                    <i class="fa fa-cutlery label-icon"></i> Eating Habits
+                </label>
+                <div class="ep-v3-segmented-control">
+                    <label class="ep-v3-segmented-option">
+                        <input type="radio" name="eatingPartner" value="Vegetarian">
+                        <div class="ep-v3-chip-content">
+                            <span class="ep-v3-chip-icon veg-icon"><i class="fa fa-leaf"></i></span>
+                            <span class="ep-v3-chip-text">Vegetarian</span>
+                            <i class="fa fa-check-circle ep-v3-chip-check"></i>
+                        </div>
+                    </label>
+                    <label class="ep-v3-segmented-option">
+                        <input type="radio" name="eatingPartner" value="Non-Vegetarian">
+                        <div class="ep-v3-chip-content">
+                            <span class="ep-v3-chip-icon nonveg-icon"><i class="fa fa-cutlery"></i></span>
+                            <span class="ep-v3-chip-text">Non-Vegetarian</span>
+                            <i class="fa fa-check-circle ep-v3-chip-check"></i>
+                        </div>
+                    </label>
+                    <label class="ep-v3-segmented-option">
+                        <input type="radio" name="eatingPartner" value="No Preference" checked>
+                        <div class="ep-v3-chip-content">
+                            <span class="ep-v3-chip-icon nopref-icon"><i class="fa fa-globe"></i></span>
+                            <span class="ep-v3-chip-text">No Preference</span>
+                            <i class="fa fa-check-circle ep-v3-chip-check"></i>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- DRINKING HABITS -->
+            <div class="ep-v3-lifestyle-group">
+                <label class="ep-v3-lifestyle-label">
+                    <i class="fa fa-glass label-icon"></i> Drinking Habits
+                </label>
+                <div class="ep-v3-segmented-control">
+                    <label class="ep-v3-segmented-option">
+                        <input type="radio" name="drinkPartner" value="Never" checked>
+                        <div class="ep-v3-chip-content">
+                            <span class="ep-v3-chip-icon never-icon"><i class="fa fa-ban"></i></span>
+                            <span class="ep-v3-chip-text">Never</span>
+                            <i class="fa fa-check-circle ep-v3-chip-check"></i>
+                        </div>
+                    </label>
+                    <label class="ep-v3-segmented-option">
+                        <input type="radio" name="drinkPartner" value="Social Drinker">
+                        <div class="ep-v3-chip-content">
+                            <span class="ep-v3-chip-icon social-icon"><i class="fa fa-glass"></i></span>
+                            <span class="ep-v3-chip-text">Social Drinker</span>
+                            <i class="fa fa-check-circle ep-v3-chip-check"></i>
+                        </div>
+                    </label>
+                    <label class="ep-v3-segmented-option">
+                        <input type="radio" name="drinkPartner" value="No Preference">
+                        <div class="ep-v3-chip-content">
+                            <span class="ep-v3-chip-icon nopref-icon"><i class="fa fa-globe"></i></span>
+                            <span class="ep-v3-chip-text">No Preference</span>
+                            <i class="fa fa-check-circle ep-v3-chip-check"></i>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- SMOKING HABITS -->
+            <div class="ep-v3-lifestyle-group">
+                <label class="ep-v3-lifestyle-label">
+                    <i class="fa fa-ban label-icon"></i> Smoking Habits
+                </label>
+                <div class="ep-v3-segmented-control">
+                    <label class="ep-v3-segmented-option">
+                        <input type="radio" name="smokePartner" value="Non Smoker">
+                        <div class="ep-v3-chip-content">
+                            <span class="ep-v3-chip-icon never-icon"><i class="fa fa-shield"></i></span>
+                            <span class="ep-v3-chip-text">Non Smoker</span>
+                            <i class="fa fa-check-circle ep-v3-chip-check"></i>
+                        </div>
+                    </label>
+                    <label class="ep-v3-segmented-option">
+                        <input type="radio" name="smokePartner" value="Social Smoker">
+                        <div class="ep-v3-chip-content">
+                            <span class="ep-v3-chip-icon social-icon"><i class="fa fa-fire"></i></span>
+                            <span class="ep-v3-chip-text">Social Smoker</span>
+                            <i class="fa fa-check-circle ep-v3-chip-check"></i>
+                        </div>
+                    </label>
+                    <label class="ep-v3-segmented-option">
+                        <input type="radio" name="smokePartner" value="No Preference" checked>
+                        <div class="ep-v3-chip-content">
+                            <span class="ep-v3-chip-icon nopref-icon"><i class="fa fa-globe"></i></span>
+                            <span class="ep-v3-chip-text">No Preference</span>
+                            <i class="fa fa-check-circle ep-v3-chip-check"></i>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- OTHER PREFERENCES -->
+            <div class="ep-v3-lifestyle-group">
+                <label class="ep-v3-lifestyle-label">
+                    <i class="fa fa-star label-icon"></i> Other Preferences & Compatibility
+                </label>
+                <div class="ep-v3-toggles-container">
+                    <label class="ep-v3-toggle-card">
+                        <div class="ep-v3-toggle-info">
+                            <div class="ep-v3-toggle-icon"><i class="fa fa-map-marker"></i></div>
+                            <div>
+                                <div class="ep-v3-toggle-title">Willing to Relocate</div>
+                                <div class="ep-v3-toggle-desc">Open to moving location</div>
+                            </div>
+                        </div>
+                        <div class="ep-v3-switch">
+                            <input type="checkbox" name="relocatePartner">
+                            <span class="ep-v3-slider"></span>
+                        </div>
+                    </label>
+
+                    <label class="ep-v3-toggle-card">
+                        <div class="ep-v3-toggle-info">
+                            <div class="ep-v3-toggle-icon"><i class="fa fa-plane"></i></div>
+                            <div>
+                                <div class="ep-v3-toggle-title">Willing to Settle Abroad</div>
+                                <div class="ep-v3-toggle-desc">Open to international relocation</div>
+                            </div>
+                        </div>
+                        <div class="ep-v3-switch">
+                            <input type="checkbox" name="settleAbroadPartner">
+                            <span class="ep-v3-slider"></span>
+                        </div>
+                    </label>
+
+                    <label class="ep-v3-toggle-card">
+                        <div class="ep-v3-toggle-info">
+                            <div class="ep-v3-toggle-icon"><i class="fa fa-magic"></i></div>
+                            <div>
+                                <div class="ep-v3-toggle-title">Horoscope Matching</div>
+                                <div class="ep-v3-toggle-desc">Require Kundali match</div>
+                            </div>
+                        </div>
+                        <div class="ep-v3-switch">
+                            <input type="checkbox" name="horoscopePartner" checked>
+                            <span class="ep-v3-slider"></span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

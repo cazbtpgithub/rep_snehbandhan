@@ -3137,32 +3137,51 @@ public class DealerReportController {
 	public void downloadFiles(@RequestParam("path") String filename, HttpServletResponse response,
 			HttpServletRequest request) throws IOException {
 
+		if (filename == null || filename.trim().isEmpty() || "success".equalsIgnoreCase(filename) || "fail".equalsIgnoreCase(filename)) {
+			response.sendRedirect(request.getContextPath() + "/login");
+			return;
+		}
+
 		ServletContext context = request.getServletContext();
 
-		
 		String rootPath1 = request.getServletContext().getRealPath("/resources/snehReport");
 		File dir1 = new File(rootPath1);
 
 		String AlldestFilePath = dir1.getAbsolutePath() + File.separator + filename;
 		String path = AlldestFilePath;
 		File file = new File(path);
-		InputStream is = new FileInputStream(file);
-		if (is != null) {
 
+		if (!file.exists() || !file.isFile()) {
+			response.sendRedirect(request.getContextPath() + "/login");
+			return;
 		}
 
-		response.setContentType("application/octet-stream");
-		response.setHeader("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
-		
-		OutputStream os = response.getOutputStream();
-		byte[] buffer = new byte[15024];
-		int len;
-		while ((len = is.read(buffer)) != -1) {
-			os.write(buffer, 0, len);
+		InputStream is = null;
+		try {
+			is = new FileInputStream(file);
+			response.setContentType("application/octet-stream");
+			response.setHeader("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
+			
+			OutputStream os = response.getOutputStream();
+			byte[] buffer = new byte[15024];
+			int len;
+			while ((len = is.read(buffer)) != -1) {
+				os.write(buffer, 0, len);
+			}
+			os.flush();
+			os.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.sendRedirect(request.getContextPath() + "/login");
+		} finally {
+			if (is != null) {
+				try {
+					is.close();
+				} catch (Exception e) {
+					// ignore
+				}
+			}
 		}
-		os.flush();
-		os.close();
-		is.close();
 
 	}
 

@@ -927,9 +927,14 @@ public class RegistrationFormController {
 
 		try{	
 			
-			String filename = personalDetailsModel.getUserProfileImageName();
-			String spliteFileName[]= filename.split("#");	
-			String file_Name = spliteFileName[0];
+			String filename = (personalDetailsModel != null) ? personalDetailsModel.getUserProfileImageName() : null;
+			String file_Name = "";
+			if (filename != null && filename.contains("#")) {
+				String spliteFileName[] = filename.split("#");
+				file_Name = spliteFileName[0];
+			} else if (filename != null) {
+				file_Name = filename;
+			}
 			final String FILE_NAME = "RegistrationForm.pdf";
 
 			String pathact = request.getServletContext().getRealPath("/resources/snehReport");
@@ -1439,7 +1444,7 @@ public class RegistrationFormController {
 			e.printStackTrace();
 		}
 
-		return "success";
+		return "fail";
 	}
 
 

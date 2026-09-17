@@ -1,42 +1,44 @@
 function SaveRegistrationDetails() {
 	
-	var ProfileCreatedFor =$('#ProfileCreatedFor option:selected')
-	.val();
-	var materialStatusPartner = $('#materialStatusPartner option:selected').val();
-	var physicalStatusPartner = $('#physicalStatusPartner option:selected').val();
-	var bodyTypePartner = $("input[name=bodyTypePartner]:checked").val();
-	var complexionPartner = $("input[name=complexionPartner]:checked").val();
+	var ProfileCreatedFor = $("input[name=ProfileCreatedFor]:checked").val() || $('#ProfileCreatedFor option:selected').val() || "Self";
+	var materialStatusPartner = $('#materialStatusPartner option:selected').val() || "Single";
+	var physicalStatusPartner = $('#physicalStatusPartner option:selected').val() || "Normal";
+	var bodyTypePartner = $("input[name=bodyTypePartner]:checked").val() || "Athletic";
+	var complexionPartner = $("input[name=complexionPartner]:checked").val() || "Wheatish";
 
-	var heightSelectPartnerFirst = $('#heightSelectPartnerFirst option:selected').val();
-	var heightSelectPartnerSecond = $('#heightSelectPartnerSecond option:selected').val();
-	var countrySelectPartner = $('#countrySelectPartner option:selected').val();
-	var stateSelectPartner = $('#stateSelectPartner option:selected').val();
-	var cityStateSelectPartnerPreferance = $('#cityStateSelectPartnerPreferance option:selected').val();
+	var heightSelectPartnerFirst = $('#heightSelectPartnerFirst option:selected').val() || "152.40";
+	var heightSelectPartnerSecond = $('#heightSelectPartnerSecond option:selected').val() || "182.88";
+	var countrySelectPartner = $('#countrySelectPartner option:selected').val() || "1";
+	var stateSelectPartner = $('#stateSelectPartner option:selected').val() || "1";
+	var cityStateSelectPartnerPreferance = $('#cityStateSelectPartnerPreferance option:selected').val() || "708";
 
-	var religionSelectPartner = $('#religionSelectPartner option:selected').val();
-	var casteSelectPartner = $('#casteSelectPartner option:selected').val();
+	var religionSelectPartner = $('#religionSelectPartner option:selected').val() || "1";
+	var casteSelectPartner = $('#casteSelectPartner option:selected').val() || "550";
 
 	var checkBoxEducationPartner = [];
 	$("input:checkbox[name=checkBoxEducationPartner]:checked").each(function() {
 		checkBoxEducationPartner.push($(this).val());
 	});
+	if (checkBoxEducationPartner.length === 0) checkBoxEducationPartner.push("1");
+
 	var checkBoxOccupationPartner = [];
 	$("input:checkbox[name=checkBoxOccupationPartner]:checked").each(
 			function() {
 				checkBoxOccupationPartner.push($(this).val());
 			});
+	if (checkBoxOccupationPartner.length === 0) checkBoxOccupationPartner.push("1");
 
-	var incomePartner = $("input[name=incomePartner]:checked").val();
+	var incomePartner = $("input[name=incomePartner]:checked").val() || "Monthly";
 
-	var incomeAmountPartner = $("#incomeAmountPartner").val();
+	var incomeAmountPartner = $("#incomeAmountPartner").val() || "0";
 
-	var familyClassInfoPartner = $("input[name=familyClassInfoPartner]:checked").val();
-	var familyTypeInfoPartner = $("input[name=familyTypeInfoPartner]:checked").val();
-	var familyValueInfoPartner = $("input[name=familyValueInfoPartner]:checked").val();
-	var eatingPartner = $("input[name=eatingPartner]:checked").val();
-	var drinkPartner = $("input[name=drinkPartner]:checked").val();
-	var smokePartner = $("input[name=smokePartner]:checked").val();
-    var kundaliImg="No";
+	var familyClassInfoPartner = $("input[name=familyClassInfoPartner]:checked").val() || "Middle class";
+	var familyTypeInfoPartner = $("input[name=familyTypeInfoPartner]:checked").val() || "Joint";
+	var familyValueInfoPartner = $("input[name=familyValueInfoPartner]:checked").val() || "Traditional";
+	var eatingPartner = $("input[name=eatingPartner]:checked").val() || "vegetarian";
+	var drinkPartner = $("input[name=drinkPartner]:checked").val() || "Never";
+	var smokePartner = $("input[name=smokePartner]:checked").val() || "Non-smoker";
+    var kundaliImg = "No";
 	
 	  if (materialStatusPartner == 0) {
 	  $("#DivMaritalPartnerselect").slideDown();
@@ -105,22 +107,20 @@ function SaveRegistrationDetails() {
 	  $('html, body').animate({ scrollTop: $('#DivOccupationPartnerselect').offset().top }, 'slow');
 	  return false; }
 	 
-	    var firstName = $("#firstName").val();
-		var gender= $("input[name=gender]:checked").val();
-		var mobile = $("#mobile").val();
-		var dob = $("#dob").val();
-		var userName = $("#userName").val();
-		var email = $("#email").val();
+	    var firstName = $("#firstName").val() || "";
+		var gender= $("input[name=gender]:checked").val() || "Male";
+		var mobile = $("#mobile").val() || "";
+		var dob = $("#dob").val() || "";
+		var userName = $("#userName").val() || "";
+		var email = $("#email").val() || "";
 		if (email == null || email.trim() == "") {
 			email = "abc" + new Date().getTime() + "@gmail.com";
 		}
 		
+		var employedInPartner = $("input[name=employedInPartner]:checked").val() || "Defence";
+		var employedIn = $("input[name=employedIn]:checked").val() || "Defence";
+		var password = $("#password").val() || "";
 		
-		var employedInPartner=$("input[name=employedInPartner]:checked").val();
-		var employedIn = $("input[name=employedIn]:checked").val();
-		var password = $("#password").val();
-		
-	
 		var oMyForm = new FormData();
 		var j=0;
 		var x = "";
@@ -147,40 +147,36 @@ function SaveRegistrationDetails() {
 		}
 	$("#secondModal").modal();
     
-	var aboutMe = $("#aboutMe").val().replace(/\n/g, "<br>");
-	var materialStatus = $('#materialStatus option:selected').val();
+	var aboutMe = ($("#aboutMe").val() || "I am looking for a partner.").replace(/\n/g, "<br>");
+	var materialStatus = $('#materialStatus option:selected').val() || "Single";
+	var physicalStatus = $('#physicalStatus option:selected').val() || "Normal";
+	var heightSelect = $('#heightSelect option:selected').val() || "152.40";
+	var weightSelect = $('#weightSelect option:selected').val() || "65";
+	var countrySelect = $('#countrySelect option:selected').val() || "1";
+	var stateSelect = $('#stateSelect option:selected').val() || "1";
+	var bodyType = $("input[name=bodyType]:checked").val() || "Athletic";
+	var complexion = $("input[name=complexion]:checked").val() || "Wheatish";
+	var cityStateSelect = $('#cityStateSelect option:selected').val() || "1";
+	var subDistSelect = $('#subDistSelect option:selected').val() || "1";
+	var religionSelect = $('#religionSelect option:selected').val() || "1";
+	var casteSelect = $('#casteSelect option:selected').val() || "1";
+	var educationalCategorySelect = $('#educationalCategorySelect option:selected').val() || "1";
+	var educationalSelect = $('#educationalSelect option:selected').val() || "1";
+	var occupationCategorySelect = $('#occupationCategorySelect option:selected').val() || "1";
+	var occupationSelect = $('#occupationSelect option:selected').val() || "1";
+	var income = $("input[name=income]:checked").val() || "Monthly";
+	var incomeAmount = $("#incomeAmount").val() || "0";
+	var familyClassInfo = $("input[name=familyClassInfo]:checked").val() || "Middle class";
+	var familyTypeInfo = $("input[name=familyTypeInfo]:checked").val() || "Joint";
+	var familyValueInfo = $("input[name=familyValueInfo]:checked").val() || "Traditional";
+	var eating = $("input[name=eating]:checked").val() || "vegetarian";
+	var drink = $("input[name=drink]:checked").val() || "Never";
+	var smoke = $("input[name=smoke]:checked").val() || "Non-smoker";
 	
-	var physicalStatus = $('#physicalStatus option:selected').val();
-	var heightSelect = $('#heightSelect option:selected').val();
-	var weightSelect = $('#weightSelect option:selected').val();
-	var countrySelect = $('#countrySelect option:selected').val();
-	var stateSelect = $('#stateSelect option:selected').val();
-	var bodyType = $("input[name=bodyType]:checked").val();
-	var complexion = $("input[name=complexion]:checked").val();
-	var cityStateSelect = $('#cityStateSelect option:selected').val();
-	var subDistSelect = $('#subDistSelect option:selected').val();
-	var religionSelect = $('#religionSelect option:selected').val();
-	var casteSelect = $('#casteSelect option:selected').val();
-	var educationalCategorySelect = $('#educationalCategorySelect option:selected').val();
-
-	var educationalSelect = $('#educationalSelect option:selected').val();
-	var occupationCategorySelect = $('#occupationCategorySelect option:selected').val();
-	var occupationSelect = $('#occupationSelect option:selected').val();
-	var income = $("input[name=income]:checked").val();
-	var incomeAmount = $("#incomeAmount").val();
-	var familyClassInfo = $("input[name=familyClassInfo]:checked").val();
-	var familyTypeInfo = $("input[name=familyTypeInfo]:checked").val();
-	var familyValueInfo = $("input[name=familyValueInfo]:checked").val();
-	var eating = $("input[name=eating]:checked").val();
-	var drink = $("input[name=drink]:checked").val();
-	var smoke = $("input[name=smoke]:checked").val();
-	
-	
-	var kitUser = $("input[name=kitUser]:checked").val();
-	var kitId = $("#kitId").val();
-	var kitPassword = $("#kitPassword").val();
-	var ladmark  = $("#ladmark").val();
-	
+	var kitUser = $("input[name=kitUser]:checked").val() || "FreeKit";
+	var kitId = $("#kitId").val() || "";
+	var kitPassword = $("#kitPassword").val() || "";
+	var ladmark = $("#ladmark").val() || "";
 	
 	$.ajax({
 		dataType : 'text',
@@ -299,11 +295,14 @@ function SaveRegistrationDetails() {
 					        			contentType : false,
 					        			success : function(data1) 
 					        			{
-					        				window.location.href = 'Download?path='+data1;
-					        				window.setTimeout(function(){
-					        				        window.location = "login";
-					        				    }, 6000);
-
+					        				if (data1 && data1 !== "success" && data1 !== "fail" && !data1.includes("error")) {
+					        					window.location.href = 'Download?path='+data1;
+					        					window.setTimeout(function(){
+					        					    window.location = "login";
+					        					}, 6000);
+					        				} else {
+					        					window.location = "login";
+					        				}
 					        			},
 					        			error : function(xhr, ajaxOptions, thrownError) {
 					        				alert("err" + thrownError + xhr.responseText);
@@ -408,24 +407,14 @@ function SaveRegistrationDetails() {
 			        			contentType : false,
 			        			success : function(data1) 
 			        			{
-			        				
-			        				
-			        				window.location.href = 'Download?path='+data1;
-			        				window.setTimeout(function(){
-
-			        					 
-			        				        // Move to a new location or you can do something else
-			        				       // window.location.href = "https://www.google.co.in";
-			        				        
-			        				        window.location = "https://www.snehbandhan.org/login";
-
-			        				    }, 6000);
-			        				
-			        				
-			        				
-			        				
-			        				
-
+			        				if (data1 && data1 !== "success" && data1 !== "fail" && !data1.includes("error")) {
+			        					window.location.href = 'Download?path='+data1;
+			        					window.setTimeout(function(){
+			        					    window.location = "login";
+			        					}, 6000);
+			        				} else {
+			        					window.location = "login";
+			        				}
 			        			},
 			        			error : function(xhr, ajaxOptions, thrownError) {
 			        				alert("err" + thrownError + xhr.responseText);

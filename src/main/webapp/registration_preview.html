@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>SnehBandhan - Create Your Account</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <!-- STYLESHEETS -->
+    <link rel="stylesheet" href="resources/Template/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="resources/Registration/edit_profile_v3.css">
+</head>
+<body class="ep-v3-body">
+
+<!-- TOP HEADER -->
+<header class="ep-v3-header">
+    <a href="#">
+        <img class="ep-v3-logo" src="resources/images/logo.png" alt="SnehBandhan Logo" onerror="this.onerror=null; this.src='https://via.placeholder.com/150x45?text=SnehBandhan';">
+    </a>
+    <div class="ep-v3-nav-right">
+        <a href="#" class="ep-v3-btn-outline" style="padding: 6px 18px; font-size: 13px;"><i class="fa fa-sign-in"></i> Login</a>
+        <a href="#" class="ep-v3-user-name" style="text-decoration:none; color: var(--text-gray);">About Us</a>
+        <a href="#" class="ep-v3-user-name" style="text-decoration:none; color: var(--text-gray);">Contact Us</a>
+    </div>
+</header>
+
+<!-- MAIN TWO-COLUMN LAYOUT -->
+<div class="ep-v3-wrapper">
+
+    <!-- LEFT SIDEBAR -->
+    <aside class="ep-v3-sidebar">
+        <!-- USER PROFILE CARD -->
+        <div class="ep-v3-profile-card">
+            <img class="ep-v3-profile-img" src="resources/UserImages/userImage.png" alt="User Avatar" onerror="this.onerror=null; this.src='https://via.placeholder.com/64?text=User';">
+            <h3 class="ep-v3-profile-name">Create Your Account</h3>
+            <p class="ep-v3-profile-id">Join 100% Verified Profiles</p>
+            <div class="ep-v3-progress-wrapper">
+                <div class="ep-v3-progress-header">
+                    <span>Profile Setup</span>
+                    <span class="ep-v3-progress-val" id="progressText">50% Completed</span>
+                </div>
+                <div class="ep-v3-progress-bar">
+                    <div class="ep-v3-progress-fill" id="progressFill" style="width: 50%;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SIDEBAR NAVIGATION MENU -->
+        <div class="ep-v3-nav-card">
+            <div class="ep-v3-menu-group">
+                <div class="ep-v3-menu-title">Registration Steps</div>
+                <div class="ep-v3-menu-item active" id="menu-step1">
+                    <i class="fa fa-user ep-v3-menu-icon"></i> 1. Personal Details
+                </div>
+                <div class="ep-v3-menu-item" id="menu-step2">
+                    <i class="fa fa-heart ep-v3-menu-icon"></i> 2. Partner Preferences
+                </div>
+            </div>
+        </div>
+
+        <!-- NEED HELP CARD -->
+        <div class="ep-v3-help-card">
+            <div class="ep-v3-help-icon"><i class="fa fa-headphones"></i></div>
+            <div class="ep-v3-help-text">
+                <strong>Need Assistance?</strong>
+                <span>Call support at +91-XXXXXXXXXX</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- RIGHT MAIN CONTENT -->
+    <main>
+        <!-- STEPPER BAR -->
+        <div class="ep-v3-stepper-card">
+            <div class="ep-v3-step-item active" id="step1-nav">
+                <div class="ep-v3-step-num">1</div>
+                <div class="ep-v3-step-info">
+                    <span class="ep-v3-step-title">Personal Information</span>
+                    <span class="ep-v3-step-sub">Basic info & lifestyle</span>
+                </div>
+            </div>
+
+            <div class="ep-v3-step-divider" id="step-div-1"></div>
+
+            <div class="ep-v3-step-item" id="step2-nav">
+                <div class="ep-v3-step-num">2</div>
+                <div class="ep-v3-step-info">
+                    <span class="ep-v3-step-title">Partner Preferences</span>
+                    <span class="ep-v3-step-sub">Habits & expectations</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 1: PERSONAL INFORMATION PANE -->
+        <div id="DivStep2">
+            <div class="ep-v3-main-card">
+                <h2 class="ep-v3-card-title">Personal Details & Lifestyle</h2>
+                <p class="ep-v3-card-sub">Please fill in your accurate information to help us recommend suitable profiles.</p>
+
+                <form class="form-horizontal" id="companyForm" method="post">
+                    <!-- SECTION 1: BASIC INFORMATION -->
+                    <div class="ep-v3-section">
+                        <div class="ep-v3-sec-header">
+                            <i class="fa fa-user-o ep-v3-sec-icon"></i> Basic Information
+                        </div>
+                        <div class="ep-v3-grid">
+                            <div class="ep-v3-field ep-v3-col-2">
+                                <label class="ep-v3-label">Profile Created For <span class="ep-v3-req">*</span></label>
+                                <div class="ep-v3-segmented-control" style="grid-template-columns: repeat(4, 1fr);">
+                                    <label class="ep-v3-segmented-option">
+                                        <input type="radio" id="pcf_self" name="ProfileCreatedFor" value="Self" checked>
+                                        <div class="ep-v3-chip-content"><span class="ep-v3-chip-text">Self</span></div>
+                                    </label>
+                                    <label class="ep-v3-segmented-option">
+                                        <input type="radio" id="pcf_son" name="ProfileCreatedFor" value="Son / Daughter">
+                                        <div class="ep-v3-chip-content"><span class="ep-v3-chip-text">Son/Daughter</span></div>
+                                    </label>
+                                    <label class="ep-v3-segmented-option">
+                                        <input type="radio" id="pcf_brother" name="ProfileCreatedFor" value="Brother / Sister">
+                                        <div class="ep-v3-chip-content"><span class="ep-v3-chip-text">Sibling</span></div>
+                                    </label>
+                                    <label class="ep-v3-segmented-option">
+                                        <input type="radio" id="pcf_friend" name="ProfileCreatedFor" value="Relative / Friend">
+                                        <div class="ep-v3-chip-content"><span class="ep-v3-chip-text">Relative/Friend</span></div>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="ep-v3-field ep-v3-col-1">
+                                <label class="ep-v3-label">Full Name <span class="ep-v3-req">*</span></label>
+                                <input type="text" id="firstName" name="firstName" class="ep-v3-input" value="Rahul Sharma" placeholder="Enter full name">
+                            </div>
+
+                            <div class="ep-v3-field ep-v3-col-1">
+                                <label class="ep-v3-label">Gender <span class="ep-v3-req">*</span></label>
+                                <div class="ep-v3-radio-group">
+                                    <label class="ep-v3-radio"><input type="radio" id="gender_male" name="gender" value="Male" checked> Male</label>
+                                    <label class="ep-v3-radio"><input type="radio" id="gender_female" name="gender" value="Female"> Female</label>
+                                </div>
+                            </div>
+
+                            <div class="ep-v3-field ep-v3-col-1">
+                                <label class="ep-v3-label">Email Address <span class="ep-v3-req">*</span></label>
+                                <input type="text" id="email" class="ep-v3-input" value="rahul.sharma@example.com" placeholder="Enter email">
+                            </div>
+
+                            <div class="ep-v3-field ep-v3-col-1">
+                                <label class="ep-v3-label">Mobile Number <span class="ep-v3-req">*</span></label>
+                                <input type="text" id="mobile" name="mobile" class="ep-v3-input" value="9876543210" placeholder="10-digit mobile number">
+                            </div>
+
+                            <div class="ep-v3-field ep-v3-col-1">
+                                <label class="ep-v3-label">Date of Birth <span class="ep-v3-req">*</span></label>
+                                <input type="text" id="dob" class="ep-v3-input dob" value="15/08/1995" placeholder="dd/mm/yyyy">
+                            </div>
+
+                            <div class="ep-v3-field ep-v3-col-1">
+                                <label class="ep-v3-label">Username <span class="ep-v3-req">*</span></label>
+                                <input type="text" id="userName" name="userName" class="ep-v3-input" value="rahul95" placeholder="Choose a username">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SECTION 5: PERSONAL LIFESTYLE & HABITS -->
+                    <div class="ep-v3-lifestyle-section">
+                        <div class="ep-v3-sec-header">
+                            <div class="ep-v3-sec-icon-wrapper">
+                                <i class="fa fa-cutlery ep-v3-sec-icon"></i>
+                            </div>
+                            <div>
+                                <div class="ep-v3-sec-title">Personal Lifestyle & Habits</div>
+                                <div class="ep-v3-sec-subtitle">Specify your personal habits and daily lifestyle choices</div>
+                            </div>
+                        </div>
+                        <div class="ep-v3-lifestyle-grid">
+                            <!-- EATING HABITS -->
+                            <div class="ep-v3-lifestyle-group">
+                                <label class="ep-v3-lifestyle-label">
+                                    <i class="fa fa-cutlery label-icon"></i> Eating Habits
+                                </label>
+                                <div class="ep-v3-segmented-control">
+                                    <label class="ep-v3-segmented-option">
+                                        <input name="eating" id="diet_veg" value="vegetarian" type="radio" checked>
+                                        <div class="ep-v3-chip-content">
+                                            <span class="ep-v3-chip-icon veg-icon"><i class="fa fa-leaf"></i></span>
+                                            <span class="ep-v3-chip-text">Vegetarian</span>
+                                            <i class="fa fa-check-circle ep-v3-chip-check"></i>
+                                        </div>
+                                    </label>
+                                    <label class="ep-v3-segmented-option">
+                                        <input name="eating" id="diet_nonveg" value="Non vegetarian" type="radio">
+                                        <div class="ep-v3-chip-content">
+                                            <span class="ep-v3-chip-icon nonveg-icon"><i class="fa fa-cutlery"></i></span>
+                                            <span class="ep-v3-chip-text">Non-Veg</span>
+                                            <i class="fa fa-check-circle ep-v3-chip-check"></i>
+                                        </div>
+                                    </label>
+                                    <label class="ep-v3-segmented-option">
+                                        <input name="eating" id="diet_egg" value="Eggs Only" type="radio">
+                                        <div class="ep-v3-chip-content">
+                                            <span class="ep-v3-chip-icon nopref-icon"><i class="fa fa-cutlery"></i></span>
+                                            <span class="ep-v3-chip-text">Eggs Only</span>
+                                            <i class="fa fa-check-circle ep-v3-chip-check"></i>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- DRINKING HABITS -->
+                            <div class="ep-v3-lifestyle-group">
+                                <label class="ep-v3-lifestyle-label">
+                                    <i class="fa fa-glass label-icon"></i> Drinking Habits
+                                </label>
+                                <div class="ep-v3-segmented-control">
+                                    <label class="ep-v3-segmented-option">
+                                        <input name="drink" id="dr_never" value="Never" type="radio" checked>
+                                        <div class="ep-v3-chip-content">
+                                            <span class="ep-v3-chip-icon never-icon"><i class="fa fa-ban"></i></span>
+                                            <span class="ep-v3-chip-text">Never</span>
+                                            <i class="fa fa-check-circle ep-v3-chip-check"></i>
+                                        </div>
+                                    </label>
+                                    <label class="ep-v3-segmented-option">
+                                        <input name="drink" id="dr_soc" value="Social drinker" type="radio">
+                                        <div class="ep-v3-chip-content">
+                                            <span class="ep-v3-chip-icon social-icon"><i class="fa fa-glass"></i></span>
+                                            <span class="ep-v3-chip-text">Socially</span>
+                                            <i class="fa fa-check-circle ep-v3-chip-check"></i>
+                                        </div>
+                                    </label>
+                                    <label class="ep-v3-segmented-option">
+                                        <input name="drink" id="dr_reg" value="Regular drinker" type="radio">
+                                        <div class="ep-v3-chip-content">
+                                            <span class="ep-v3-chip-icon social-icon"><i class="fa fa-glass"></i></span>
+                                            <span class="ep-v3-chip-text">Regularly</span>
+                                            <i class="fa fa-check-circle ep-v3-chip-check"></i>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ACTION BAR -->
+                    <div class="ep-v3-action-bar">
+                        <a href="#" class="ep-v3-btn-outline" style="text-decoration:none;">Cancel</a>
+                        <button type="button" class="ep-v3-btn-primary">
+                            Save & Continue to Partner Preferences <i class="fa fa-angle-right"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>
+
+</body>
+</html>

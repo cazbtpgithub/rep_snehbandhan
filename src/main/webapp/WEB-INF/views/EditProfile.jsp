@@ -554,31 +554,97 @@
                     </div>
 
                     <!-- SECTION 5: LIFESTYLE & FAMILY -->
-                    <div class="ep-v3-section">
+                    <div class="ep-v3-lifestyle-section">
                         <div class="ep-v3-sec-header">
-                            <i class="fa fa-cutlery ep-v3-sec-icon"></i> Lifestyle & Family
+                            <div class="ep-v3-sec-icon-wrapper">
+                                <i class="fa fa-cutlery ep-v3-sec-icon"></i>
+                            </div>
+                            <div>
+                                <div class="ep-v3-sec-title">Personal Lifestyle & Habits</div>
+                                <div class="ep-v3-sec-subtitle">Specify your personal habits and daily lifestyle choices</div>
+                            </div>
                         </div>
-                        <div class="ep-v3-grid">
-                            <div class="ep-v3-field ep-v3-col-1">
-                                <label class="ep-v3-label">Eating Habits</label>
-                                <div class="ep-v3-radio-group">
-                                    <label class="ep-v3-radio"><input type="radio" name="eating" value="Vegetarian" ${modelDetails.eating == 'Vegetarian' ? 'checked' : ''}> Vegetarian</label>
-                                    <label class="ep-v3-radio"><input type="radio" name="eating" value="Non-Vegetarian" ${modelDetails.eating == 'Non-Vegetarian' || empty modelDetails.eating ? 'checked' : ''}> Non-Veg</label>
-                                    <label class="ep-v3-radio"><input type="radio" name="eating" value="Eggetarian" ${modelDetails.eating == 'Eggetarian' ? 'checked' : ''}> Eggetarian</label>
+                        <div class="ep-v3-lifestyle-grid">
+                            <!-- EATING HABITS -->
+                            <div class="ep-v3-lifestyle-group">
+                                <label class="ep-v3-lifestyle-label">
+                                    <i class="fa fa-cutlery label-icon"></i> Eating Habits
+                                </label>
+                                <div class="ep-v3-segmented-control">
+                                    <label class="ep-v3-segmented-option">
+                                        <input type="radio" name="eating" value="Vegetarian" ${modelDetails.eating == 'Vegetarian' ? 'checked' : ''}>
+                                        <div class="ep-v3-chip-content">
+                                            <span class="ep-v3-chip-icon veg-icon"><i class="fa fa-leaf"></i></span>
+                                            <span class="ep-v3-chip-text">Vegetarian</span>
+                                            <i class="fa fa-check-circle ep-v3-chip-check"></i>
+                                        </div>
+                                    </label>
+                                    <label class="ep-v3-segmented-option">
+                                        <input type="radio" name="eating" value="Non-Vegetarian" ${modelDetails.eating == 'Non-Vegetarian' || empty modelDetails.eating ? 'checked' : ''}>
+                                        <div class="ep-v3-chip-content">
+                                            <span class="ep-v3-chip-icon nonveg-icon"><i class="fa fa-cutlery"></i></span>
+                                            <span class="ep-v3-chip-text">Non-Veg</span>
+                                            <i class="fa fa-check-circle ep-v3-chip-check"></i>
+                                        </div>
+                                    </label>
+                                    <label class="ep-v3-segmented-option">
+                                        <input type="radio" name="eating" value="Eggetarian" ${modelDetails.eating == 'Eggetarian' ? 'checked' : ''}>
+                                        <div class="ep-v3-chip-content">
+                                            <span class="ep-v3-chip-icon nopref-icon"><i class="fa fa-cutlery"></i></span>
+                                            <span class="ep-v3-chip-text">Eggetarian</span>
+                                            <i class="fa fa-check-circle ep-v3-chip-check"></i>
+                                        </div>
+                                    </label>
                                 </div>
                             </div>
-                            <div class="ep-v3-field ep-v3-col-1">
-                                <label class="ep-v3-label">Drinking Habits</label>
-                                <div class="ep-v3-radio-group">
-                                    <label class="ep-v3-radio"><input type="radio" name="drink" value="No" ${modelDetails.drink == 'No' || empty modelDetails.drink ? 'checked' : ''}> Never</label>
-                                    <label class="ep-v3-radio"><input type="radio" name="drink" value="Yes" ${modelDetails.drink == 'Yes' ? 'checked' : ''}> Socially</label>
+
+                            <!-- DRINKING HABITS -->
+                            <div class="ep-v3-lifestyle-group">
+                                <label class="ep-v3-lifestyle-label">
+                                    <i class="fa fa-glass label-icon"></i> Drinking Habits
+                                </label>
+                                <div class="ep-v3-segmented-control">
+                                    <label class="ep-v3-segmented-option">
+                                        <input type="radio" name="drink" value="No" ${modelDetails.drink == 'No' || empty modelDetails.drink ? 'checked' : ''}>
+                                        <div class="ep-v3-chip-content">
+                                            <span class="ep-v3-chip-icon never-icon"><i class="fa fa-ban"></i></span>
+                                            <span class="ep-v3-chip-text">Never</span>
+                                            <i class="fa fa-check-circle ep-v3-chip-check"></i>
+                                        </div>
+                                    </label>
+                                    <label class="ep-v3-segmented-option">
+                                        <input type="radio" name="drink" value="Yes" ${modelDetails.drink == 'Yes' ? 'checked' : ''}>
+                                        <div class="ep-v3-chip-content">
+                                            <span class="ep-v3-chip-icon social-icon"><i class="fa fa-glass"></i></span>
+                                            <span class="ep-v3-chip-text">Socially</span>
+                                            <i class="fa fa-check-circle ep-v3-chip-check"></i>
+                                        </div>
+                                    </label>
                                 </div>
                             </div>
-                            <div class="ep-v3-field ep-v3-col-1">
-                                <label class="ep-v3-label">Smoking Habits</label>
-                                <div class="ep-v3-radio-group">
-                                    <label class="ep-v3-radio"><input type="radio" name="smoke" value="No" ${modelDetails.smoke == 'No' || empty modelDetails.smoke ? 'checked' : ''}> Never</label>
-                                    <label class="ep-v3-radio"><input type="radio" name="smoke" value="Yes" ${modelDetails.smoke == 'Yes' ? 'checked' : ''}> Socially</label>
+
+                            <!-- SMOKING HABITS -->
+                            <div class="ep-v3-lifestyle-group">
+                                <label class="ep-v3-lifestyle-label">
+                                    <i class="fa fa-ban label-icon"></i> Smoking Habits
+                                </label>
+                                <div class="ep-v3-segmented-control">
+                                    <label class="ep-v3-segmented-option">
+                                        <input type="radio" name="smoke" value="No" ${modelDetails.smoke == 'No' || empty modelDetails.smoke ? 'checked' : ''}>
+                                        <div class="ep-v3-chip-content">
+                                            <span class="ep-v3-chip-icon never-icon"><i class="fa fa-shield"></i></span>
+                                            <span class="ep-v3-chip-text">Never</span>
+                                            <i class="fa fa-check-circle ep-v3-chip-check"></i>
+                                        </div>
+                                    </label>
+                                    <label class="ep-v3-segmented-option">
+                                        <input type="radio" name="smoke" value="Yes" ${modelDetails.smoke == 'Yes' ? 'checked' : ''}>
+                                        <div class="ep-v3-chip-content">
+                                            <span class="ep-v3-chip-icon social-icon"><i class="fa fa-fire"></i></span>
+                                            <span class="ep-v3-chip-text">Socially</span>
+                                            <i class="fa fa-check-circle ep-v3-chip-check"></i>
+                                        </div>
+                                    </label>
                                 </div>
                             </div>
                         </div>
@@ -783,41 +849,164 @@
                     </div>
 
                     <!-- SECTION 5: LIFESTYLE PREFERENCES -->
-                    <div class="ep-v3-section">
+                    <div class="ep-v3-lifestyle-section">
                         <div class="ep-v3-sec-header">
-                            <i class="fa fa-heart ep-v3-sec-icon"></i> Lifestyle Preferences
+                            <div class="ep-v3-sec-icon-wrapper">
+                                <i class="fa fa-heart ep-v3-sec-icon"></i>
+                            </div>
+                            <div>
+                                <div class="ep-v3-sec-title">Lifestyle Preferences</div>
+                                <div class="ep-v3-sec-subtitle">Set your lifestyle choices & expectations for ideal match recommendations</div>
+                            </div>
                         </div>
-                        <div class="ep-v3-grid">
-                            <div class="ep-v3-field ep-v3-col-1">
-                                <label class="ep-v3-label">Eating Habits</label>
-                                <div class="ep-v3-radio-group">
-                                    <label class="ep-v3-radio"><input type="radio" name="eatingPartner" value="Vegetarian" ${userPartnerPreferances.eating == 'Vegetarian' ? 'checked' : ''}> Vegetarian</label>
-                                    <label class="ep-v3-radio"><input type="radio" name="eatingPartner" value="Non-Vegetarian" ${userPartnerPreferances.eating == 'Non-Vegetarian' ? 'checked' : ''}> Non-Vegetarian</label>
-                                    <label class="ep-v3-radio"><input type="radio" name="eatingPartner" value="No Preference" ${userPartnerPreferances.eating == 'No Preference' || empty userPartnerPreferances.eating ? 'checked' : ''}> No Preference</label>
+
+                        <div class="ep-v3-lifestyle-grid">
+                            <!-- EATING HABITS -->
+                            <div class="ep-v3-lifestyle-group">
+                                <label class="ep-v3-lifestyle-label">
+                                    <i class="fa fa-cutlery label-icon"></i> Eating Habits
+                                </label>
+                                <div class="ep-v3-segmented-control">
+                                    <label class="ep-v3-segmented-option">
+                                        <input type="radio" name="eatingPartner" value="Vegetarian" ${userPartnerPreferances.eating == 'Vegetarian' ? 'checked' : ''}>
+                                        <div class="ep-v3-chip-content">
+                                            <span class="ep-v3-chip-icon veg-icon"><i class="fa fa-leaf"></i></span>
+                                            <span class="ep-v3-chip-text">Vegetarian</span>
+                                            <i class="fa fa-check-circle ep-v3-chip-check"></i>
+                                        </div>
+                                    </label>
+                                    <label class="ep-v3-segmented-option">
+                                        <input type="radio" name="eatingPartner" value="Non-Vegetarian" ${userPartnerPreferances.eating == 'Non-Vegetarian' ? 'checked' : ''}>
+                                        <div class="ep-v3-chip-content">
+                                            <span class="ep-v3-chip-icon nonveg-icon"><i class="fa fa-cutlery"></i></span>
+                                            <span class="ep-v3-chip-text">Non-Vegetarian</span>
+                                            <i class="fa fa-check-circle ep-v3-chip-check"></i>
+                                        </div>
+                                    </label>
+                                    <label class="ep-v3-segmented-option">
+                                        <input type="radio" name="eatingPartner" value="No Preference" ${userPartnerPreferances.eating == 'No Preference' || empty userPartnerPreferances.eating ? 'checked' : ''}>
+                                        <div class="ep-v3-chip-content">
+                                            <span class="ep-v3-chip-icon nopref-icon"><i class="fa fa-globe"></i></span>
+                                            <span class="ep-v3-chip-text">No Preference</span>
+                                            <i class="fa fa-check-circle ep-v3-chip-check"></i>
+                                        </div>
+                                    </label>
                                 </div>
                             </div>
-                            <div class="ep-v3-field ep-v3-col-1">
-                                <label class="ep-v3-label">Drinking Habits</label>
-                                <div class="ep-v3-radio-group">
-                                    <label class="ep-v3-radio"><input type="radio" name="drinkPartner" value="Never" ${userPartnerPreferances.drink == 'Never' ? 'checked' : ''}> Never</label>
-                                    <label class="ep-v3-radio"><input type="radio" name="drinkPartner" value="Social Drinker" ${userPartnerPreferances.drink == 'Social Drinker' ? 'checked' : ''}> Social Drinker</label>
-                                    <label class="ep-v3-radio"><input type="radio" name="drinkPartner" value="No Preference" ${userPartnerPreferances.drink == 'No Preference' || empty userPartnerPreferances.drink ? 'checked' : ''}> No Preference</label>
+
+                            <!-- DRINKING HABITS -->
+                            <div class="ep-v3-lifestyle-group">
+                                <label class="ep-v3-lifestyle-label">
+                                    <i class="fa fa-glass label-icon"></i> Drinking Habits
+                                </label>
+                                <div class="ep-v3-segmented-control">
+                                    <label class="ep-v3-segmented-option">
+                                        <input type="radio" name="drinkPartner" value="Never" ${userPartnerPreferances.drink == 'Never' ? 'checked' : ''}>
+                                        <div class="ep-v3-chip-content">
+                                            <span class="ep-v3-chip-icon never-icon"><i class="fa fa-ban"></i></span>
+                                            <span class="ep-v3-chip-text">Never</span>
+                                            <i class="fa fa-check-circle ep-v3-chip-check"></i>
+                                        </div>
+                                    </label>
+                                    <label class="ep-v3-segmented-option">
+                                        <input type="radio" name="drinkPartner" value="Social Drinker" ${userPartnerPreferances.drink == 'Social Drinker' ? 'checked' : ''}>
+                                        <div class="ep-v3-chip-content">
+                                            <span class="ep-v3-chip-icon social-icon"><i class="fa fa-glass"></i></span>
+                                            <span class="ep-v3-chip-text">Social Drinker</span>
+                                            <i class="fa fa-check-circle ep-v3-chip-check"></i>
+                                        </div>
+                                    </label>
+                                    <label class="ep-v3-segmented-option">
+                                        <input type="radio" name="drinkPartner" value="No Preference" ${userPartnerPreferances.drink == 'No Preference' || empty userPartnerPreferances.drink ? 'checked' : ''}>
+                                        <div class="ep-v3-chip-content">
+                                            <span class="ep-v3-chip-icon nopref-icon"><i class="fa fa-globe"></i></span>
+                                            <span class="ep-v3-chip-text">No Preference</span>
+                                            <i class="fa fa-check-circle ep-v3-chip-check"></i>
+                                        </div>
+                                    </label>
                                 </div>
                             </div>
-                            <div class="ep-v3-field ep-v3-col-1">
-                                <label class="ep-v3-label">Smoking Habits</label>
-                                <div class="ep-v3-radio-group">
-                                    <label class="ep-v3-radio"><input type="radio" name="smokePartner" value="Non Smoker" ${userPartnerPreferances.smoke == 'Non Smoker' ? 'checked' : ''}> Non Smoker</label>
-                                    <label class="ep-v3-radio"><input type="radio" name="smokePartner" value="Social Smoker" ${userPartnerPreferances.smoke == 'Social Smoker' ? 'checked' : ''}> Social Smoker</label>
-                                    <label class="ep-v3-radio"><input type="radio" name="smokePartner" value="No Preference" ${userPartnerPreferances.smoke == 'No Preference' || empty userPartnerPreferances.smoke ? 'checked' : ''}> No Preference</label>
+
+                            <!-- SMOKING HABITS -->
+                            <div class="ep-v3-lifestyle-group">
+                                <label class="ep-v3-lifestyle-label">
+                                    <i class="fa fa-ban label-icon"></i> Smoking Habits
+                                </label>
+                                <div class="ep-v3-segmented-control">
+                                    <label class="ep-v3-segmented-option">
+                                        <input type="radio" name="smokePartner" value="Non Smoker" ${userPartnerPreferances.smoke == 'Non Smoker' ? 'checked' : ''}>
+                                        <div class="ep-v3-chip-content">
+                                            <span class="ep-v3-chip-icon never-icon"><i class="fa fa-shield"></i></span>
+                                            <span class="ep-v3-chip-text">Non Smoker</span>
+                                            <i class="fa fa-check-circle ep-v3-chip-check"></i>
+                                        </div>
+                                    </label>
+                                    <label class="ep-v3-segmented-option">
+                                        <input type="radio" name="smokePartner" value="Social Smoker" ${userPartnerPreferances.smoke == 'Social Smoker' ? 'checked' : ''}>
+                                        <div class="ep-v3-chip-content">
+                                            <span class="ep-v3-chip-icon social-icon"><i class="fa fa-fire"></i></span>
+                                            <span class="ep-v3-chip-text">Social Smoker</span>
+                                            <i class="fa fa-check-circle ep-v3-chip-check"></i>
+                                        </div>
+                                    </label>
+                                    <label class="ep-v3-segmented-option">
+                                        <input type="radio" name="smokePartner" value="No Preference" ${userPartnerPreferances.smoke == 'No Preference' || empty userPartnerPreferances.smoke ? 'checked' : ''}>
+                                        <div class="ep-v3-chip-content">
+                                            <span class="ep-v3-chip-icon nopref-icon"><i class="fa fa-globe"></i></span>
+                                            <span class="ep-v3-chip-text">No Preference</span>
+                                            <i class="fa fa-check-circle ep-v3-chip-check"></i>
+                                        </div>
+                                    </label>
                                 </div>
                             </div>
-                            <div class="ep-v3-field ep-v3-col-1">
-                                <label class="ep-v3-label">Other Preferences</label>
-                                <div style="display:flex; flex-direction:column; gap:6px;">
-                                    <label style="font-size:13px; font-weight:500; display:flex; align-items:center; gap:6px;"><input type="checkbox" style="accent-color:var(--primary);"> Willing to relocate</label>
-                                    <label style="font-size:13px; font-weight:500; display:flex; align-items:center; gap:6px;"><input type="checkbox" style="accent-color:var(--primary);"> Willing to settle abroad</label>
-                                    <label style="font-size:13px; font-weight:500; display:flex; align-items:center; gap:6px;"><input type="checkbox" checked style="accent-color:var(--primary);"> Horoscope Matching</label>
+
+                            <!-- OTHER PREFERENCES -->
+                            <div class="ep-v3-lifestyle-group">
+                                <label class="ep-v3-lifestyle-label">
+                                    <i class="fa fa-star label-icon"></i> Other Preferences & Compatibility
+                                </label>
+                                <div class="ep-v3-toggles-container">
+                                    <label class="ep-v3-toggle-card">
+                                        <div class="ep-v3-toggle-info">
+                                            <div class="ep-v3-toggle-icon"><i class="fa fa-map-marker"></i></div>
+                                            <div>
+                                                <div class="ep-v3-toggle-title">Willing to Relocate</div>
+                                                <div class="ep-v3-toggle-desc">Open to moving location</div>
+                                            </div>
+                                        </div>
+                                        <div class="ep-v3-switch">
+                                            <input type="checkbox" name="relocatePartner">
+                                            <span class="ep-v3-slider"></span>
+                                        </div>
+                                    </label>
+
+                                    <label class="ep-v3-toggle-card">
+                                        <div class="ep-v3-toggle-info">
+                                            <div class="ep-v3-toggle-icon"><i class="fa fa-plane"></i></div>
+                                            <div>
+                                                <div class="ep-v3-toggle-title">Willing to Settle Abroad</div>
+                                                <div class="ep-v3-toggle-desc">Open to international relocation</div>
+                                            </div>
+                                        </div>
+                                        <div class="ep-v3-switch">
+                                            <input type="checkbox" name="settleAbroadPartner">
+                                            <span class="ep-v3-slider"></span>
+                                        </div>
+                                    </label>
+
+                                    <label class="ep-v3-toggle-card">
+                                        <div class="ep-v3-toggle-info">
+                                            <div class="ep-v3-toggle-icon"><i class="fa fa-magic"></i></div>
+                                            <div>
+                                                <div class="ep-v3-toggle-title">Horoscope Matching</div>
+                                                <div class="ep-v3-toggle-desc">Require Kundali match</div>
+                                            </div>
+                                        </div>
+                                        <div class="ep-v3-switch">
+                                            <input type="checkbox" name="horoscopePartner" checked>
+                                            <span class="ep-v3-slider"></span>
+                                        </div>
+                                    </label>
                                 </div>
                             </div>
                         </div>
