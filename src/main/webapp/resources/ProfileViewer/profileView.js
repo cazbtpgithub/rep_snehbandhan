@@ -207,7 +207,7 @@ function kundaliSlider(userId){
 	        onAction: function(action){
 	          
 	        	
-	        	if('confirm'==action)
+	        	if('confirm'==action || 'ok'==action)
 	        		{	
                     $("#"+VisitorId).hide();
 	           	    $("#ShortlistVisitedId").val(VisitorId);

@@ -14,9 +14,11 @@
     <link rel="stylesheet" href="resources/Template/css/font-awesome.min.css">
     <link rel="stylesheet" href="resources/Template/css/bootstrap.min.css">
     <link rel="stylesheet" href="resources/customcss/dashboard_new.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/confirmBox/jquery-confirm.css" media="screen">
 
     <script src="${pageContext.request.contextPath}/resources/Template/js/jquery-min.js"></script>
     <script src="${pageContext.request.contextPath}/resources/Template/js/bootstrap.min.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/confirmBox/jquery-confirm.js" type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/resources/ProfileViewer/profileView.js"></script>
 
     <style>
@@ -487,6 +489,7 @@
             <!-- Profile Cards List -->
             <div class="profile-cards-container">
 
+                <script>var shortListUsersId = window.shortListUsersId || [];</script>
                 <c:forEach var="profileShortList" items="${sortlistedProfileList}" varStatus="theCount">
                     <script>shortListUsersId.push("${profileShortList.sortlistedUserModel.userId}");</script>
                 </c:forEach>
@@ -587,10 +590,10 @@
                                 <span class="tag-premium">Premium</span>
                             </div>
                             <div class="card-action-btns">
-                                <a href="#" class="btn-shortlist-outline"><i class="fa fa-heart-o"></i> Shortlist</a>
+                                <a href="#" class="btn-shortlist-outline" onclick="Shortlist('25005','Trupti Popat Sawant');"><i class="fa fa-heart-o"></i> Shortlist</a>
                                 <a href="#" class="btn-view-profile-solid">View Profile</a>
                                 <a href="#" class="btn-circle-icon"><i class="fa fa-comment-o"></i></a>
-                                <a href="#" class="btn-circle-icon"><i class="fa fa-envelope-o"></i></a>
+                                <a href="#" class="btn-circle-icon" onclick="Shortlist('25005','Trupti Popat Sawant');"><i class="fa fa-envelope-o"></i></a>
                             </div>
                         </div>
                     </div>
@@ -619,10 +622,10 @@
                                 <span>Last Active: 1 Day ago</span>
                             </div>
                             <div class="card-action-btns">
-                                <a href="#" class="btn-shortlist-outline"><i class="fa fa-heart-o"></i> Shortlist</a>
+                                <a href="#" class="btn-shortlist-outline" onclick="Shortlist('23300','Ashwini Arun Pawar');"><i class="fa fa-heart-o"></i> Shortlist</a>
                                 <a href="#" class="btn-view-profile-solid">View Profile</a>
                                 <a href="#" class="btn-circle-icon"><i class="fa fa-comment-o"></i></a>
-                                <a href="#" class="btn-circle-icon"><i class="fa fa-envelope-o"></i></a>
+                                <a href="#" class="btn-circle-icon" onclick="Shortlist('23300','Ashwini Arun Pawar');"><i class="fa fa-envelope-o"></i></a>
                             </div>
                         </div>
                     </div>
@@ -651,10 +654,10 @@
                                 <span>Last Active: 3 Hours ago</span>
                             </div>
                             <div class="card-action-btns">
-                                <a href="#" class="btn-shortlist-outline"><i class="fa fa-heart-o"></i> Shortlist</a>
+                                <a href="#" class="btn-shortlist-outline" onclick="Shortlist('25044','Komal Chandar Patil');"><i class="fa fa-heart-o"></i> Shortlist</a>
                                 <a href="#" class="btn-view-profile-solid">View Profile</a>
                                 <a href="#" class="btn-circle-icon"><i class="fa fa-comment-o"></i></a>
-                                <a href="#" class="btn-circle-icon"><i class="fa fa-envelope-o"></i></a>
+                                <a href="#" class="btn-circle-icon" onclick="Shortlist('25044','Komal Chandar Patil');"><i class="fa fa-envelope-o"></i></a>
                             </div>
                         </div>
                     </div>
@@ -818,7 +821,11 @@
     <input type="hidden" id="loguserid" name="loguserid" value="${loguser}">
     <input type="hidden" id="firstName" name="firstName" value="${firstName}"> 
     <input type="hidden" id="hiddenExpDate" name="hiddenExpDate" value="${expDate}">  
-    <input type="hidden" id="hiddelUserId" name="hiddelUserId" value="${delUserId}">
+    <!-- Shortlist Form Hidden Fields -->
+    <form id="ShortlistForm">
+        <input type="hidden" id="ShortlistVisitedId" name="ShortlistVisitedId">
+        <input type="hidden" id="ShortlistName" name="ShortlistName">
+    </form>
 
     <!-- Shortlist Modal -->
     <div id="myModal" class="modal fade" role="dialog">
@@ -835,6 +842,25 @@
                         <textarea class="form-control" rows="3" id="ShortlistMSG" maxlength="104"></textarea>
                     </div>
                     <button type="button" class="btn btn-primary" onclick="ShortlistSendMSG();">Send Message</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upgrade Package Modal -->
+    <div id="myModalUpgrade" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title" style="color:red;">Upgrade Package Required</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Your shortlist profile limit has reached maximum count or expired. Please upgrade your package to continue shortlisting profiles.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <a href="${pageContext.request.contextPath}/upgradeAndPayment" class="btn btn-primary">Upgrade Package</a>
                 </div>
             </div>
         </div>
@@ -914,10 +940,10 @@
                 '<div class="profile-actions-wrapper">' +
                     '<div class="profile-status-bar"><span>Last Active: Recently</span><span class="tag-premium">Premium</span></div>' +
                     '<div class="card-action-btns">' +
-                        '<a href="#" class="btn-shortlist-outline"><i class="fa fa-heart-o"></i> Shortlist</a>' +
+                        '<a href="#" class="btn-shortlist-outline" onclick="Shortlist(\'' + (item.visitorUserId || 25005) + '\', \'' + item.name + '\');"><i class="fa fa-heart-o"></i> Shortlist</a>' +
                         '<a href="#" class="btn-view-profile-solid">View Profile</a>' +
                         '<a href="#" class="btn-circle-icon"><i class="fa fa-comment-o"></i></a>' +
-                        '<a href="#" class="btn-circle-icon"><i class="fa fa-envelope-o"></i></a>' +
+                        '<a href="#" class="btn-circle-icon" onclick="Shortlist(\'' + (item.visitorUserId || 25005) + '\', \'' + item.name + '\');"><i class="fa fa-envelope-o"></i></a>' +
                     '</div>' +
                 '</div>' +
             '</div>';
