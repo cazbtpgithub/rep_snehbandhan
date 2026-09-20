@@ -1,19 +1,21 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <c:forEach var="profile" items="${LatestMatch}" begin="0" end="9" varStatus="theCount">
-<div class="profile-card">
+<div class="profile-card" data-user-id="${profile.visitorUserId}">
     <div class="profile-photos" onclick="imageSlider('${profile.visitorUserId}');" style="cursor: pointer;">
         <div class="main-photo-wrapper">
             <span class="verified-badge"><i class="fa fa-check"></i> Verified</span>
             <c:set var="mainImg" value="userImage.png" />
-            <c:if test="${not empty profile.imageObject}">
+            <c:if test="${not empty profile.imageObject && not empty profile.imageObject[0]}">
                 <c:set var="mainImg" value="${profile.imageObject[0]}" />
             </c:if>
             <img src="${pageContext.request.contextPath}/resources/UserImages/${mainImg}" onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/resources/UserImages/userImage.png';" alt="Profile">
         </div>
         <div class="thumb-photos">
             <c:forEach var="img" items="${profile.imageObject}" begin="1" end="2">
-                <img src="${pageContext.request.contextPath}/resources/UserImages/${img}" onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/resources/UserImages/userImage.png';" alt="Thumb">
+                <c:if test="${not empty img}">
+                    <img src="${pageContext.request.contextPath}/resources/UserImages/${img}" onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/resources/UserImages/userImage.png';" alt="Thumb">
+                </c:if>
             </c:forEach>
         </div>
     </div>
@@ -65,5 +67,10 @@
             <a href="#" class="btn-circle-icon" onclick="Shortlist('${profile.visitorUserId}','${profile.name}');"><i class="fa fa-envelope-o"></i></a>
         </div>
     </div>
+    <script>
+        if (typeof latestMatchVisitorIds !== 'undefined' && latestMatchVisitorIds.indexOf(${profile.visitorUserId}) === -1) {
+            latestMatchVisitorIds.push(${profile.visitorUserId});
+        }
+    </script>
 </div>
 </c:forEach>

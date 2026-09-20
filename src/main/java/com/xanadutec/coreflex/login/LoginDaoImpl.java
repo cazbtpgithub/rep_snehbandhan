@@ -181,12 +181,22 @@ public class LoginDaoImpl implements LoginDao, UserDetailsService {
 
 	@Override
 	public void updateEmailTime() {
-		Session session = sessionFactory.getCurrentSession();
-		String hql8 = "update EmailTime set emailDate =:emailDate where emaiId =:emaiId ";
-		Query query8 = session.createQuery(hql8);
-		query8.setParameter("emailDate", new Date());
-		query8.setParameter("emaiId", 1);
-		query8.executeUpdate();
+		try {
+			Session session = sessionFactory.getCurrentSession();
+			String hql8 = "update EmailTime set emailDate =:emailDate where emaiId =:emaiId ";
+			Query query8 = session.createQuery(hql8);
+			query8.setParameter("emailDate", new Date());
+			query8.setParameter("emaiId", 1);
+			int updated = query8.executeUpdate();
+			if (updated == 0) {
+				EmailTime newTime = new EmailTime();
+				newTime.setEmaiId(1);
+				newTime.setEmailDate(new Date());
+				session.save(newTime);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -196,11 +206,22 @@ public class LoginDaoImpl implements LoginDao, UserDetailsService {
 			Criteria criteria=session.createCriteria(EmailTime.class);
 			criteria.add(Restrictions.eq("emaiId", 1));
 			EmailTime time=(EmailTime) criteria.uniqueResult();
-			return time.getEmailDate();			
+			if (time != null && time.getEmailDate() != null) {
+				return time.getEmailDate();
+			} else {
+				Date now = new Date();
+				if (time == null) {
+					EmailTime newTime = new EmailTime();
+					newTime.setEmaiId(1);
+					newTime.setEmailDate(now);
+					session.save(newTime);
+				}
+				return now;
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return null;
+		return new Date();
 	}
 
 	@Override

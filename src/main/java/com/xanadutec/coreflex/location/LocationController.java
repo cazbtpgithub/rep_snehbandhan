@@ -460,7 +460,17 @@ public class LocationController {
 			long maxCount = userService.getMaxCountOfUserDetails();
 			
 			ObjectMapper mapper = new ObjectMapper();
-			model.addAttribute("userModelDetailList", "[]");
+			try {
+				List<AdminUserModel> list = userService.getListOfUserModelDetailsForAdminPanel();
+				if (list != null && !list.isEmpty()) {
+					model.addAttribute("userModelDetailList", mapper.writeValueAsString(list).replaceAll("'", " ").replaceAll(" ,", ""));
+				} else {
+					model.addAttribute("userModelDetailList", "[]");
+				}
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				model.addAttribute("userModelDetailList", "[]");
+			}
 		    List<Country> countries = locationservice.getListOfcountry();
 			List<State_Country> state_Countries = locationservice.getListOfStateByCountryId(1 + "");
 
@@ -475,7 +485,7 @@ public class LocationController {
 			model.addAttribute("pagination_maxCount", maxCount);
 			HttpSession httpSession = request.getSession();
 			UserModel userModel=(UserModel) httpSession.getAttribute("ActUserId");
-			if(userModel.getUserRoll().getId()==4)
+			if(userModel != null && userModel.getUserRoll() != null && userModel.getUserRoll().getId()==4)
 			{
 				model.addAttribute("loginUserRole", "Employee");
 			}

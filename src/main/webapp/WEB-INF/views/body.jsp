@@ -35,6 +35,27 @@
 <script src="resources/plugins/jQuery/jquery-2.2.3.min.js"></script>
 <!-- jQuery UI 1.11.4 -->
 <script src="resources/plugins/jQuery/jquery-ui.min.js"></script>
+<script type="text/javascript">
+if (typeof jQuery !== 'undefined') {
+	jQuery.fn.selectRange = function(start, end) {
+		if (typeof end === 'undefined') end = start;
+		return this.each(function() {
+			try {
+				if (this.setSelectionRange) {
+					this.focus();
+					this.setSelectionRange(start, end);
+				} else if (this.createTextRange) {
+					var range = this.createTextRange();
+					range.collapse(true);
+					range.moveEnd('character', end);
+					range.moveStart('character', start);
+					range.select();
+				}
+			} catch(e) {}
+		});
+	};
+}
+</script>
 <script src="resources/bootstrap/js/bootstrap.min.js"></script>
 
 <!-- Data table Add By Ramesh -->

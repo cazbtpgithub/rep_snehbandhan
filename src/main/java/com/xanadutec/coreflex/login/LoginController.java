@@ -22,6 +22,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectWriter;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -318,34 +319,35 @@ public class LoginController {
 		Date presDate = new Date();
 
 		try {
-			long diff = presDate.getTime() - prevDate.getTime();
-			long diffDays = diff / (24 * 60 * 60 * 1000);
-			long diffHours = diff / (60 * 60 * 1000) % 24;
-			
-			System.out.println("diffDays  "+diffDays);
-			System.out.println("diffHours  "+diffHours);
+			if (prevDate != null) {
+				long diff = presDate.getTime() - prevDate.getTime();
+				long diffDays = diff / (24 * 60 * 60 * 1000);
+				long diffHours = diff / (60 * 60 * 1000) % 24;
+				
+				System.out.println("diffDays  "+diffDays);
+				System.out.println("diffHours  "+diffHours);
 
-			if ((diffDays < 0) || (diffHours <= -23)) {
+				if ((diffDays < 0) || (diffHours <= -23)) {
 
-				final String pathact1 = request.getServletContext()
-						.getRealPath("/resources/UserImages");
+					final String pathact1 = request.getServletContext()
+							.getRealPath("/resources/UserImages");
 
-				loginService.updateEmailTime();
+					loginService.updateEmailTime();
 
-				Thread tt = new Thread(new Runnable() {
+					Thread tt = new Thread(new Runnable() {
 
-					@Override
-					public void run() {
-						emailService.sendKitExpiryMail(pathact1);
-					}
-				});
+						@Override
+						public void run() {
+							emailService.sendKitExpiryMail(pathact1);
+						}
+					});
 
-				tt.start();
+					tt.start();
 
+				}
 			}
-
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		}
 
 		
@@ -542,32 +544,45 @@ public class LoginController {
 			HttpSession httpSession = request.getSession();
 			UserModel userModel = (UserModel) httpSession
 					.getAttribute("ActUserId");
-			UserModelDetails modelDetails = userService
-					.getUserdetails(userModel);
+			if (userModel == null) {
+				try {
+					Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+					if (auth != null && auth.getPrincipal() instanceof UserDetails) {
+						UserDetails userDetails = (UserDetails) auth.getPrincipal();
+						userModel = userService.getUserByUname(userDetails.getUsername());
+						if (userModel != null) {
+							httpSession.setAttribute("ActUserId", userModel);
+							httpSession.setAttribute("ActUserName", userModel.getFirstName());
+						}
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			UserModelDetails modelDetails = userModel != null ? userService
+					.getUserdetails(userModel) : null;
 
 			obj = new JSONObject(request.getParameter("jsonObjectData"));
 			final JSONObject jsonObj = obj;
-			String latestMatchVisitorIds = jsonObj
-					.get("latestMatchVisitorIds").toString();
-			String length = jsonObj.getString("length");
-			StringBuffer builder = new StringBuffer(latestMatchVisitorIds);
-			builder.deleteCharAt(0);
-			builder.deleteCharAt(builder.toString().length() - 1);
+			String length = jsonObj.optString("length", "10");
 
-			String visitorArray[] = builder.toString().split(",");
 			List<UserModel> models = new ArrayList<>();
-
-			for (String string : visitorArray) {
-				if (string.equalsIgnoreCase("null") || string.equals("")) {
-
-				} else {
-					
-					UserModel model2 = new UserModel();
-					model2.setUserId(Long.parseLong(string));
-					models.add(model2);
-
+			Object vIds = jsonObj.opt("latestMatchVisitorIds");
+			if (vIds != null) {
+				String rawVisitorIds = vIds.toString().replaceAll("[\\[\\]\"\\s]", "");
+				if (!rawVisitorIds.isEmpty()) {
+					String[] visitorArray = rawVisitorIds.split(",");
+					for (String string : visitorArray) {
+						if (!string.equalsIgnoreCase("null") && !string.isEmpty()) {
+							try {
+								UserModel model2 = new UserModel();
+								model2.setUserId(Long.parseLong(string));
+								models.add(model2);
+							} catch (NumberFormatException nfe) {
+							}
+						}
+					}
 				}
-
 			}
 
 			List<UserProfileView> profileViews;
@@ -908,30 +923,45 @@ public class LoginController {
 			HttpSession httpSession = request.getSession();
 			UserModel userModel = (UserModel) httpSession
 					.getAttribute("ActUserId");
-			UserModelDetails modelDetails = userService
-					.getUserdetails(userModel);
+			if (userModel == null) {
+				try {
+					Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+					if (auth != null && auth.getPrincipal() instanceof UserDetails) {
+						UserDetails userDetails = (UserDetails) auth.getPrincipal();
+						userModel = userService.getUserByUname(userDetails.getUsername());
+						if (userModel != null) {
+							httpSession.setAttribute("ActUserId", userModel);
+							httpSession.setAttribute("ActUserName", userModel.getFirstName());
+						}
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			UserModelDetails modelDetails = userModel != null ? userService
+					.getUserdetails(userModel) : null;
 
 			obj = new JSONObject(request.getParameter("jsonObjectData"));
 			final JSONObject jsonObj = obj;
-			String latestMatchVisitorIds = jsonObj
-					.get("latestUpgradedVisitorIds").toString();
-			String length = jsonObj.getString("length");
-			StringBuffer builder = new StringBuffer(latestMatchVisitorIds);
-			builder.deleteCharAt(0);
-			builder.deleteCharAt(builder.toString().length() - 1);
+			String length = jsonObj.optString("length", "10");
 
-			String visitorArray[] = builder.toString().split(",");
 			List<UserModel> models = new ArrayList<>();
-
-			for (String string : visitorArray) {
-				if (string.equalsIgnoreCase("null") || string.equals("")) {
-
-				} else {
-					UserModel model2 = new UserModel();
-					model2.setUserId(Long.parseLong(string));
-					models.add(model2);
+			Object vIds = jsonObj.opt("latestUpgradedVisitorIds");
+			if (vIds != null) {
+				String rawVisitorIds = vIds.toString().replaceAll("[\\[\\]\"\\s]", "");
+				if (!rawVisitorIds.isEmpty()) {
+					String[] visitorArray = rawVisitorIds.split(",");
+					for (String string : visitorArray) {
+						if (!string.equalsIgnoreCase("null") && !string.isEmpty()) {
+							try {
+								UserModel model2 = new UserModel();
+								model2.setUserId(Long.parseLong(string));
+								models.add(model2);
+							} catch (NumberFormatException nfe) {
+							}
+						}
+					}
 				}
-
 			}
 
 			List<UserProfileView> profileViews;
@@ -967,30 +997,45 @@ public class LoginController {
 			HttpSession httpSession = request.getSession();
 			UserModel userModel = (UserModel) httpSession
 					.getAttribute("ActUserId");
-			UserModelDetails modelDetails = userService
-					.getUserdetails(userModel);
+			if (userModel == null) {
+				try {
+					Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+					if (auth != null && auth.getPrincipal() instanceof UserDetails) {
+						UserDetails userDetails = (UserDetails) auth.getPrincipal();
+						userModel = userService.getUserByUname(userDetails.getUsername());
+						if (userModel != null) {
+							httpSession.setAttribute("ActUserId", userModel);
+							httpSession.setAttribute("ActUserName", userModel.getFirstName());
+						}
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			UserModelDetails modelDetails = userModel != null ? userService
+					.getUserdetails(userModel) : null;
 
 			obj = new JSONObject(request.getParameter("jsonObjectData"));
 			final JSONObject jsonObj = obj;
-			String latestMatchVisitorIds = jsonObj
-					.get("NotSeenYetProfiles").toString();
-			String length = jsonObj.getString("length");
-			StringBuffer builder = new StringBuffer(latestMatchVisitorIds);
-			builder.deleteCharAt(0);
-			builder.deleteCharAt(builder.toString().length() - 1);
+			String length = jsonObj.optString("length", "10");
 
-			String visitorArray[] = builder.toString().split(",");
 			List<UserModel> models = new ArrayList<>();
-
-			for (String string : visitorArray) {
-				if (string.equalsIgnoreCase("null") || string.equals("")) {
-
-				} else {
-					UserModel model2 = new UserModel();
-					model2.setUserId(Long.parseLong(string));
-					models.add(model2);
+			Object vIds = jsonObj.opt("NotSeenYetProfiles");
+			if (vIds != null) {
+				String rawVisitorIds = vIds.toString().replaceAll("[\\[\\]\"\\s]", "");
+				if (!rawVisitorIds.isEmpty()) {
+					String[] visitorArray = rawVisitorIds.split(",");
+					for (String string : visitorArray) {
+						if (!string.equalsIgnoreCase("null") && !string.isEmpty()) {
+							try {
+								UserModel model2 = new UserModel();
+								model2.setUserId(Long.parseLong(string));
+								models.add(model2);
+							} catch (NumberFormatException nfe) {
+							}
+						}
+					}
 				}
-
 			}
 
 			List<UserProfileView> profileViews;
@@ -1026,30 +1071,45 @@ public class LoginController {
 			HttpSession httpSession = request.getSession();
 			UserModel userModel = (UserModel) httpSession
 					.getAttribute("ActUserId");
-			UserModelDetails modelDetails = userService
-					.getUserdetails(userModel);
+			if (userModel == null) {
+				try {
+					Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+					if (auth != null && auth.getPrincipal() instanceof UserDetails) {
+						UserDetails userDetails = (UserDetails) auth.getPrincipal();
+						userModel = userService.getUserByUname(userDetails.getUsername());
+						if (userModel != null) {
+							httpSession.setAttribute("ActUserId", userModel);
+							httpSession.setAttribute("ActUserName", userModel.getFirstName());
+						}
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			UserModelDetails modelDetails = userModel != null ? userService
+					.getUserdetails(userModel) : null;
 
 			obj = new JSONObject(request.getParameter("jsonObjectData"));
 			final JSONObject jsonObj = obj;
-			String latestMatchVisitorIds = jsonObj
-					.get("ViewedyetProfiles").toString();
-			String length = jsonObj.getString("length");
-			StringBuffer builder = new StringBuffer(latestMatchVisitorIds);
-			builder.deleteCharAt(0);
-			builder.deleteCharAt(builder.toString().length() - 1);
+			String length = jsonObj.optString("length", "10");
 
-			String visitorArray[] = builder.toString().split(",");
 			List<UserModel> models = new ArrayList<>();
-
-			for (String string : visitorArray) {
-				if (string.equalsIgnoreCase("null") || string.equals("")) {
-
-				} else {
-					UserModel model2 = new UserModel();
-					model2.setUserId(Long.parseLong(string));
-					models.add(model2);
+			Object vIds = jsonObj.opt("ViewedyetProfiles");
+			if (vIds != null) {
+				String rawVisitorIds = vIds.toString().replaceAll("[\\[\\]\"\\s]", "");
+				if (!rawVisitorIds.isEmpty()) {
+					String[] visitorArray = rawVisitorIds.split(",");
+					for (String string : visitorArray) {
+						if (!string.equalsIgnoreCase("null") && !string.isEmpty()) {
+							try {
+								UserModel model2 = new UserModel();
+								model2.setUserId(Long.parseLong(string));
+								models.add(model2);
+							} catch (NumberFormatException nfe) {
+							}
+						}
+					}
 				}
-
 			}
 
 			List<UserProfileView> profileViews;
@@ -1085,30 +1145,45 @@ public class LoginController {
 			HttpSession httpSession = request.getSession();
 			UserModel userModel = (UserModel) httpSession
 					.getAttribute("ActUserId");
-			UserModelDetails modelDetails = userService
-					.getUserdetails(userModel);
+			if (userModel == null) {
+				try {
+					Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+					if (auth != null && auth.getPrincipal() instanceof UserDetails) {
+						UserDetails userDetails = (UserDetails) auth.getPrincipal();
+						userModel = userService.getUserByUname(userDetails.getUsername());
+						if (userModel != null) {
+							httpSession.setAttribute("ActUserId", userModel);
+							httpSession.setAttribute("ActUserName", userModel.getFirstName());
+						}
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			UserModelDetails modelDetails = userModel != null ? userService
+					.getUserdetails(userModel) : null;
 
 			obj = new JSONObject(request.getParameter("jsonObjectData"));
 			final JSONObject jsonObj = obj;
-			String ShortlistedOrIntrested = jsonObj
-					.get("ShortlistedOrIntrested").toString();
-			String length = jsonObj.getString("length");
-			StringBuffer builder = new StringBuffer(ShortlistedOrIntrested);
-			builder.deleteCharAt(0);
-			builder.deleteCharAt(builder.toString().length() - 1);
+			String length = jsonObj.optString("length", "10");
 
-			String visitorArray[] = builder.toString().split(",");
 			List<UserModel> models = new ArrayList<>();
-
-			for (String string : visitorArray) {
-				if (string.equalsIgnoreCase("null") || string.equals("")) {
-
-				} else {
-					UserModel model2 = new UserModel();
-					model2.setUserId(Long.parseLong(string));
-					models.add(model2);
+			Object vIds = jsonObj.opt("ShortlistedOrIntrested");
+			if (vIds != null) {
+				String rawVisitorIds = vIds.toString().replaceAll("[\\[\\]\"\\s]", "");
+				if (!rawVisitorIds.isEmpty()) {
+					String[] visitorArray = rawVisitorIds.split(",");
+					for (String string : visitorArray) {
+						if (!string.equalsIgnoreCase("null") && !string.isEmpty()) {
+							try {
+								UserModel model2 = new UserModel();
+								model2.setUserId(Long.parseLong(string));
+								models.add(model2);
+							} catch (NumberFormatException nfe) {
+							}
+						}
+					}
 				}
-
 			}
 
 			List<UserProfileView> profileViews;

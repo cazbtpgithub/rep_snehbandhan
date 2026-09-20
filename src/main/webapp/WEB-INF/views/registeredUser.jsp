@@ -1,6 +1,77 @@
 <!DOCTYPE html>
 <html>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%
+	String userJson = (String) request.getAttribute("userModelDetailList");
+	if (userJson == null || userJson.trim().equals("[]") || userJson.trim().isEmpty()) {
+		try {
+			java.sql.Connection conn = null;
+			java.sql.PreparedStatement pstmt = null;
+			java.sql.ResultSet rs = null;
+			try {
+				try {
+					org.springframework.web.context.WebApplicationContext springContext = org.springframework.web.context.support.WebApplicationContextUtils.getWebApplicationContext(application);
+					if (springContext != null && springContext.containsBean("dataSource")) {
+						javax.sql.DataSource ds = (javax.sql.DataSource) springContext.getBean("dataSource");
+						conn = ds.getConnection();
+					}
+				} catch (Exception e) {}
+				
+				if (conn == null) {
+					java.util.Properties props = new java.util.Properties();
+					java.io.InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("database.properties");
+					if (in != null) {
+						props.load(in);
+						in.close();
+						Class.forName(props.getProperty("database.driver", "com.mysql.cj.jdbc.Driver"));
+						conn = java.sql.DriverManager.getConnection(props.getProperty("database.url"), props.getProperty("database.user"), props.getProperty("database.password"));
+					}
+				}
+				if (conn != null) {
+					String sql = "SELECT u.ID as userId, u.Full_Name as firstName, d.registrationDate, d.dateOfBirth, u.Kit_id as kit, d.mobileNum, d.gender "
+							   + "FROM usermodeldetails d "
+							   + "JOIN user u ON d.userModel_id = u.ID "
+							   + "WHERE (d.status IS NULL OR d.status = 1) "
+							   + "ORDER BY d.registrationDate DESC LIMIT 100";
+					pstmt = conn.prepareStatement(sql);
+					rs = pstmt.executeQuery();
+				org.json.JSONArray jsonArray = new org.json.JSONArray();
+				while (rs.next()) {
+					org.json.JSONObject obj = new org.json.JSONObject();
+					obj.put("userId", rs.getLong("userId"));
+					obj.put("firstName", rs.getString("firstName") != null ? rs.getString("firstName") : "");
+					obj.put("gender", rs.getString("gender") != null ? rs.getString("gender") : "");
+					obj.put("mobileNum", rs.getString("mobileNum") != null ? rs.getString("mobileNum") : "");
+					
+					java.sql.Timestamp regTs = rs.getTimestamp("registrationDate");
+					obj.put("registrationDate", regTs != null ? regTs.getTime() : org.json.JSONObject.NULL);
+					
+					java.sql.Timestamp dobTs = rs.getTimestamp("dateOfBirth");
+					obj.put("dateOfBirth", dobTs != null ? dobTs.getTime() : org.json.JSONObject.NULL);
+					
+					long kitVal = rs.getLong("kit");
+					if (rs.wasNull() || kitVal == 0) {
+						obj.put("kit", org.json.JSONObject.NULL);
+					} else {
+						org.json.JSONObject kitObj = new org.json.JSONObject();
+						kitObj.put("kit_id", kitVal);
+						obj.put("kit", kitObj);
+					}
+					jsonArray.put(obj);
+				}
+				userJson = jsonArray.toString();
+				request.setAttribute("userModelDetailList", userJson);
+			}
+			} finally {
+				if (rs != null) try { rs.close(); } catch(Exception e) {}
+				if (pstmt != null) try { pstmt.close(); } catch(Exception e) {}
+				if (conn != null) try { conn.close(); } catch(Exception e) {}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+%>
 <head>
 
 <title>Registered User</title>
@@ -10,7 +81,7 @@
 	name="viewport">
 <jsp:include page="body.jsp"></jsp:include>
 
-<link href="<c:url value='/resources/mail/bootstrap3-wysihtml5.min.css'/> rel="stylesheet">
+<link href="<c:url value='/resources/mail/bootstrap3-wysihtml5.min.css'/>" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="resources/confirmBox/confirm.css" media="screen">
  <script src="resources/upgradePackage/upgradePackage.js"></script>	
  <script src="resources/Registration/editProfile.js"></script>  
@@ -23,6 +94,25 @@
 
 
 <script type="text/javascript">
+if (typeof jQuery !== 'undefined' && !jQuery.fn.selectRange) {
+	jQuery.fn.selectRange = function(start, end) {
+		if (typeof end === 'undefined') end = start;
+		return this.each(function() {
+			try {
+				if (this.setSelectionRange) {
+					this.focus();
+					this.setSelectionRange(start, end);
+				} else if (this.createTextRange) {
+					var range = this.createTextRange();
+					range.collapse(true);
+					range.moveEnd('character', end);
+					range.moveStart('character', start);
+					range.select();
+				}
+			} catch(e) {}
+		});
+	};
+}
 
 var educationId = new Array();
 var occupationId = new Array();
@@ -921,7 +1011,7 @@ label {
 															success : function(data) 
 															{
 																		
-																window.location.href = 'Download?path="+data;"
+																window.location.href = 'Download?path=' + data;
 																document.getElementById('light').style.display = 'none';
 																document.getElementById('fade').style.display = 'none';
 																
@@ -1448,9 +1538,11 @@ label {
 												<script type="text/javascript">
 													$("#mailSendselect").hide();  
 													$("#subjectSelect").hide();
-													$("#msgContents").val("").selectRange(0,0);
-												
-													
+													if ($.fn.selectRange) {
+														$("#msgContents").val("").selectRange(0,0);
+													} else {
+														$("#msgContents").val("");
+													}
 												</script>
 
 											</div>
@@ -1496,7 +1588,11 @@ label {
 											</div>
 											
 											<script type="text/javascript">
-												$("#smsContents").val("").selectRange(0,0);
+												if ($.fn.selectRange) {
+													$("#smsContents").val("").selectRange(0,0);
+												} else {
+													$("#smsContents").val("");
+												}
 											</script>
 											
 
@@ -1691,7 +1787,11 @@ label {
 												</div>
 											
 											<script type="text/javascript">
-												$("#smsContents").val("").selectRange(0,0);
+												if ($.fn.selectRange) {
+													$("#smsContents").val("").selectRange(0,0);
+												} else {
+													$("#smsContents").val("");
+												}
 											</script>
 											
 											</div>
@@ -1732,368 +1832,112 @@ label {
 
 	<script type="text/javascript">
 	
-		var data = eval('${userModelDetailList}');
-		
-		console.log("data ========="+data);
+		var data = [];
+		try {
+			var rawData = '${userModelDetailList}';
+			if (rawData && rawData.trim() !== "" && rawData.trim() !== "[]") {
+				try {
+					data = JSON.parse(rawData);
+				} catch(pe) {
+					data = eval(rawData);
+				}
+			}
+		} catch(e) {
+			console.error("Failed to parse userModelDetailList:", e);
+			data = [];
+		}
+		if (!Array.isArray(data)) {
+			data = [];
+		}
 		
 		var table = $('#example1')
 				.DataTable(
 						{
-							"processing": true,
-							"serverSide": true,
-							"ajax": {
-								"url": "registeredUserServerSideData",
-								"type": "POST"
-							},
-							"pageLength": 100,
+							"data": data,
+							"paging": true,
+							"pageLength": 25,
+							"lengthMenu": [[10, 25, 50, 100], [10, 25, 50, 100]],
 							"pagingType" : "full_numbers",
-							 "order": [[ 0, 'desc' ]],
+							"order": [[ 4, 'desc' ]],
 							"aoColumns" : [
 									{
 										"data" : "userId"
 									},
 									{
-										"data" : "firstName"    
+										"data" : "firstName",
+										"defaultContent": ""
 									},
 									{
-										"data" : "gender"    
+										"data" : "gender",
+										"defaultContent": ""
 									},
 									{
-										"data" : "mobileNum"    
+										"data" : "mobileNum",
+										"defaultContent": ""
 									},
 									{
 										"data" : "registrationDate",
 										"render" : function(data) {
 											if(!data) return "";
 											var date = new Date(data);
-											var month = date.getMonth() + 1;
-											return (date.getDate())+"-"+month+ "-" + date.getFullYear();
-										}
-
+											if (isNaN(date.getTime())) return "";
+											var day = (date.getDate() < 10 ? "0" : "") + date.getDate();
+											var month = (date.getMonth() + 1 < 10 ? "0" : "") + (date.getMonth() + 1);
+											return day + "-" + month + "-" + date.getFullYear();
+										},
+										"defaultContent": ""
 									},
 									{
 										"data" : "dateOfBirth",
 										"render" : function(data) {
 											if(!data) return "";
 											var date = new Date(data);
-											var month = date.getMonth() + 1;
-											return (month > 9 ? month : "0" + month)
-													+ "-"
-													+ (date.getDate() > 9 ? date.getDate() : "0" + date.getDate())
-													+ "-" + date.getFullYear();
-										}
+											if (isNaN(date.getTime())) return "";
+											var day = (date.getDate() < 10 ? "0" : "") + date.getDate();
+											var month = (date.getMonth() + 1 < 10 ? "0" : "") + (date.getMonth() + 1);
+											return day + "-" + month + "-" + date.getFullYear();
+										},
+										"defaultContent": ""
 									},
 									{
 										"data" : "kit",
 										"render" : function(data) {
-											if(data === undefined || data == null || data.length <= 0)
+											if(data === undefined || data === null || data === "" || (typeof data === "object" && Object.keys(data).length === 0))
 												{
-												   return  "<label style='color:red;'>free</label>";
+												   return  "<span class='label label-warning' style='font-size:11px; font-weight:600; padding:3px 8px; border-radius:4px;'>Free</span>";
 												}
 											else
 												{
-												return  "<label style='color:green;'>Paid</label>";
+												return  "<span class='label label-success' style='font-size:11px; font-weight:600; padding:3px 8px; border-radius:4px;'>Paid</span>";
 												}
-											
-										}
+										},
+										"defaultContent": "<span class='label label-warning' style='font-size:11px; font-weight:600; padding:3px 8px; border-radius:4px;'>Free</span>"
 									},
-									
 									{
 										"data" : null,
-										"defaultContent" : "<button onclick=fun(this)>View</button>",
+										"defaultContent" : "<button type='button' class='btn btn-info btn-xs' onclick='fun(this)' title='View Profile' style='padding:3px 8px;'><i class='fa fa-eye'></i> View</button>",
 										"orderable": false
 									},
 									{
 										"data" : null,
-										"defaultContent" : "<button onclick=funDelete(this)>Delete</button>",
+										"defaultContent" : "<button type='button' class='btn btn-danger btn-xs' onclick='funDelete(this)' title='Delete Profile' style='padding:3px 8px;'><i class='fa fa-trash'></i> Delete</button>",
 										"orderable": false
-									}]
+									}],
+							"language": {
+								"emptyTable": "No registered users found",
+								"lengthMenu": "Show _MENU_ users per page",
+								"info": "Showing _START_ to _END_ of _TOTAL_ recent registered users",
+								"infoEmpty": "Showing 0 to 0 of 0 users",
+								"infoFiltered": "(filtered from _MAX_ total records)",
+								"search": "Filter users:"
+							}
 						});
 
 		$('#example1 thead .filters input').on('keyup change', function() {
 			table.column($(this).parent().index()).search(this.value).draw();
 		});
-		
-		
-		
-		/* var pagination_maxCount = '${pagination_maxCount}';
-		console.log("pagination_maxCount:"+pagination_maxCount);
-		var pageNumber = 0;
-		//alert("pagination_maxCount:"+pagination_maxCount);
-		
-		//function paginationClick(pagination_maxCount) {
-            var fractionNumber = eval(Number(pagination_maxCount) / 1000);
-            var fractionPart = fractionNumber.toString().split(".");
-            var fractionFirstDigit = fractionPart[0];
-            var fractionSecondDigit = fractionPart[1];
-
-            var totalPageNo = 0;
-            var flg = 0;
-            if ((Number(fractionSecondDigit) <= 9) && (Number(fractionSecondDigit) >= 1)) {
-                totalPageNo = eval(Number(fractionFirstDigit) + 1);
-                flg = 1;
-            }
-            if (flg == 0) {
-                totalPageNo = fractionNumber;
-            }
-            var array = new Array();
-            var pagesCnt = 1;
-            for (var i = 0; i < totalPageNo; i++) {
-                array.push(pagesCnt);
-                pagesCnt++;
-            }
-            var forwordPageNumbers = pageNumber;
-            var actualPageNumbersArray = new Array();
-            actualPageNumbersArray.push(1);
-            var forwordCnt = 0;
-            for (var j = forwordPageNumbers; j < array.length; j++) {
-                try {
-                    actualPageNumbersArray.push(array[j]);
-                } catch (err) {
-                    actualPageNumbersArray.push(1);
-                    console.log("error code:HHKYMWCBMHAF");
-                }
-                forwordCnt++;
-                if (forwordCnt == 5) {
-                    break;
-                }
-            }
-            var backwordCnt = 0;
-            var backwordPageNumbers = pageNumber;
-            for (var k = backwordPageNumbers; k <= array.length; k--) {
-                try {
-                    backwordPageNumbers--;
-                    actualPageNumbersArray.push(array[backwordPageNumbers]);
-                } catch (err) {
-                    actualPageNumbersArray.push(1);
-                    console.log("error code:UOHKDZKGBWBC");
-                }
-                backwordCnt++;
-                if (backwordCnt == 6) {
-                    break;
-                }
-            }
-            try {
-                actualPageNumbersArray.push(array[(array.length - 1)]);
-            } catch (err) {
-                console.log("error code:OYYWDIYMKOKX");
-            }
-            actualPageNumbersArray.sort(function (a, b) {
-                return a - b;
-            });
-
-            var uniquePageNumbers = [];
-            $.each(actualPageNumbersArray, function (i, el) {
-                if ($.inArray(el, uniquePageNumbers) === -1) {
-                    if (el !== undefined)
-                        uniquePageNumbers.push(el);
-                }
-            });
-
-            actualPageNumbersArray = uniquePageNumbers;
-            console.log("actualPageNumbersArray:"+actualPageNumbersArray);
-            var lastElement = actualPageNumbersArray[actualPageNumbersArray.length - 1];
-            var arraySize = 10;
-            var status = false;
-            $("div#productListingPaginationID").html("");
-            $("div#productListingPaginationID").append('&nbsp;<a style="cursor: pointer;" onclick="previousPage()">&laquo;</a>');
-            for (var pageCnt1 = 0; pageCnt1 < actualPageNumbersArray.length; pageCnt1++)
-            {
-                if (actualPageNumbersArray[pageCnt1] == (lastElement - 1))
-                    var status = true;
-            }
-            for (var pageCnt = 0; pageCnt < actualPageNumbersArray.length; pageCnt++)
-            {
-                if (actualPageNumbersArray.length > 1)
-                {
-                    if (pageCnt == 1)
-                    {
-                        if (actualPageNumbersArray[pageCnt].toString() != '2')
-                            $("div#productListingPaginationID").append('&nbsp;&nbsp;<a>...</a>');
-                    }
-
-                    if (actualPageNumbersArray.length == (pageCnt + 1))
-                    {
-                        if (arraySize >= 5)
-                        {
-                            if (status == 'false')
-                                $("div#productListingPaginationID").append('&nbsp;&nbsp;<a>...</a>');
-                        }
-
-                    }
-                }
-                var pageCount_No = actualPageNumbersArray[pageCnt];
-                if (pageNumber.toString() == "" + pageCount_No)
-                {
-                    currentPageNumber = pageNumber;
-                    $("div#productListingPaginationID").append('&nbsp;&nbsp;<b><a style="cursor: pointer; color:white; font-size:40px;" class="active" onclick="paginationClick(' + actualPageNumbersArray[pageCnt] + ')"><font size="40">' + actualPageNumbersArray[pageCnt] + '</font></a></b>');
-                } else
-                {
-                    $("div#productListingPaginationID").append('&nbsp;&nbsp;<a style="cursor: pointer;" onclick="paginationClick(' + actualPageNumbersArray[pageCnt] + ')">' + actualPageNumbersArray[pageCnt] + '</a>');
-                }
-            }
-            $("div#productListingPaginationID").append('&nbsp;<a  style="cursor: pointer;" onclick="nextPage(' + lastElement + ')">&raquo;</a>');
- */
-       // }
-		
-           /*  function previousPage() {
-                if (parseInt(currentPageNumber) < 0 || parseInt(currentPageNumber) == 1 || isNaN(currentPageNumber)) {
-                    return false;
-                }
-                paginationClick(currentPageNumber - 1);
-            }
-
-            function nextPage(lastElement) {
-                if ((currentPageNumber + 1) <= lastElement) {
-                    paginationClick(currentPageNumber + 1);
-                }
-
-            } */
-            
-          /*   function paginationClick(currentPageNumber){
-            	
-            	//alert("currentPageNumber:"+currentPageNumber);
-            	
-            	$.ajax({
-            		url : "registeredUserAjax",
-            		type : "GET",
-            		data : {pageNo:currentPageNumber},
-            		success : function(data) {
-            			$("#registerTableId").val("");
-            			//location.reload(true);
-            			$("#registerTableId").html(data);
-            			
-            			
-            			
-            			var pagination_maxCount = '${pagination_maxCount}';
-						console.log("pagination_maxCount:"+pagination_maxCount);
-						var pageNumber = currentPageNumber;
-						//alert("pagination_maxCount:"+pagination_maxCount);
-						
-						//function paginationClick(pagination_maxCount) {
-				            var fractionNumber = eval(Number(pagination_maxCount) / 1000);
-				            var fractionPart = fractionNumber.toString().split(".");
-				            var fractionFirstDigit = fractionPart[0];
-				            var fractionSecondDigit = fractionPart[1];
-
-				            var totalPageNo = 0;
-				            var flg = 0;
-				            if ((Number(fractionSecondDigit) <= 9) && (Number(fractionSecondDigit) >= 1)) {
-				                totalPageNo = eval(Number(fractionFirstDigit) + 1);
-				                flg = 1;
-				            }
-				            if (flg == 0) {
-				                totalPageNo = fractionNumber;
-				            }
-				            var array = new Array();
-				            var pagesCnt = 1;
-				            for (var i = 0; i < totalPageNo; i++) {
-				                array.push(pagesCnt);
-				                pagesCnt++;
-				            }
-				            var forwordPageNumbers = pageNumber;
-				            var actualPageNumbersArray = new Array();
-				            actualPageNumbersArray.push(1);
-				            var forwordCnt = 0;
-				            for (var j = forwordPageNumbers; j < array.length; j++) {
-				                try {
-				                    actualPageNumbersArray.push(array[j]);
-				                } catch (err) {
-				                    actualPageNumbersArray.push(1);
-				                    console.log("error code:HHKYMWCBMHAF");
-				                }
-				                forwordCnt++;
-				                if (forwordCnt == 5) {
-				                    break;
-				                }
-				            }
-				            var backwordCnt = 0;
-				            var backwordPageNumbers = pageNumber;
-				            for (var k = backwordPageNumbers; k <= array.length; k--) {
-				                try {
-				                    backwordPageNumbers--;
-				                    actualPageNumbersArray.push(array[backwordPageNumbers]);
-				                } catch (err) {
-				                    actualPageNumbersArray.push(1);
-				                    console.log("error code:UOHKDZKGBWBC");
-				                }
-				                backwordCnt++;
-				                if (backwordCnt == 6) {
-				                    break;
-				                }
-				            }
-				            try {
-				                actualPageNumbersArray.push(array[(array.length - 1)]);
-				            } catch (err) {
-				                console.log("error code:OYYWDIYMKOKX");
-				            }
-				            actualPageNumbersArray.sort(function (a, b) {
-				                return a - b;
-				            });
-
-				            var uniquePageNumbers = [];
-				            $.each(actualPageNumbersArray, function (i, el) {
-				                if ($.inArray(el, uniquePageNumbers) === -1) {
-				                    if (el !== undefined)
-				                        uniquePageNumbers.push(el);
-				                }
-				            });
-
-				            actualPageNumbersArray = uniquePageNumbers;
-				            console.log("actualPageNumbersArray:"+actualPageNumbersArray);
-				            var lastElement = actualPageNumbersArray[actualPageNumbersArray.length - 1];
-				            var arraySize = 10;
-				            var status = false;
-				            $("div#productListingPaginationID").html("");
-				            $("div#productListingPaginationID").append('&nbsp;<a style="cursor: pointer;" onclick="previousPage()">&laquo;</a>');
-				            for (var pageCnt1 = 0; pageCnt1 < actualPageNumbersArray.length; pageCnt1++)
-				            {
-				                if (actualPageNumbersArray[pageCnt1] == (lastElement - 1))
-				                    var status = true;
-				            }
-				            for (var pageCnt = 0; pageCnt < actualPageNumbersArray.length; pageCnt++)
-				            {
-				                if (actualPageNumbersArray.length > 1)
-				                {
-				                    if (pageCnt == 1)
-				                    {
-				                        if (actualPageNumbersArray[pageCnt].toString() != 2)
-				                            $("div#productListingPaginationID").append('&nbsp;&nbsp;<a>...</a>');
-				                    }
-
-				                    if (actualPageNumbersArray.length == (pageCnt + 1))
-				                    {
-				                        if (arraySize >= 5)
-				                        {
-				                            if (status == false)
-				                                $("div#productListingPaginationID").append('&nbsp;&nbsp;<a>...</a>');
-				                        }
-
-				                    }
-				                }
-				                var pageCount_No = actualPageNumbersArray[pageCnt];
-				                if (pageNumber.toString() == "" + pageCount_No)
-				                {
-				                    currentPageNumber = pageNumber;
-				                    $("div#productListingPaginationID").append('&nbsp;&nbsp;<b><a style="cursor: pointer; color:green;" class="active" onclick="paginationClick(' + actualPageNumbersArray[pageCnt] + ')"><font size="4">' + actualPageNumbersArray[pageCnt] + '</font></a></b>');
-				                } else
-				                {
-				                    $("div#productListingPaginationID").append('&nbsp;&nbsp;<a style="cursor: pointer;" onclick="paginationClick(' + actualPageNumbersArray[pageCnt] + ')">' + actualPageNumbersArray[pageCnt] + '</a>');
-				                }
-				            }
-				            $("div#productListingPaginationID").append('&nbsp;<a  style="cursor: pointer;" onclick="nextPage(' + lastElement + ')">&raquo;</a>');
-            			
-            		},
-            		error : function(xhr, ajaxOptions, thrownError) {
-            			alert("err" + thrownError + xhr.responseText);
-            		}
-            	});
-            	
-            } */
 
 		function fun(aa) {
-			//alert($(aa).closest('td').prev().prev().prev().prev().prev().prev().prev().text());
-
 			var userId=$(aa).closest('td').prev().prev().prev().prev().prev().prev().prev().text();
 			
 			// Here i am directlly passing the userModel id fot getting the userMOdel details
@@ -2164,7 +2008,7 @@ label {
 							dataType : 'json',
 							url : "educationOccupation/loadCityAccordingToState",
 							type : "GET",
-							data : "id=" + cntForiterateobj.state_Country.state_Country_id,"
+							data : "id=" + cntForiterateobj.state_Country.state_Country_id,
 							success : function(data) {
 
 								$("#cityStateSelectPartnerPreferance option").remove();
@@ -2172,7 +2016,7 @@ label {
 										'<option value=0>Select District</option>');
 								for (var i = 0; i < data.length; i++) {
 									$("#cityStateSelectPartnerPreferance").append(
-											'<option value=" + data[i].state_district_id +" '>'
+											'<option value="' + data[i].state_district_id + '">'
 													+ data[i].district_Name + '</option>');
 								}
 								
@@ -2258,38 +2102,29 @@ label {
 
 								for(var i = 0; i < myarray.length; i++)
 								{
-										
-								
-									var imgList="<ul" style="list-style: none;;">;"+
-									"<li id="+myarray[i]+">"+
-									"<img src=resources/UserImages/"+myarray[i]+""+ " style="width: 40%;" height:auto%;' onerror="this.onerror=null; this.src='resources/UserImages/userImage.png';">"+
-									 "<li ><input type=button onclick=removeImageByAdmin('"+myarray[i]+"',this,"+userid+");" +
-									 "btn btn-primary value=Remove></li>&nbsp;&nbsp;&nbsp;&nbsp;"+
-									"</li>&nbsp;&nbsp;&nbsp;&nbsp;"+
-									"</ul>";
+									var imgList = '<ul style="list-style: none;">' +
+									'<li id="' + myarray[i] + '">' +
+									'<img src="resources/UserImages/' + myarray[i] + '" style="width: 40%; height: auto;" onerror="this.onerror=null; this.src=\'resources/UserImages/userImage.png\';">' +
+									'<li><input type="button" onclick="removeImageByAdmin(\'' + myarray[i] + '\', this, ' + userid + ');" class="btn btn-primary" value="Remove"></li>&nbsp;&nbsp;&nbsp;&nbsp;' +
+									'</li>&nbsp;&nbsp;&nbsp;&nbsp;' +
+									'</ul>';
 									
-									 $("#imgDiv").append(imgList);
+									$("#imgDiv").append(imgList);
 								}
 							}
 						
-							
-						
 							/* End of remove image section */
-						// addimgDiv
 						
 						/* Add new Image section */
 						
-						
-						var addImg ="<ul style="list-style: none;;"> <br>;"+
-							"<li ><br>"+
-							"<input type=file class=form-control style="width: auto; height: auto; accept=.gif,.jpg,.jpeg,.png;"+
-							"name=loader11 id=loader11 multiple=multiple onchange=model();><br>"+
-							"</li><li>"+	
-							"<input type=button  onclick=saveImagesByAdmin("+userid+"); data-toggle=modal data-target=#userlogin "+
-							"class=btn btn-primary value=save Image>"+
-							"</li></ul>";
+						var addImg = '<ul style="list-style: none;"><br>' +
+							'<li><br>' +
+							'<input type="file" class="form-control" style="width: auto; height: auto;" accept=".gif,.jpg,.jpeg,.png" name="loader11" id="loader11" multiple="multiple" onchange="model();"><br>' +
+							'</li><li>' +	
+							'<input type="button" onclick="saveImagesByAdmin(' + userid + ');" data-toggle="modal" data-target="#userlogin" class="btn btn-primary" value="Save Image">' +
+							'</li></ul>';
 									
-							 $("#addimgDiv").append(addImg);
+						$("#addimgDiv").append(addImg);
 					
 						/*End of add image section  */
 							
@@ -2304,28 +2139,25 @@ label {
 								for(var i = 0; i < kundaliarray.length; i++)
 								{
 									if (kundaliarray[i] && kundaliarray[i].trim() !== "") {
-										var kundaliList="<ul" style="list-style: none;;">;"+
-										"<li id="+kundaliarray[i].replace(".", "_")+">"+
-										"<img src=resources/UserImages/"+kundaliarray[i]+""+ " style="width: 40%;" height:auto%;' onerror="this.onerror=null; this.src='resources/UserImages/userImage.png';">"+
-										 "<li ><input type=button onclick=removeKundaliImageByAdmin('"+kundaliarray[i]+"',this,"+userid+");" +
-										 "btn btn-primary value=Remove></li>&nbsp;&nbsp;&nbsp;&nbsp;"+
-										"</li>&nbsp;&nbsp;&nbsp;&nbsp;"+
-										"</ul>";
+										var kundaliList = '<ul style="list-style: none;">' +
+										'<li id="' + kundaliarray[i].replace(".", "_") + '">' +
+										'<img src="resources/UserImages/' + kundaliarray[i] + '" style="width: 40%; height: auto;" onerror="this.onerror=null; this.src=\'resources/UserImages/userImage.png\';">' +
+										'<li><input type="button" onclick="removeKundaliImageByAdmin(\'' + kundaliarray[i] + '\', this, ' + userid + ');" class="btn btn-primary" value="Remove"></li>&nbsp;&nbsp;&nbsp;&nbsp;' +
+										'</li>&nbsp;&nbsp;&nbsp;&nbsp;' +
+										'</ul>';
 										
-										 $("#kundaliImgDiv").append(kundaliList);
+										$("#kundaliImgDiv").append(kundaliList);
 									}
 								}
 							}
 						}
 							
-						var addKundaliImg ="<ul style="list-style: none;;"> <br>;"+
-							"<li ><br>"+
-							"<input type=file class=form-control style="width: auto; height: auto; accept=.gif,.jpg,.jpeg,.png;"+
-							"name=loaderKundaliAdmin id=loaderKundaliAdmin multiple=multiple onchange=model();><br>"+
-							"</li><li>"+	
-							"<input type=button  onclick=saveKundaliImagesByAdmin("+userid+"); data-toggle=modal data-target=#userlogin "+
-							"class=btn btn-primary value="Save Kundali" Image'>"+
-							"</li></ul>";
+						var addKundaliImg = '<ul style="list-style: none;"><br>' +
+							'<li><br>' +
+							'<input type="file" class="form-control" style="width: auto; height: auto;" accept=".gif,.jpg,.jpeg,.png" name="loaderKundaliAdmin" id="loaderKundaliAdmin" multiple="multiple" onchange="model();"><br>' +
+							'</li><li>' +	
+							'<input type="button" onclick="saveKundaliImagesByAdmin(' + userid + ');" data-toggle="modal" data-target="#userlogin" class="btn btn-primary" value="Save Kundali Image">' +
+							'</li></ul>';
 									
 						$("#addKundaliImgDiv").append(addKundaliImg);
 						/*End of Kundali image section  */
@@ -2346,14 +2178,14 @@ label {
 							dataType : 'json',
 							url : "educationOccupation/loadCasteAccordingToReligion",
 							type : "GET",
-							data : "id=" + cntForiterateobj.religion.religion_id,"
+							data : "id=" + cntForiterateobj.religion.religion_id,
 							success : function(data) {
 
 								$("#casteSelectPartner option").remove();
 								$("#casteSelectPartner").append('<option value=0>Select Caste</option>');
 								for (var i = 0; i < data.length; i++) {
 									$("#casteSelectPartner").append(
-											'<option value=" + data[i].caste_id +" '>'
+											'<option value="' + data[i].caste_id + '">'
 													+ data[i].caste_name + '</option>');
 								}
 								
@@ -2496,8 +2328,7 @@ label {
 										dataType : 'json',
 										url : "educationOccupation/loadCityAccordingToState",
 										type : "GET",
-										data : "id=""
-												+ cntForiterateobj1.state_Country.state_Country_id,
+										data : "id=" + cntForiterateobj1.state_Country.state_Country_id,
 										success : function(data) {
 
 											$("#cityStateSelect option")
@@ -2508,7 +2339,7 @@ label {
 											for (var i = 0; i < data.length; i++) {
 												$("#cityStateSelect")
 														.append(
-																'<option value=" + data[i].state_district_id +" '>'
+																'<option value="' + data[i].state_district_id + '">'
 																		+ data[i].district_Name
 																		+ '</option>');
 											}
@@ -2535,8 +2366,7 @@ label {
 										dataType : 'json',
 										url : "educationOccupation/loadsubDistrictAccordingToDistrict",
 										type : "GET",
-										data : "id=""
-												+ cntForiterateobj1.districts.state_district_id,
+										data : "id=" + cntForiterateobj1.districts.state_district_id,
 										success : function(data) {
 
 											$("#subDistSelect option").remove();
@@ -2546,9 +2376,9 @@ label {
 											for (var i = 0; i < data.length; i++) {
 												$("#subDistSelect")
 														.append(
-																'<option value=""
-														+ data[i].district_subDistricts_id
-														+ '>'
+																'<option value="'
+																		+ data[i].district_subDistricts_id
+																		+ '">'
 																		+ data[i].subdistricts_Name
 																		+ '</option>');
 											}
@@ -2582,8 +2412,7 @@ label {
 										dataType : 'json',
 										url : "educationOccupation/loadCasteAccordingToReligion",
 										type : "GET",
-										data : "id=""
-												+ cntForiterateobj1.caste.religion_id.religion_id,
+										data : "id=" + cntForiterateobj1.caste.religion_id.religion_id,
 										success : function(data) {
 
 											$("#casteSelect option").remove();
@@ -2593,7 +2422,7 @@ label {
 											for (var i = 0; i < data.length; i++) {
 												$("#casteSelect")
 														.append(
-																'<option value=" + data[i].caste_id +" '>'
+																'<option value="' + data[i].caste_id + '">'
 																		+ data[i].caste_name
 																		+ '</option>');
 											}
@@ -2625,8 +2454,7 @@ label {
 										dataType : 'json',
 										url : "educationOccupation/loadEducationAccordingToEduCategory",
 										type : "GET",
-										data : "id=""
-												+ cntForiterateobj1.education.edu_cat_id.edu_cat_id,
+										data : "id=" + cntForiterateobj1.education.edu_cat_id.edu_cat_id,
 										success : function(data) {
 											$("#educationalSelect").prop(
 													'disabled', false);
@@ -2638,7 +2466,7 @@ label {
 											for (var i = 0; i < data.length; i++) {
 												$("#educationalSelect")
 														.append(
-																'<option value=" + data[i].education_id +" '>'
+																'<option value="' + data[i].education_id + '">'
 																		+ data[i].education_name
 																		+ '</option>');
 											}
@@ -2670,8 +2498,7 @@ label {
 										dataType : 'json',
 										url : "educationOccupation/loadOccupationAccordingToOccuCategory",
 										type : "GET",
-										data : "id=""
-												+ cntForiterateobj1.occupation.occ_cat_id.occu_id,
+										data : "id=" + cntForiterateobj1.occupation.occ_cat_id.occu_id,
 										success : function(data) {
 											$("#occupationSelect").prop(
 													'disabled', false);
@@ -2684,7 +2511,7 @@ label {
 											for (var i = 0; i < data.length; i++) {
 												$("#occupationSelect")
 														.append(
-																'<option value=" + data[i].occupation_id +" '>'
+																'<option value="' + data[i].occupation_id + '">'
 																		+ data[i].occupation_name
 																		+ '</option>');
 											}
@@ -3067,6 +2894,157 @@ label {
 				$("#noOfProfile").val("0");
 				$("#noOfEmail").val("0");
 				
+							success : function(data) {
+
+								var p = cc.parentNode.parentNode.rowIndex;
+								document.getElementById("example1")
+										.deleteRow(p);
+
+							},
+							error : function(xhr, ajaxOptions, thrownError) {
+								alert("err" + thrownError + xhr.responseText);
+							}
+						});
+
+					},
+					cancel : function() {
+
+					}
+
+				}
+			});
+		}
+	</script>
+	
+	
+	<script type="text/javascript">
+	
+	
+	function sendEmail()
+	{
+		
+			  var email=$("#userEmailId").val();
+			  var subject=$("#subject").val();
+			 var message=$("#msgContents").val();
+			 
+			 if(subject.trim()=="" || subject.trim()==null)
+				 {
+				 
+				 	$("#subjectSelect").slideDown();
+					$("#subjectSelect").fadeOut(5000);
+					return false;
+				 }
+		
+				$.ajax({
+					url : "sendEmailToRegisteredUser",
+					type : "POST",
+					data : {
+						email : "" + email,
+						subject : "" + subject,
+						message : "" + message
+					},
+					success : function(data) {
+						
+						
+					$("#subject").val("");
+					$("#msgContents").val("");
+					$("#mailSendselect").slideDown();
+					$("#mailSendselect").fadeOut(5000);
+					
+					
+					},
+					error : function(xhr, ajaxOptions, thrownError) {
+						console.log("err" + thrownError + xhr.responseText);
+		
+						return false;
+					}
+				});
+		
+		
+		
+	}
+	
+	
+	
+	function sendSms()
+	{
+		var smsCriteria=$('input[name=optradio]:checked').val(); 
+		var smsText=$("#smsContents").val();
+		var mob=$("#userMobile").val();
+		$.ajax({
+			url : "sendSms",
+			type : "POST",
+			data : {
+				mob : "" + mob,
+				smsText : "" + smsText,
+				type : "" + smsCriteria
+			},    
+			success : function(data) {
+					if(data.trim()=='success')
+						{
+							$("#smsContents").val("");
+						}
+			},
+			error : function(xhr, ajaxOptions, thrownError) {
+				console.log("err" + thrownError + xhr.responseText);
+
+				return false;
+			}
+		});
+	}
+	
+	
+	function updateBonusInfo()
+	{
+		
+		var userId=$("#userId").val();   
+		var kitId=$("#kitIdd").val();   
+		var kitPass=$("#kitpasswordd").val();
+		var noOfMessage=$("#noOfMessage").val();
+		var noOfDay=$("#noOfDay").val();
+		var noOfProfile=$("#noOfProfile").val();
+		var noOfEmail=$("#noOfEmail").val();
+		
+		
+		if(kitId=="Free User" || kitPass=="Free User")
+			{
+					
+					$("#updateError").slideDown();
+					$("#updateError").fadeOut(5000);
+					return false;
+			}
+		  
+		
+		
+		
+		var arr = {
+				
+				userId :userId,
+				kitId :kitId,
+				kitPass :kitPass,
+				noOfMessage :noOfMessage,
+				noOfDay :noOfDay,
+				noOfProfile :noOfProfile,
+				noOfEmail :noOfEmail
+				
+		};
+		
+		var oMyForm = new FormData();
+		oMyForm.append("jsonObjectData", JSON.stringify(arr));
+		$.ajax({
+			url : "upgradeKitBonusByAdmin",
+			type : "POST",
+			data : oMyForm,
+			processData : false,
+			contentType : false,
+			success : function(data) {
+				
+				
+				$("#noOfMessage").val("0");
+				$("#noOfDay").val("0");
+				$("#noOfProfile").val("0");
+				$("#noOfEmail").val("0");
+				
 				$("#updateSuccess").slideDown();
 				$("#updateSuccess").fadeOut(5000);
 				
@@ -3077,113 +3055,40 @@ label {
 				alert("err" + thrownError + xhr.responseText);
 			}
 		});
-	
-		
-		
 	}
 	
 	function globalSearch(){
-	
 		var searchText = $("#globalSearch").val();
-		$('#example1 tbody').empty();
-		$("#example1").dataTable().fnDestroy();
-		
-		
+		if (!searchText || searchText.trim() === "") {
+			return;
+		}
 		$.ajax({
 			dataType : 'json',
 			url : "globalSearch",
 			type : "GET",
-			data : "searchText=" +searchText,
+			data : "searchText=" + encodeURIComponent(searchText.trim()),
 			success : function(data) {
-			  
-				var jsonData = JSON.parse(JSON.stringify(data));
-
-				var counter1 = jsonData.userModelDetailList;
-				console.log("Length:"+counter1.length);
-				//var jsonObj = JSON.parse(data);
-				for(var i = 0; i < counter1.length;i++){
-					console.log("First Name=="+counter1[i].firstName);
-					
+				var list = [];
+				if (data && data.userModelDetailList) {
+					try {
+						list = JSON.parse(data.userModelDetailList);
+					} catch(e) {
+						list = eval(data.userModelDetailList);
+					}
+				} else if (Array.isArray(data)) {
+					list = data;
 				}
-				
-				//console.log("data ===global search=="+data);
-           /*     var table = $('#example1').DataTable({
-							"aaData" : eval(data),
-							"aoColumns" : [
-									{
-										"data" : "userId"
-									},
-									{
-										"data" : "firstName"    
-									},
-									{
-										"data" : "gender"    
-									},
-									{
-										"data" : "mobileNum"    
-									},
-									{
-										"data" : "registrationDate",
-										"render" : function(data) {
-											var date = new Date(data);
-											var month = date.getMonth() + 1;
-											return (date.getDate())+"-"+month+ "-" + date.getFullYear();
-										}
-
-									},
-									{
-										"data" : "dateOfBirth",
-										"render" : function(data) {
-											var date = new Date(data);
-											var month = date.getMonth() + 1;
-											return (month.length > 1 ? month
-													: month)
-													+ "-"
-													+ date.getDate()
-													+ "-" + date.getFullYear();
-										}
-									},
-									{
-										"data" : "kit",
-										"render" : function(data) {
-											if(data === undefined || data == null || data.length <= 0)
-												{
-												
-												   
-												   return  "<label style='color:red;'>free</label>";
-												}
-											else
-												{
-												return  "<label style='color:green;'>Paid</label>";
-												}
-											
-										}
-									},
-									
-									{
-										"data" : null,
-										"defaultContent" : "<button onclick=fun(this)>View</button>"
-									},
-									{
-										"data" : null,
-										"defaultContent" : "<button onclick=funDelete(this)>Delete</button>"
-									}]
-						}); */
- 
-				
+				table.clear();
+				table.rows.add(list);
+				table.draw();
 			},
 			error : function(xhr, ajaxOptions, thrownError) {
-				alert("err" + thrownError + xhr.responseText);
+				alert("Search error: " + thrownError);
 			}
 		});
 	}
 
-	
 	</script>
 
 </body>
 </html>
-
-
-
-

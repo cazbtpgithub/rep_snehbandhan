@@ -212,14 +212,23 @@ public class UserDaoImpl implements UserDao {
 			criteria = session.createCriteria(UserModelImagesName.class);
 			criteria.add(Restrictions.eq("userModel", userModelDetails2.getUserModel()));
 
-			UserModelImagesName imagesName = (UserModelImagesName) criteria.uniqueResult();
-			try {
-				String s[] = imagesName.getImageNames().split("#");
-				List<String> lst = new ArrayList<>();
-				lst = Arrays.asList(s);
-				profileView.setImageObject(lst);
-			} catch (Exception e) {
-
+			List<UserModelImagesName> imgList = criteria.list();
+			if (imgList != null && !imgList.isEmpty()) {
+				UserModelImagesName imagesName = imgList.get(0);
+				try {
+					if (imagesName != null && imagesName.getImageNames() != null) {
+						String s[] = imagesName.getImageNames().split("#");
+						List<String> lst = new ArrayList<>();
+						for (String imgStr : s) {
+							if (imgStr != null && !imgStr.trim().isEmpty()) {
+								lst.add(imgStr.trim());
+							}
+						}
+						profileView.setImageObject(lst);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 			try {
 				HttpSession httpSession = request.getSession();
@@ -703,17 +712,27 @@ public class UserDaoImpl implements UserDao {
 			profileView.setOccupation(userModelDetails2.getOccupation().getOccupation_name());
 			profileView.setCaste(userModelDetails2.getCaste().getCaste_name());
 			profileView.setVisitorUserId(userModelDetails2.getUserModel().getUserId());
+			profileView.setUserId(userModelDetails2.getUserModel().getUserId());
 			criteria = session.createCriteria(UserModelImagesName.class);
 			criteria.add(Restrictions.eq("userModel", userModelDetails2.getUserModel()));
 
-			UserModelImagesName imagesName = (UserModelImagesName) criteria.uniqueResult();
-			try {
-				String s[] = imagesName.getImageNames().split("#");
-				List<String> lst = new ArrayList<>();
-				lst = Arrays.asList(s);
-				profileView.setImageObject(lst);
-			} catch (Exception e) {
-             e.printStackTrace();
+			List<UserModelImagesName> imgList = criteria.list();
+			if (imgList != null && !imgList.isEmpty()) {
+				UserModelImagesName imagesName = imgList.get(0);
+				try {
+					if (imagesName != null && imagesName.getImageNames() != null) {
+						String s[] = imagesName.getImageNames().split("#");
+						List<String> lst = new ArrayList<>();
+						for (String imgStr : s) {
+							if (imgStr != null && !imgStr.trim().isEmpty()) {
+								lst.add(imgStr.trim());
+							}
+						}
+						profileView.setImageObject(lst);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 			try {
 				HttpSession httpSession = request.getSession();
@@ -2306,7 +2325,7 @@ public class UserDaoImpl implements UserDao {
 		stat.setStatus_id(1);
 		Session session = sessionFactory.getCurrentSession();
 		Criteria cr = session.createCriteria(UserModelDetails.class);
-		cr.setFirstResult(1);
+		cr.setFirstResult(0);
 		//cr.addOrder(Order.desc("userDetailsId"));
 		cr.createCriteria("userModel", "u");
 		cr.setProjection(Projections.projectionList().add(Projections.property("u.userId"), "userId")
@@ -2326,7 +2345,7 @@ public class UserDaoImpl implements UserDao {
 				or.add(Restrictions.eq("status", stat));
 				cr.add(or);
 				cr.addOrder(Order.desc("registrationDate"));
-				cr.setMaxResults(1000);
+				cr.setMaxResults(100);
 		List<AdminUserModel> list = cr.list();
 		return list;
 	}

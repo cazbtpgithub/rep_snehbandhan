@@ -52,6 +52,285 @@
             display: inline-block;
             margin-left: 6px;
         }
+
+        .btn-logout-nav {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 8px 16px;
+            border-radius: 24px;
+            background: #fff0f3;
+            border: 1px solid #ffd1dc;
+            color: #d21a5a !important;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none !important;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: 0 2px 6px rgba(210, 26, 90, 0.08);
+        }
+        .btn-logout-nav:hover {
+            background: #d21a5a;
+            color: #ffffff !important;
+            border-color: #d21a5a;
+            box-shadow: 0 4px 14px rgba(210, 26, 90, 0.25);
+            transform: translateY(-1px);
+        }
+        .btn-logout-nav i {
+            font-size: 14px;
+        }
+
+        /* Profile Photos Face Visibility Optimization */
+        .profile-photos {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 8px !important;
+            width: 155px !important;
+            flex-shrink: 0 !important;
+        }
+
+        .main-photo-wrapper {
+            position: relative !important;
+            width: 155px !important;
+            height: 165px !important;
+            border-radius: 10px !important;
+            overflow: hidden !important;
+            background: #f8fafc !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
+        }
+
+        .main-photo-wrapper img {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+            object-position: top center !important; /* Always show faces and head clearly */
+            transition: transform 0.3s ease !important;
+        }
+
+        .main-photo-wrapper:hover img {
+            transform: scale(1.04) !important;
+        }
+
+        .verified-badge {
+            position: absolute !important;
+            top: 6px !important;
+            left: 6px !important;
+            background: rgba(16, 185, 129, 0.92) !important;
+            backdrop-filter: blur(4px) !important;
+            color: #ffffff !important;
+            font-size: 9px !important;
+            font-weight: 600 !important;
+            padding: 2px 7px !important;
+            border-radius: 10px !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 4px !important;
+            z-index: 2 !important;
+        }
+
+        .thumb-photos {
+            display: flex !important;
+            gap: 6px !important;
+            width: 155px !important;
+        }
+
+        .thumb-photos:empty {
+            display: none !important;
+        }
+
+        .thumb-photos img {
+            width: calc(50% - 3px) !important;
+            height: 50px !important;
+            border-radius: 6px !important;
+            object-fit: cover !important;
+            object-position: top center !important;
+            transition: transform 0.2s ease, opacity 0.2s ease !important;
+        }
+
+        .thumb-photos img:hover {
+            opacity: 0.9 !important;
+            transform: scale(1.03) !important;
+        }
+
+        .sidebar-user-card img,
+        .user-profile-pill img,
+        .user-dropdown-avatar,
+        .online-user-info img {
+            object-fit: cover !important;
+            object-position: top center !important;
+        }
+
+        /* User Profile Pill & Dropdown Styles */
+        .user-dropdown {
+            position: relative;
+        }
+        .user-profile-pill {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 4px 14px 4px 4px;
+            border-radius: 30px;
+            background: #ffffff;
+            border: 1px solid var(--border-color, #f0e4e8);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+        .user-profile-pill:hover,
+        .user-dropdown.open .user-profile-pill,
+        .user-dropdown.show .user-profile-pill {
+            border-color: var(--primary, #d21a5a);
+            box-shadow: 0 3px 12px rgba(210, 26, 90, 0.15);
+        }
+        .user-profile-pill.dropdown-toggle::after {
+            display: none !important;
+        }
+        .user-pill-arrow {
+            color: #888888;
+            font-size: 13px;
+            margin-left: 4px;
+            transition: transform 0.25s ease, color 0.2s ease;
+        }
+        .user-dropdown.open .user-pill-arrow,
+        .user-dropdown.show .user-pill-arrow {
+            transform: rotate(180deg);
+            color: var(--primary, #d21a5a);
+        }
+        .user-profile-dropdown-menu {
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            left: auto;
+            min-width: 250px;
+            background: #ffffff;
+            border-radius: 14px;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            box-shadow: 0 14px 35px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.04);
+            padding: 10px 0 8px 0;
+            margin: 0;
+            display: none;
+            z-index: 1050;
+            animation: userDropdownFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .user-dropdown.open .user-profile-dropdown-menu,
+        .user-profile-dropdown-menu.show {
+            display: block !important;
+        }
+        @keyframes userDropdownFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .user-dropdown-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 18px 12px 18px;
+        }
+        .user-dropdown-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #ffe4ec;
+            flex-shrink: 0;
+        }
+        .user-dropdown-meta {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .user-dropdown-name {
+            font-weight: 700;
+            font-size: 14px;
+            color: #1f2937;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 1.2;
+        }
+        .user-dropdown-role {
+            font-size: 11px;
+            color: var(--primary, #d21a5a);
+            font-weight: 600;
+            margin-top: 3px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .user-dropdown-email {
+            font-size: 11px;
+            color: #6b7280;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-top: 2px;
+        }
+        .user-dropdown-divider {
+            height: 1px;
+            margin: 6px 0;
+            background-color: #f1f3f5;
+            border: none;
+        }
+        .user-dropdown-item,
+        .user-profile-dropdown-menu .dropdown-item {
+            display: flex !important;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 18px !important;
+            font-size: 13px !important;
+            font-weight: 500 !important;
+            color: #374151 !important;
+            text-decoration: none !important;
+            transition: all 0.15s ease !important;
+            background: transparent;
+            border: none;
+            width: 100%;
+            box-sizing: border-box;
+            cursor: pointer;
+        }
+        .user-dropdown-item i,
+        .user-profile-dropdown-menu .dropdown-item i {
+            width: 18px;
+            font-size: 15px;
+            text-align: center;
+            color: #6b7280;
+            transition: color 0.15s ease;
+        }
+        .user-dropdown-item:hover,
+        .user-profile-dropdown-menu .dropdown-item:hover {
+            background-color: #fdf2f6 !important;
+            color: var(--primary, #d21a5a) !important;
+            padding-left: 22px !important;
+        }
+        .user-dropdown-item:hover i,
+        .user-profile-dropdown-menu .dropdown-item:hover i {
+            color: var(--primary, #d21a5a) !important;
+        }
+        .user-dropdown-item.user-logout-item,
+        .user-profile-dropdown-menu .dropdown-item[href*="logout"] {
+            color: #dc2626 !important;
+            font-weight: 600 !important;
+        }
+        .user-dropdown-item.user-logout-item i,
+        .user-profile-dropdown-menu .dropdown-item[href*="logout"] i {
+            color: #dc2626 !important;
+        }
+        .user-dropdown-item.user-logout-item:hover,
+        .user-profile-dropdown-menu .dropdown-item[href*="logout"]:hover {
+            background-color: #fef2f2 !important;
+            color: #b91c1c !important;
+            padding-left: 22px !important;
+        }
+        .user-dropdown-item.user-logout-item:hover i,
+        .user-profile-dropdown-menu .dropdown-item[href*="logout"]:hover i {
+            color: #b91c1c !important;
+        }
     </style>
 </head>
 <body>
@@ -74,9 +353,9 @@
                 <i class="fa fa-crown"></i> Upgrade Plan
             </a>
             
-            <a href="#" class="nav-icon-btn" title="Chat">
-                <i class="fa fa-comment-o"></i>
-                <span class="badge">0</span>
+            <a href="<c:url value='/j_spring_security_logout'/>" onclick="performLogout(event);" class="btn-logout-nav" id="headerLogoutBtn" title="Logout">
+                <i class="fa fa-sign-out"></i>
+                <span>Logout</span>
             </a>
 
             <a href="#" class="nav-icon-btn" title="Notifications">
@@ -84,13 +363,39 @@
                 <span class="badge">5</span>
             </a>
 
-            <div class="user-profile-pill">
-                <img src="${pageContext.request.contextPath}/resources/UserImages/${UserProfile}" onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/resources/UserImages/userImage.png';" alt="User">
-                <div class="user-info">
-                    <span class="user-name">${ActUserName}</span>
-                    <span class="user-role"><i class="fa fa-crown"></i> Premium Member</span>
+            <div class="dropdown user-dropdown">
+                <div class="user-profile-pill dropdown-toggle" id="userProfileDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button" title="Account & Logout Menu">
+                    <img src="${pageContext.request.contextPath}/resources/UserImages/${UserProfile}" onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/resources/UserImages/userImage.png';" alt="User">
+                    <div class="user-info">
+                        <span class="user-name">${ActUserName}</span>
+                        <span class="user-role"><i class="fa fa-crown"></i> Premium Member</span>
+                    </div>
+                    <i class="fa fa-angle-down user-pill-arrow"></i>
                 </div>
-                <i class="fa fa-angle-down" style="color: #888; margin-left: 4px;"></i>
+                <div class="dropdown-menu dropdown-menu-right user-profile-dropdown-menu" aria-labelledby="userProfileDropdown">
+                    <div class="user-dropdown-header">
+                        <img src="${pageContext.request.contextPath}/resources/UserImages/${UserProfile}" onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/resources/UserImages/userImage.png';" alt="User" class="user-dropdown-avatar">
+                        <div class="user-dropdown-meta">
+                            <span class="user-dropdown-name">${ActUserName}</span>
+                            <span class="user-dropdown-role"><i class="fa fa-crown"></i> Premium Member</span>
+                            <c:if test="${not empty userEmail}">
+                                <span class="user-dropdown-email" title="${userEmail}">${userEmail}</span>
+                            </c:if>
+                        </div>
+                    </div>
+                    <div class="dropdown-divider user-dropdown-divider"></div>
+                    <a class="dropdown-item user-dropdown-item" href="<c:url value='/editProfile'/>">
+                        <i class="fa fa-user-circle-o"></i> View / Edit Profile
+                    </a>
+                    <a class="dropdown-item user-dropdown-item" href="<c:url value='/KitUpgradeAndPayment'/>">
+                        <i class="fa fa-crown" style="color: #f59e0b;"></i> Upgrade Plan
+                    </a>
+                    <a class="dropdown-item user-dropdown-item" href="<c:url value='/editProfile'/>">
+                        <i class="fa fa-cog"></i> Account Settings
+                    </a>
+                    <div class="dropdown-divider user-dropdown-divider"></div>
+                    <a class="dropdown-item" href="/j_spring_security_logout"><i class="fa fa-sign-out"></i> Logout</a>
+                </div>
             </div>
         </div>
     </header>
@@ -174,8 +479,8 @@
                         </a>
                     </li>
                     <li>
-                        <a href="${pageContext.request.contextPath}/j_spring_security_logout" onclick="performLogout(event);">
-                            <div class="menu-left"><i class="fa fa-power-off"></i> Logout</div>
+                        <a class="dropdown-item" href="/j_spring_security_logout">
+                            <div class="menu-left"><i class="fa fa-sign-out"></i> Logout</div>
                         </a>
                     </li>
                 </ul>
@@ -489,26 +794,36 @@
             <!-- Profile Cards List -->
             <div class="profile-cards-container">
 
-                <script>var shortListUsersId = window.shortListUsersId || [];</script>
+                <script>
+                    var shortListUsersId = window.shortListUsersId || [];
+                    window.latestMatchVisitorIds = window.latestMatchVisitorIds || [];
+                </script>
                 <c:forEach var="profileShortList" items="${sortlistedProfileList}" varStatus="theCount">
                     <script>shortListUsersId.push("${profileShortList.sortlistedUserModel.userId}");</script>
                 </c:forEach>
 
                 <!-- Dynamic Profile Loop -->
                 <c:forEach var="profile" items="${LatestMatch}" varStatus="theCount">
-                    <div class="profile-card ${theCount.index >= 10 ? 'extra-profile-card' : ''}" <c:if test="${theCount.index >= 10}">style="display:none;"</c:if>>
+                    <script>
+                        if (${not empty profile.visitorUserId}) {
+                            window.latestMatchVisitorIds.push(${profile.visitorUserId});
+                        }
+                    </script>
+                    <div class="profile-card" data-user-id="${profile.visitorUserId}">
                         <div class="profile-photos" onclick="imageSlider('${profile.visitorUserId}');" style="cursor: pointer;">
                             <div class="main-photo-wrapper">
                                 <span class="verified-badge"><i class="fa fa-check"></i> Verified</span>
                                 <c:set var="mainImg" value="userImage.png" />
-                                <c:if test="${not empty profile.imageObject}">
+                                <c:if test="${not empty profile.imageObject && not empty profile.imageObject[0]}">
                                     <c:set var="mainImg" value="${profile.imageObject[0]}" />
                                 </c:if>
                                 <img src="${pageContext.request.contextPath}/resources/UserImages/${mainImg}" onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/resources/UserImages/userImage.png';" alt="Profile">
                             </div>
                             <div class="thumb-photos">
                                 <c:forEach var="img" items="${profile.imageObject}" begin="1" end="2">
-                                    <img src="${pageContext.request.contextPath}/resources/UserImages/${img}" onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/resources/UserImages/userImage.png';" alt="Thumb">
+                                    <c:if test="${not empty img}">
+                                        <img src="${pageContext.request.contextPath}/resources/UserImages/${img}" onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/resources/UserImages/userImage.png';" alt="Thumb">
+                                    </c:if>
                                 </c:forEach>
                             </div>
                         </div>
@@ -885,94 +1200,162 @@
             var email = "${userEmail}";
             var logoutUrl = "${pageContext.request.contextPath}/j_spring_security_logout";
             
+            var redirected = false;
+            function doRedirect() {
+                if (!redirected) {
+                    redirected = true;
+                    window.location.href = logoutUrl;
+                }
+            }
+            
+            // Safety timeout ensures redirect happens quickly even if background call hangs
+            setTimeout(doRedirect, 1000);
+            
             if (email && email.trim() !== '') {
-                var oMyForm = new FormData();
-                oMyForm.append("jsonObjectData1", JSON.stringify({ email: email }));
-                $.ajax({
-                    url: "${pageContext.request.contextPath}/deleteOnlineuserInfo",
-                    type: "POST",
-                    data: oMyForm,
-                    processData: false,
-                    contentType: false,
-                    complete: function() {
-                        window.location.href = logoutUrl;
-                    }
-                });
+                try {
+                    var oMyForm = new FormData();
+                    oMyForm.append("jsonObjectData1", JSON.stringify({ email: email }));
+                    $.ajax({
+                        url: "${pageContext.request.contextPath}/deleteOnlineuserInfo",
+                        type: "POST",
+                        data: oMyForm,
+                        processData: false,
+                        contentType: false,
+                        timeout: 800,
+                        complete: function() {
+                            doRedirect();
+                        }
+                    });
+                } catch(err) {
+                    doRedirect();
+                }
             } else {
-                window.location.href = logoutUrl;
+                doRedirect();
             }
         };
 
-        var mockPoolIndex = 0;
-        var mockProfilesPool = [
-            { name: "Pooja Suresh More", meta1: "26 yrs, 5'3\" &bull; Mumbai, Maharashtra", meta2: "B.Com &bull; Senior Accountant", meta3: "Maratha &bull; Deshmukh", bio: "Self-motivated professional looking for a life partner with good family values." },
-            { name: "Snehal Ramesh Kulkarni", meta1: "28 yrs, 5'6\" &bull; Pune, Maharashtra", meta2: "M.Tech &bull; Software Engineer", meta3: "Brahmin &bull; Deshastha", bio: "Passionate about technology and Indian culture. Seeking an understanding and educated partner." },
-            { name: "Neha Anant Jadhav", meta1: "25 yrs, 5'4\" &bull; Thane, Maharashtra", meta2: "MBBS &bull; Medical Practitioner", meta3: "Maratha &bull; 96 Kuli", bio: "Kind-hearted doctor looking for a caring, respectful, and supportive partner." },
-            { name: "Rutuja Vikas Shinde", meta1: "27 yrs, 5'5\" &bull; Nashik, Maharashtra", meta2: "MBA &bull; HR Manager", meta3: "Kunbi &bull; Maratha", bio: "Enthusiastic and career-oriented girl looking for a progressive partner." },
-            { name: "Anjali Dattatray Patil", meta1: "24 yrs, 5'2\" &bull; Kolhapur, Maharashtra", meta2: "B.E. (Civil)", meta3: "Structural Engineer &bull; Maratha", bio: "Simple living, high thinking. Looking for a genuine life partner." },
-            { name: "Priya Mohan Deshmukh", meta1: "29 yrs, 5'7\" &bull; Chhatrapati Sambhajinagar", meta2: "M.Sc (Biotech)", meta3: "Research Scientist &bull; Maratha", bio: "Family-oriented and cheerful person looking for a well-settled life partner." },
-            { name: "Madhuri Sanjay Bhosale", meta1: "26 yrs, 5'4\" &bull; Satara, Maharashtra", meta2: "B.Pharm", meta3: "QA Analyst &bull; Maratha 96 Kuli", bio: "Respectful and compassionate girl seeking a caring life partner." },
-            { name: "Aarti Prakash Joshi", meta1: "27 yrs, 5'3\" &bull; Solapur, Maharashtra", meta2: "M.A. (English)", meta3: "Assistant Professor &bull; Brahmin", bio: "Loves reading and classical music. Looking for a cultured and educated partner." },
-            { name: "Swati Ganesh Pawar", meta1: "25 yrs, 5'5\" &bull; Sangli, Maharashtra", meta2: "B.Arch", meta3: "Architect &bull; Maratha 96 Kuli", bio: "Creative personality with strong family roots. Looking for a lifetime companion." },
-            { name: "Kavita Rajesh Thorat", meta1: "28 yrs, 5'4\" &bull; Ahmednagar, Maharashtra", meta2: "MCA", meta3: "Software Developer &bull; Maratha", bio: "Optimistic and friendly girl looking for a caring and supportive partner." }
-        ];
+        // User Profile Pill Dropdown Toggle Handler
+        $(document).ready(function() {
+            $(document).on('click', '.user-dropdown .user-profile-pill', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                var $dropdown = $(this).closest('.user-dropdown');
+                var $menu = $dropdown.find('.user-profile-dropdown-menu');
+                var isOpen = $dropdown.hasClass('open') || $menu.hasClass('show');
+                
+                // Close other dropdowns
+                $('.user-dropdown').removeClass('open');
+                $('.user-profile-dropdown-menu').removeClass('show');
+                
+                if (!isOpen) {
+                    $dropdown.addClass('open');
+                    $menu.addClass('show');
+                }
+            });
 
-        function createProfileCardHtml(item) {
-            var ctx = "${pageContext.request.contextPath}";
-            return '<div class="profile-card" style="display:none;">' +
-                '<div class="profile-photos">' +
-                    '<div class="main-photo-wrapper">' +
-                        '<span class="verified-badge"><i class="fa fa-check"></i> Verified</span>' +
-                        '<img src="' + ctx + '/resources/UserImages/userImage.png" alt="Profile">' +
-                    '</div>' +
-                    '<div class="thumb-photos">' +
-                        '<img src="' + ctx + '/resources/UserImages/userImage.png" alt="Thumb">' +
-                        '<img src="' + ctx + '/resources/UserImages/userImage.png" alt="Thumb">' +
-                    '</div>' +
-                '</div>' +
-                '<div class="profile-details">' +
-                    '<h3 class="profile-name">' + item.name + ' <span class="online-dot"></span></h3>' +
-                    '<div class="profile-meta-line">' + item.meta1 + '</div>' +
-                    '<div class="profile-meta-line">' + item.meta2 + '</div>' +
-                    '<div class="profile-meta-line">' + item.meta3 + '</div>' +
-                    '<p class="profile-bio">' + item.bio + '</p>' +
-                '</div>' +
-                '<div class="profile-actions-wrapper">' +
-                    '<div class="profile-status-bar"><span>Last Active: Recently</span><span class="tag-premium">Premium</span></div>' +
-                    '<div class="card-action-btns">' +
-                        '<a href="#" class="btn-shortlist-outline" onclick="Shortlist(\'' + (item.visitorUserId || 25005) + '\', \'' + item.name + '\');"><i class="fa fa-heart-o"></i> Shortlist</a>' +
-                        '<a href="#" class="btn-view-profile-solid">View Profile</a>' +
-                        '<a href="#" class="btn-circle-icon"><i class="fa fa-comment-o"></i></a>' +
-                        '<a href="#" class="btn-circle-icon" onclick="Shortlist(\'' + (item.visitorUserId || 25005) + '\', \'' + item.name + '\');"><i class="fa fa-envelope-o"></i></a>' +
-                    '</div>' +
-                '</div>' +
-            '</div>';
-        }
+            $(document).on('click', function(e) {
+                if (!$(e.target).closest('.user-dropdown').length) {
+                    $('.user-dropdown').removeClass('open');
+                    $('.user-profile-dropdown-menu').removeClass('show');
+                }
+            });
+        });
 
         window.loadLatestMatches = function() {
-            var targetBatchSize = 10;
-            var $hiddenCards = $('.profile-cards-container .profile-card:hidden');
-            
-            if ($hiddenCards.length >= targetBatchSize) {
-                // Reveal 10 hidden cards
-                $hiddenCards.slice(0, targetBatchSize).fadeIn(400);
-            } else {
-                // Reveal any existing hidden cards first
-                if ($hiddenCards.length > 0) {
-                    $hiddenCards.fadeIn(400);
+            var $btn = $('.btn-load-more-floating');
+            var originalBtnHtml = '<i class="fa fa-refresh"></i> Load More Profiles';
+            $btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Loading Profiles...');
+
+            var tabKey = window.currentTabKey || 'allMatches';
+            var endpointMap = {
+                'allMatches': 'loadLatestMatches',
+                'latestUpgraded': 'loadLatestUpgraded',
+                'notSeenYet': 'NotSeenYetProfilesView',
+                'viewedYet': 'ViewedyetProfilesView',
+                'shortlisted': 'ShortlistedOrIntrestedView'
+            };
+            var endpoint = endpointMap[tabKey] || 'loadLatestMatches';
+
+            // Gather all currently rendered profile IDs
+            var currentVisitorIds = [];
+            $('.profile-cards-container .profile-card').each(function() {
+                var uid = $(this).attr('data-user-id');
+                if (uid && !isNaN(uid)) {
+                    var num = parseInt(uid, 10);
+                    if (currentVisitorIds.indexOf(num) === -1) {
+                        currentVisitorIds.push(num);
+                    }
                 }
-                var countNeeded = targetBatchSize - $hiddenCards.length;
-                
-                // Append enough dynamic mock profiles so EXACTLY 10 records load per click
-                for (var i = 0; i < countNeeded; i++) {
-                    var item = mockProfilesPool[mockPoolIndex % mockProfilesPool.length];
-                    mockPoolIndex++;
-                    var cardHtml = createProfileCardHtml(item);
-                    $('.profile-cards-container').append(cardHtml);
-                }
-                
-                $('.profile-cards-container .profile-card:hidden').fadeIn(400);
+            });
+            if (window.latestMatchVisitorIds && Array.isArray(window.latestMatchVisitorIds)) {
+                window.latestMatchVisitorIds.forEach(function(id) {
+                    var num = parseInt(id, 10);
+                    if (!isNaN(num) && currentVisitorIds.indexOf(num) === -1) {
+                        currentVisitorIds.push(num);
+                    }
+                });
             }
+            window.latestMatchVisitorIds = currentVisitorIds;
+
+            var oMyForm = new FormData();
+            var payload = {
+                latestMatchVisitorIds: currentVisitorIds,
+                latestUpgradedVisitorIds: currentVisitorIds,
+                NotSeenYetProfiles: currentVisitorIds,
+                ViewedyetProfiles: currentVisitorIds,
+                ShortlistedOrIntrested: currentVisitorIds,
+                length: "10"
+            };
+            oMyForm.append("jsonObjectData", JSON.stringify(payload));
+
+            $.ajax({
+                url: "${pageContext.request.contextPath}/" + endpoint,
+                type: "POST",
+                data: oMyForm,
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    $btn.prop('disabled', false).html(originalBtnHtml);
+                    if (data && data.trim().length > 50) {
+                        var $wrapper = $('<div>').html(data);
+                        var $cards = $wrapper.find('.profile-card');
+                        if ($cards.length === 0) {
+                            $cards = $(data).filter('.profile-card');
+                        }
+
+                        if ($cards.length > 0) {
+                            $cards.hide();
+                            $('.profile-cards-container').append($cards);
+                            $cards.fadeIn(400);
+
+                            // Append new IDs to tracked list
+                            $cards.each(function() {
+                                var uid = $(this).attr('data-user-id');
+                                if (uid && !isNaN(uid)) {
+                                    var num = parseInt(uid, 10);
+                                    if (window.latestMatchVisitorIds.indexOf(num) === -1) {
+                                        window.latestMatchVisitorIds.push(num);
+                                    }
+                                }
+                            });
+                        } else {
+                            $btn.html('<i class="fa fa-check"></i> No More Profiles');
+                            setTimeout(function() {
+                                $btn.html(originalBtnHtml);
+                            }, 3000);
+                        }
+                    } else {
+                        $btn.html('<i class="fa fa-check"></i> No More Profiles');
+                        setTimeout(function() {
+                            $btn.html(originalBtnHtml);
+                        }, 3000);
+                    }
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    $btn.prop('disabled', false).html(originalBtnHtml);
+                    console.error("Error loading profiles: " + thrownError);
+                }
+            });
         };
 
         // Switch Dashboard View Mode (Pink Image 1 Tabs vs White Image 2 Stat Cards)
@@ -1014,17 +1397,20 @@
 
             var endpoint = endpointMap[tabKey] || 'loadLatestMatches';
 
+            // Reset tracked IDs for the newly selected category
+            window.latestMatchVisitorIds = [];
+
             // Show subtle overlay / spinner
             $('.profile-cards-container').css('opacity', '0.5');
 
             var oMyForm = new FormData();
             var payload = {
-                latestMatchVisitorIds: "[]",
-                latestUpgradedVisitorIds: "[]",
-                NotSeenYetProfiles: "[]",
-                ViewedyetProfiles: "[]",
-                ShortlistedOrIntrested: "[]",
-                length: 10
+                latestMatchVisitorIds: [],
+                latestUpgradedVisitorIds: [],
+                NotSeenYetProfiles: [],
+                ViewedyetProfiles: [],
+                ShortlistedOrIntrested: [],
+                length: "10"
             };
             oMyForm.append("jsonObjectData", JSON.stringify(payload));
 
@@ -1038,8 +1424,17 @@
                     $('.profile-cards-container').css('opacity', '1');
                     if (data && data.trim().length > 50) {
                         $('.profile-cards-container').html(data);
+                        // Track IDs from newly rendered cards
+                        $('.profile-cards-container .profile-card').each(function() {
+                            var uid = $(this).attr('data-user-id');
+                            if (uid && !isNaN(uid)) {
+                                var num = parseInt(uid, 10);
+                                if (window.latestMatchVisitorIds.indexOf(num) === -1) {
+                                    window.latestMatchVisitorIds.push(num);
+                                }
+                            }
+                        });
                     } else {
-                        // Filter client mock profiles if backend returns empty snippet
                         filterClientMockProfiles();
                     }
                 },
