@@ -8,12 +8,14 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import javax.persistence.TypedQuery;
 import javax.servlet.http.HttpServletRequest;
@@ -3299,35 +3301,57 @@ public class UserDaoImpl implements UserDao {
 	@Override
 	public List<UserProfileView> getTopShortlistedProfiles(int limit, HttpServletRequest request) {
 		Session session = sessionFactory.getCurrentSession();
-		List<Long> userIds = new ArrayList<>();
+		List<Long> shortlistedCandidateIds = new ArrayList<>();
 		try {
+			// Query shortlisted users ordered by shortlist count desc (broad pool up to 50)
 			String hql = "select s.sortlistedUserModel.userId, count(s.sortlistedUserModel.userId) as scount "
 					+ "from SortlistedProfileUserWithDate s "
+					+ "where s.sortlistedUserModel.userId is not null "
 					+ "group by s.sortlistedUserModel.userId "
 					+ "order by count(s.sortlistedUserModel.userId) desc";
 			Query query = session.createQuery(hql);
-			query.setMaxResults(limit);
+			query.setMaxResults(50);
 			List<Object[]> results = query.list();
 			for (Object[] row : results) {
 				if (row[0] != null) {
-					userIds.add((Long) row[0]);
+					shortlistedCandidateIds.add((Long) row[0]);
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		if (userIds.size() < limit) {
+		// Query fallback candidate users who have images
+		List<Long> fallbackCandidateIds = new ArrayList<>();
+		try {
+			Criteria imgCriteria = session.createCriteria(UserModelImagesName.class);
+			imgCriteria.add(Restrictions.isNotNull("imageNames"));
+			imgCriteria.add(Restrictions.ne("imageNames", ""));
+			imgCriteria.setMaxResults(50);
+			List<UserModelImagesName> imgList = imgCriteria.list();
+			for (UserModelImagesName img : imgList) {
+				if (img.getUserModel() != null) {
+					Long uid = img.getUserModel().getUserId();
+					if (uid != null && !shortlistedCandidateIds.contains(uid) && !fallbackCandidateIds.contains(uid)) {
+						fallbackCandidateIds.add(uid);
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		if (shortlistedCandidateIds.size() + fallbackCandidateIds.size() < limit * 3) {
 			try {
 				Criteria fallbackCriteria = session.createCriteria(UserModelDetails.class);
 				fallbackCriteria.addOrder(Order.desc("registrationDate"));
-				fallbackCriteria.setMaxResults(limit * 3);
+				fallbackCriteria.setMaxResults(50);
 				List<UserModelDetails> fallbackList = fallbackCriteria.list();
 				for (UserModelDetails umd : fallbackList) {
-					if (umd.getUserModel() != null && !userIds.contains(umd.getUserModel().getUserId())) {
-						userIds.add(umd.getUserModel().getUserId());
-						if (userIds.size() == limit) {
-							break;
+					if (umd.getUserModel() != null) {
+						Long uid = umd.getUserModel().getUserId();
+						if (uid != null && !shortlistedCandidateIds.contains(uid) && !fallbackCandidateIds.contains(uid)) {
+							fallbackCandidateIds.add(uid);
 						}
 					}
 				}
@@ -3336,8 +3360,16 @@ public class UserDaoImpl implements UserDao {
 			}
 		}
 
-		List<UserProfileView> profileViews = new ArrayList<>();
-		for (Long uId : userIds) {
+		List<Long> allCandidateIds = new ArrayList<>();
+		allCandidateIds.addAll(shortlistedCandidateIds);
+		allCandidateIds.addAll(fallbackCandidateIds);
+
+		List<UserProfileView> shortlistedWithImages = new ArrayList<>();
+		List<UserProfileView> shortlistedWithoutImages = new ArrayList<>();
+		List<UserProfileView> fallbackWithImages = new ArrayList<>();
+		List<UserProfileView> fallbackWithoutImages = new ArrayList<>();
+
+		for (Long uId : allCandidateIds) {
 			try {
 				UserModel userModel = (UserModel) session.get(UserModel.class, uId);
 				if (userModel == null) continue;
@@ -3386,17 +3418,84 @@ public class UserDaoImpl implements UserDao {
 				Criteria criteriaImg = session.createCriteria(UserModelImagesName.class);
 				criteriaImg.add(Restrictions.eq("userModel", userModel));
 				UserModelImagesName imagesName = (UserModelImagesName) criteriaImg.uniqueResult();
-				if (imagesName != null && imagesName.getImageNames() != null) {
+				boolean hasImage = false;
+				if (imagesName != null && imagesName.getImageNames() != null && !imagesName.getImageNames().trim().isEmpty()) {
 					String s[] = imagesName.getImageNames().split("#");
-					List<String> lst = Arrays.asList(s);
-					profileView.setImageObject(lst);
+					List<String> lst = new ArrayList<>();
+					for (String imgItem : s) {
+						if (imgItem != null && !imgItem.trim().isEmpty()) {
+							lst.add(imgItem.trim());
+						}
+					}
+					if (!lst.isEmpty()) {
+						profileView.setImageObject(lst);
+						hasImage = true;
+					}
 				}
 
-				profileViews.add(profileView);
+				boolean isShortlisted = shortlistedCandidateIds.contains(uId);
+				if (isShortlisted) {
+					if (hasImage) {
+						shortlistedWithImages.add(profileView);
+					} else {
+						shortlistedWithoutImages.add(profileView);
+					}
+				} else {
+					if (hasImage) {
+						fallbackWithImages.add(profileView);
+					} else {
+						fallbackWithoutImages.add(profileView);
+					}
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
-		return profileViews;
+
+		// Daily rotation seed based on calendar day (changes every day at midnight)
+		Calendar cal = Calendar.getInstance();
+		long daySeed = cal.get(Calendar.YEAR) * 366L + cal.get(Calendar.DAY_OF_YEAR);
+		Random dailyRandom = new Random(daySeed);
+
+		List<UserProfileView> finalSelection = new ArrayList<>();
+
+		// If we have more shortlisted profiles with images than the limit, rotate among them daily
+		if (shortlistedWithImages.size() > limit) {
+			Collections.shuffle(shortlistedWithImages, dailyRandom);
+			finalSelection.addAll(shortlistedWithImages.subList(0, limit));
+		} else if (shortlistedWithImages.size() == limit) {
+			// If exactly equal to limit, also mix with fallbackWithImages so that profiles change every day
+			List<UserProfileView> combinedPool = new ArrayList<>(shortlistedWithImages);
+			combinedPool.addAll(fallbackWithImages);
+			if (combinedPool.size() > limit) {
+				Collections.shuffle(combinedPool, dailyRandom);
+				finalSelection.addAll(combinedPool.subList(0, limit));
+			} else {
+				finalSelection.addAll(shortlistedWithImages);
+			}
+		} else {
+			// If shortlisted with images is fewer than limit, include all shortlisted first and supplement from fallback
+			finalSelection.addAll(shortlistedWithImages);
+			if (!fallbackWithImages.isEmpty()) {
+				Collections.shuffle(fallbackWithImages, dailyRandom);
+				for (UserProfileView pv : fallbackWithImages) {
+					if (finalSelection.size() >= limit) break;
+					finalSelection.add(pv);
+				}
+			}
+			// If still not enough, supplement from profiles without images
+			if (finalSelection.size() < limit) {
+				List<UserProfileView> remaining = new ArrayList<>();
+				remaining.addAll(shortlistedWithoutImages);
+				remaining.addAll(fallbackWithoutImages);
+				Collections.shuffle(remaining, dailyRandom);
+				for (UserProfileView pv : remaining) {
+					if (finalSelection.size() >= limit) break;
+					finalSelection.add(pv);
+				}
+			}
+		}
+
+		return finalSelection;
 	}
 }
