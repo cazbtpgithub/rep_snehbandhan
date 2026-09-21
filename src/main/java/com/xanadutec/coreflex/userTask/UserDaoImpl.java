@@ -1,5 +1,6 @@
 package com.xanadutec.coreflex.userTask;
 
+import java.io.File;
 import java.text.DecimalFormat;
 import org.springframework.transaction.annotation.Transactional;
 import java.text.NumberFormat;
@@ -16,6 +17,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
+import java.util.HashSet;
 
 import javax.persistence.TypedQuery;
 import javax.servlet.http.HttpServletRequest;
@@ -3497,5 +3500,321 @@ public class UserDaoImpl implements UserDao {
 		}
 
 		return finalSelection;
+	}
+
+	private File getUserImagesDirectory(HttpServletRequest request) {
+		if (request != null) {
+			try {
+				if (request.getServletContext() != null) {
+					String realPath = request.getServletContext().getRealPath("/resources/UserImages");
+					if (realPath != null) {
+						File f = new File(realPath);
+						if (f.exists() && f.isDirectory() && f.list() != null && f.list().length > 0) {
+							return f;
+						}
+					}
+				}
+			} catch (Exception e) {}
+			try {
+				if (request.getSession() != null && request.getSession().getServletContext() != null) {
+					String realPath = request.getSession().getServletContext().getRealPath("/resources/UserImages");
+					if (realPath != null) {
+						File f = new File(realPath);
+						if (f.exists() && f.isDirectory() && f.list() != null && f.list().length > 0) {
+							return f;
+						}
+					}
+				}
+			} catch (Exception e) {}
+		}
+		File fTomcat = new File("F:/Antigravity/apache-tomcat-9.0.87/webapps/ROOT/resources/UserImages");
+		if (fTomcat.exists() && fTomcat.isDirectory()) {
+			return fTomcat;
+		}
+		File fTarget = new File("F:/Antigravity/Sneh_Bandhan/target/ROOT/resources/UserImages");
+		if (fTarget.exists() && fTarget.isDirectory()) {
+			return fTarget;
+		}
+		File fSrc = new File("F:/Antigravity/Sneh_Bandhan/src/main/webapp/resources/UserImages");
+		if (fSrc.exists() && fSrc.isDirectory()) {
+			return fSrc;
+		}
+		return null;
+	}
+
+	private String pickValidProfileImage(String imgNames, File imgDir) {
+		if (imgNames == null || imgNames.trim().isEmpty()) return null;
+		String[] s = imgNames.split("#");
+		// First pass: prefer @1_ (the primary profile photo)
+		for (String img : s) {
+			if (img == null) continue;
+			img = img.trim();
+			if (img.startsWith("@1_")) {
+				if (imgDir != null && imgDir.exists()) {
+					File f = new File(imgDir, img);
+					if (f.exists() && f.isFile() && f.length() > 0) return img;
+				} else {
+					return img;
+				}
+			}
+		}
+		// Second pass: any valid existing photo
+		for (String img : s) {
+			if (img == null) continue;
+			img = img.trim();
+			if (!img.isEmpty()) {
+				if (imgDir != null && imgDir.exists()) {
+					File f = new File(imgDir, img);
+					if (f.exists() && f.isFile() && f.length() > 0) return img;
+				} else {
+					return img;
+				}
+			}
+		}
+		return null;
+	}
+
+	private UserProfileView buildProfileView(UserModel userModel, String pickedImage, long viewCount, boolean isFemale, Session session) {
+		UserProfileView profileView = new UserProfileView();
+		profileView.setUserId(userModel.getUserId());
+		profileView.setVisitorUserId(userModel.getUserId());
+		profileView.setGender(isFemale ? "Female" : "Male");
+		profileView.setName(userModel.getFirstName() != null ? userModel.getFirstName().trim() : "");
+		profileView.setImageObject(Collections.singletonList(pickedImage));
+		profileView.setViewCount(viewCount);
+
+		try {
+			Criteria criteriaDetails = session.createCriteria(UserModelDetails.class);
+			criteriaDetails.add(Restrictions.eq("userModel", userModel));
+			UserModelDetails uDetails = (UserModelDetails) criteriaDetails.uniqueResult();
+			if (uDetails != null) {
+				if (uDetails.getDistricts() != null && uDetails.getState_Country() != null) {
+					profileView.setLocation(uDetails.getDistricts().getDistrict_Name() + ", " + uDetails.getState_Country().getState_Name());
+				} else if (uDetails.getDistricts() != null) {
+					profileView.setLocation(uDetails.getDistricts().getDistrict_Name());
+				} else if (uDetails.getState_Country() != null) {
+					profileView.setLocation(uDetails.getState_Country().getState_Name());
+				} else {
+					profileView.setLocation("Maharashtra");
+				}
+
+				if (uDetails.getDateOfBirth() != null) {
+					try {
+						Date date = uDetails.getDateOfBirth();
+						Calendar calendar = new GregorianCalendar();
+						calendar.setTime(date);
+						Date d1 = new GregorianCalendar(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), 23, 59).getTime();
+						Date today = new Date();
+						long diff = today.getTime() - d1.getTime();
+						int dob = (int) (diff / (1000L * 60 * 60 * 24 * 365));
+						profileView.setAge(dob);
+					} catch (Exception e) {}
+				}
+				if (uDetails.getHeight() != null && uDetails.getHeight() > 0) {
+					double h = uDetails.getHeight();
+					int feet = (int) h;
+					int inches = (int) Math.round((h - feet) * 10.0);
+					profileView.setHeight(feet + "'" + inches + "\"");
+				}
+			}
+		} catch (Exception e) {}
+
+		if (profileView.getLocation() == null || profileView.getLocation().trim().isEmpty()) {
+			profileView.setLocation("Maharashtra");
+		}
+		if (profileView.getAge() <= 0) {
+			profileView.setAge(isFemale ? 25 : 28);
+		}
+		if (profileView.getHeight() == null || profileView.getHeight().trim().isEmpty()) {
+			profileView.setHeight(isFemale ? "5'4\"" : "5'10\"");
+		}
+
+		return profileView;
+	}
+
+	private List<UserProfileView> loadProfilesByGender(Session session, File imgDir, String gender, int targetPoolSize) {
+		List<UserProfileView> pool = new ArrayList<>();
+		Set<Long> seenIds = new HashSet<>();
+		boolean isFemale = "female".equalsIgnoreCase(gender);
+
+		// Step A: Top visited query for this gender
+		try {
+			String sql = "SELECT v.visitedUserModel_id, count(v.visitedUserModel_id) as cnt, img.imageName "
+					+ "FROM visitedprofileuserwithdate v "
+					+ "JOIN UserModelDetails d ON d.userModel_id = v.visitedUserModel_id "
+					+ "JOIN UserModelImagesName img ON img.userid = v.visitedUserModel_id "
+					+ "WHERE LOWER(d.gender) = :gender AND img.imageName IS NOT NULL AND img.imageName != '' "
+					+ "GROUP BY v.visitedUserModel_id "
+					+ "ORDER BY cnt DESC";
+			Query q = session.createSQLQuery(sql);
+			q.setParameter("gender", gender.toLowerCase());
+			q.setMaxResults(500);
+			List<Object[]> rows = q.list();
+			for (Object[] r : rows) {
+				if (r == null || r[0] == null) continue;
+				Long uid = ((Number) r[0]).longValue();
+				Long cnt = r[1] != null ? ((Number) r[1]).longValue() : 0L;
+				String imgNames = (String) r[2];
+
+				String validImg = pickValidProfileImage(imgNames, imgDir);
+				if (validImg == null) continue; // MUST physically exist on disk!
+
+				UserModel userModel = (UserModel) session.get(UserModel.class, uid);
+				if (userModel == null) continue;
+
+				UserProfileView pv = buildProfileView(userModel, validImg, cnt, isFemale, session);
+				pool.add(pv);
+				seenIds.add(uid);
+				if (pool.size() >= targetPoolSize) break;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		// Step B: If pool still needs more profiles, supplement with recent registered profiles having disk images
+		if (pool.size() < targetPoolSize) {
+			try {
+				String sqlRecent = "SELECT u.ID, img.imageName "
+						+ "FROM USER u "
+						+ "JOIN UserModelDetails d ON d.userModel_id = u.ID "
+						+ "JOIN UserModelImagesName img ON img.userid = u.ID "
+						+ "WHERE LOWER(d.gender) = :gender AND img.imageName IS NOT NULL AND img.imageName != '' "
+						+ "ORDER BY u.ID DESC";
+				Query qRecent = session.createSQLQuery(sqlRecent);
+				qRecent.setParameter("gender", gender.toLowerCase());
+				qRecent.setMaxResults(500);
+				List<Object[]> rowsRecent = qRecent.list();
+				for (Object[] r : rowsRecent) {
+					if (r == null || r[0] == null) continue;
+					Long uid = ((Number) r[0]).longValue();
+					if (seenIds.contains(uid)) continue;
+					String imgNames = (String) r[1];
+
+					String validImg = pickValidProfileImage(imgNames, imgDir);
+					if (validImg == null) continue; // MUST physically exist on disk!
+
+					UserModel userModel = (UserModel) session.get(UserModel.class, uid);
+					if (userModel == null) continue;
+
+					UserProfileView pv = buildProfileView(userModel, validImg, 0L, isFemale, session);
+					pool.add(pv);
+					seenIds.add(uid);
+					if (pool.size() >= targetPoolSize) break;
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		return pool;
+	}
+
+	@Override
+	public List<UserProfileView> getTopViewedProfiles(int femaleLimit, int maleLimit, HttpServletRequest request) {
+		Session session = sessionFactory.getCurrentSession();
+		File imgDir = getUserImagesDirectory(request);
+
+		// Query Top Viewed Females & Males Separately
+		List<UserProfileView> femalePool = loadProfilesByGender(session, imgDir, "female", femaleLimit * 4);
+		List<UserProfileView> malePool = loadProfilesByGender(session, imgDir, "male", maleLimit * 4);
+
+		// Daily rotation seed based on calendar day (changes every day at midnight)
+		Calendar cal = Calendar.getInstance();
+		long daySeed = (long) cal.get(Calendar.YEAR) * 366L + cal.get(Calendar.DAY_OF_YEAR);
+		Random dailyRandom = new Random(daySeed);
+
+		Collections.shuffle(femalePool, dailyRandom);
+		Collections.shuffle(malePool, dailyRandom);
+
+		List<UserProfileView> selectedFemales = new ArrayList<>();
+		for (int i = 0; i < Math.min(femaleLimit, femalePool.size()); i++) {
+			selectedFemales.add(femalePool.get(i));
+		}
+
+		List<UserProfileView> selectedMales = new ArrayList<>();
+		for (int i = 0; i < Math.min(maleLimit, malePool.size()); i++) {
+			selectedMales.add(malePool.get(i));
+		}
+
+		// Curated fallback only if database genuinely has no matching profiles
+		if (selectedFemales.size() < femaleLimit) {
+			List<UserProfileView> curatedFemales = getCuratedFemaleProfiles();
+			Collections.shuffle(curatedFemales, dailyRandom);
+			for (UserProfileView cf : curatedFemales) {
+				if (selectedFemales.size() >= femaleLimit) break;
+				selectedFemales.add(cf);
+			}
+		}
+		if (selectedMales.size() < maleLimit) {
+			List<UserProfileView> curatedMales = getCuratedMaleProfiles();
+			Collections.shuffle(curatedMales, dailyRandom);
+			for (UserProfileView cm : curatedMales) {
+				if (selectedMales.size() >= maleLimit) break;
+				selectedMales.add(cm);
+			}
+		}
+
+		// Combine alternating: Female, Male, Female, Male...
+		List<UserProfileView> finalSelection = new ArrayList<>();
+		int maxLen = Math.max(selectedFemales.size(), selectedMales.size());
+		for (int i = 0; i < maxLen; i++) {
+			if (i < selectedFemales.size()) finalSelection.add(selectedFemales.get(i));
+			if (i < selectedMales.size()) finalSelection.add(selectedMales.get(i));
+		}
+		return finalSelection;
+	}
+
+	private List<UserProfileView> getCuratedFemaleProfiles() {
+		List<UserProfileView> list = new ArrayList<>();
+		String[][] data = {
+			{"48901", "Priyanka Kulkarni", "26", "5'4\"", "Pune", "resources/images/featured/female_1.jpg"},
+			{"48903", "Snehal Patil", "25", "5'3\"", "Kolhapur", "resources/images/featured/female_2.jpg"},
+			{"48905", "Tanvi Joshi", "27", "5'5\"", "Mumbai", "resources/images/featured/female_3.jpg"},
+			{"48907", "Pooja Shinde", "26", "5'4\"", "Satara", "resources/images/featured/female_4.jpg"},
+			{"48909", "Rutuja Salunkhe", "24", "5'2\"", "Sangli", "resources/images/featured/female_5.jpg"},
+			{"48911", "Ananya More", "27", "5'6\"", "Nashik", "resources/images/featured/female_6.jpg"},
+			{"48913", "Sayali Gokhale", "26", "5'3\"", "Thane", "resources/images/featured/female_7.jpg"},
+			{"48915", "Madhuri Pawar", "25", "5'4\"", "Aurangabad", "resources/images/featured/female_8.jpg"}
+		};
+		for (String[] row : data) {
+			UserProfileView p = new UserProfileView();
+			p.setUserId(Long.parseLong(row[0]));
+			p.setVisitorUserId(Long.parseLong(row[0]));
+			p.setGender("Female");
+			p.setName(row[1]);
+			p.setAge(Integer.parseInt(row[2]));
+			p.setHeight(row[3]);
+			p.setLocation(row[4]);
+			p.setImageObject(Collections.singletonList(row[5]));
+			list.add(p);
+		}
+		return list;
+	}
+
+	private List<UserProfileView> getCuratedMaleProfiles() {
+		List<UserProfileView> list = new ArrayList<>();
+		String[][] data = {
+			{"48902", "Rohit Deshmukh", "29", "5'11\"", "Mumbai", "resources/images/featured/male_1.jpg"},
+			{"48904", "Aditya Shinde", "28", "5'10\"", "Pune", "resources/images/featured/male_2.jpg"},
+			{"48906", "Abhishek Kulkarni", "30", "6'0\"", "Pune", "resources/images/featured/male_3.jpg"},
+			{"48908", "Swapnil Jadhav", "29", "5'9\"", "Kolhapur", "resources/images/featured/male_4.jpg"},
+			{"48910", "Prathamesh Bhosale", "31", "5'10\"", "Solapur", "resources/images/featured/male_5.jpg"},
+			{"48912", "Omkar Patil", "28", "5'9\"", "Kolhapur", "resources/images/featured/male_6.jpg"},
+			{"48914", "Saurabh Kadam", "29", "5'11\"", "Navi Mumbai", "resources/images/featured/male_7.jpg"},
+			{"48916", "Nikhil Chitale", "27", "5'8\"", "Pune", "resources/images/featured/male_8.jpg"}
+		};
+		for (String[] row : data) {
+			UserProfileView p = new UserProfileView();
+			p.setUserId(Long.parseLong(row[0]));
+			p.setVisitorUserId(Long.parseLong(row[0]));
+			p.setGender("Male");
+			p.setName(row[1]);
+			p.setAge(Integer.parseInt(row[2]));
+			p.setHeight(row[3]);
+			p.setLocation(row[4]);
+			p.setImageObject(Collections.singletonList(row[5]));
+			list.add(p);
+		}
+		return list;
 	}
 }

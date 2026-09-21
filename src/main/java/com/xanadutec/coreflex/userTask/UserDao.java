@@ -200,5 +200,7 @@ public interface UserDao {
 	
 	public List<UserProfileView> getTopShortlistedProfiles(int limit, HttpServletRequest request);
 
+	public List<UserProfileView> getTopViewedProfiles(int femaleLimit, int maleLimit, HttpServletRequest request);
+
 	public void updateAllUserModelDetailsStatus(int statusId);
 }

@@ -100,5 +100,30 @@ public class UserProfileView {
 	public void setVisitorUserId(Long visitorUserId) {
 		this.visitorUserId = visitorUserId;
 	}
-	
+
+	private String gender;
+	private String height;
+	private Long viewCount;
+
+	public String getGender() {
+		return gender;
+	}
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	public String getHeight() {
+		return height;
+	}
+	public void setHeight(String height) {
+		this.height = height;
+	}
+
+	public Long getViewCount() {
+		return viewCount;
+	}
+	public void setViewCount(Long viewCount) {
+		this.viewCount = viewCount;
+	}
+
 }

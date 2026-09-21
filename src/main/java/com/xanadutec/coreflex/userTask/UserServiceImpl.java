@@ -478,4 +478,9 @@ public class UserServiceImpl implements UserService {
 	public List<UserProfileView> getTopShortlistedProfiles(int limit, HttpServletRequest request) {
 		return userDao.getTopShortlistedProfiles(limit, request);
 	}
+
+	@Override
+	public List<UserProfileView> getTopViewedProfiles(int femaleLimit, int maleLimit, HttpServletRequest request) {
+		return userDao.getTopViewedProfiles(femaleLimit, maleLimit, request);
+	}
 }

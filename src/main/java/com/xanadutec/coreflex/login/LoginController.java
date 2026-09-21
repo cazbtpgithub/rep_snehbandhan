@@ -111,7 +111,7 @@ public class LoginController {
 		List<SuccessStory>successList=locationService.getListOfSuccessStory();
 		List<FAQS> faqsList=locationService.getListOfFAQs();
 		String privacyAndPolicy=locationService.getPrivacyPolicy();
-		List<UserProfileView> featuredProfiles = userService.getTopShortlistedProfiles(4, request);
+		List<UserProfileView> featuredProfiles = userService.getTopViewedProfiles(8, 8, request);
 		model.addAttribute("privacyAndPolicy", privacyAndPolicy); 
 		model.addAttribute("successList", successList); 
 		model.addAttribute("faqsList", faqsList);
@@ -129,7 +129,7 @@ public class LoginController {
 		List<SuccessStory>successList=locationService.getListOfSuccessStory();
 		List<FAQS> faqsList=locationService.getListOfFAQs();
 		String privacyAndPolicy=locationService.getPrivacyPolicy();
-		List<UserProfileView> featuredProfiles = userService.getTopShortlistedProfiles(4, request);
+		List<UserProfileView> featuredProfiles = userService.getTopViewedProfiles(8, 8, request);
 		model.addAttribute("privacyAndPolicy", privacyAndPolicy);
 		model.addAttribute("successList", successList);
 		model.addAttribute("faqsList", faqsList);
