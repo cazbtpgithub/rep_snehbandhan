@@ -163,8 +163,8 @@ function kundaliSlider(userId){
        				console.log(data.profileCount);
        				if(data.profileCount){
        					$("#myModal").modal();	
-       					var text="<br>DOB:  "+data.dob+"<br>Mobile:  "+data.mobile+"<br>Email-id:  "+data.email+"<br>Address:  "+data.Address+"<br>";
-       					$("#menu3ViewContact").html(text);
+        					var text="<br>DOB:  "+data.dob+"<br>Mobile:  "+data.mobile+"<br>Email-id:  "+data.email+"<br>Address:  "+data.Address+"<br>Landmark : "+(data.landmark||"")+"<br>";
+        					$("#menu3ViewContact").html(text);
        					
        					}else{
        					
@@ -232,8 +232,8 @@ function kundaliSlider(userId){
 	           				console.log(data.profileCount);
 	           				if(data.profileCount){
 	           					$("#myModal").modal();	
-	           					var landMarkText = (data.landmark && data.landmark.trim() !== "") ? "<br>Landmark : " + data.landmark : "";
-	           					var text="<br>DOB:  "+data.dob+"<br>Mobile:  "+data.mobile+"<br>Email-id:  "+data.email+"<br>Address:  "+data.Address+landMarkText+"<br>";
+	           					var landmarkVal = (data.landmark && data.landmark.toString().trim() !== "" && data.landmark.toString().trim().toLowerCase() !== "undefined" && data.landmark.toString().trim().toLowerCase() !== "null") ? data.landmark.toString().trim() : "";
+	           					var text="<br>DOB:  "+data.dob+"<br>Mobile:  "+data.mobile+"<br>Email-id:  "+data.email+"<br>Address:  "+data.Address+"<br>Landmark : "+landmarkVal+"<br>";
 	           					$("#menu3ViewContact").html(text);
 	           					}else{
 	           					$("#myModalUpgrade").modal();	

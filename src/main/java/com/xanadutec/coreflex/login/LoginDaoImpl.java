@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.xanadutec.coreflex.model.EmailTime;
 import com.xanadutec.coreflex.model.RoleModel;
 import com.xanadutec.coreflex.model.UserModel;
+import com.xanadutec.coreflex.model.UserModelDetails;
 
 @Repository("loginDao")
 @Transactional
@@ -109,7 +110,7 @@ public class LoginDaoImpl implements LoginDao, UserDetailsService {
 	public UserModel getByUname(String uname) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(UserModel.class);
-		criteria.add(Restrictions.eq("userName", uname));
+		criteria.add(Restrictions.or(Restrictions.eq("userName", uname), Restrictions.eq("mobileNo", uname)));
 		List<UserModel> users = criteria.list();
 		if (users != null && !users.isEmpty()) {
 			return users.get(0);
@@ -122,7 +123,7 @@ public class LoginDaoImpl implements LoginDao, UserDetailsService {
 	public UserModel getUserByUnamePassword(String userName, String password) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(UserModel.class);
-		criteria.add(Restrictions.eq("userName", userName));
+		criteria.add(Restrictions.or(Restrictions.eq("userName", userName), Restrictions.eq("mobileNo", userName)));
 		criteria.add(Restrictions.eq("password", password));
 		List<UserModel> users = criteria.list();
 		if (users != null && !users.isEmpty()) {
@@ -136,7 +137,7 @@ public class LoginDaoImpl implements LoginDao, UserDetailsService {
 	public List<UserModel> getListOfUserIfUnamePasswordIsValid(String userName, String password) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(UserModel.class);
-		criteria.add(Restrictions.eq("userName", userName));
+		criteria.add(Restrictions.or(Restrictions.eq("userName", userName), Restrictions.eq("mobileNo", userName)));
 		criteria.add(Restrictions.eq("password", password));
 		List<UserModel> users = criteria.list();
 		UserModel userModel = null;
@@ -163,7 +164,7 @@ public class LoginDaoImpl implements LoginDao, UserDetailsService {
 	public UserModel getUserByUname(String userName) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(UserModel.class);
-		criteria.add(Restrictions.eq("userName", userName));
+		criteria.add(Restrictions.or(Restrictions.eq("userName", userName), Restrictions.eq("mobileNo", userName)));
 		List<UserModel> users = criteria.list();
 		if (users != null && !users.isEmpty()) {
 			return users.get(0);
@@ -230,5 +231,45 @@ public class LoginDaoImpl implements LoginDao, UserDetailsService {
 		Criteria criteria = session.createCriteria(UserModel.class);
 		criteria.add(Restrictions.eq("userId", id));
 		return (UserModel) criteria.uniqueResult();
+	}
+
+	@Override
+	public boolean checkUsernameExists(String userName) {
+		if (userName == null || userName.trim().isEmpty()) {
+			return false;
+		}
+		try {
+			Session session = sessionFactory.getCurrentSession();
+			Criteria criteria = session.createCriteria(UserModel.class);
+			criteria.add(Restrictions.eq("userName", userName.trim()));
+			List<UserModel> users = criteria.list();
+			return users != null && !users.isEmpty();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	@Override
+	public boolean checkMobileExists(String mobile) {
+		if (mobile == null || mobile.trim().isEmpty()) {
+			return false;
+		}
+		try {
+			Session session = sessionFactory.getCurrentSession();
+			Criteria critDetails = session.createCriteria(UserModelDetails.class);
+			critDetails.add(Restrictions.eq("mobileNum", mobile.trim()));
+			List<UserModelDetails> details = critDetails.list();
+			if (details != null && !details.isEmpty()) {
+				return true;
+			}
+			Criteria criteria = session.createCriteria(UserModel.class);
+			criteria.add(Restrictions.eq("mobileNo", mobile.trim()));
+			List<UserModel> users = criteria.list();
+			return users != null && !users.isEmpty();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 }

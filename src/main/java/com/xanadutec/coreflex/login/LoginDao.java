@@ -26,5 +26,7 @@ public interface LoginDao {
 
 	public UserModel getUserDetailsBy(long id);
 
+	public boolean checkUsernameExists(String userName);
 
+	public boolean checkMobileExists(String mobile);
 }

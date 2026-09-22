@@ -60,5 +60,13 @@ public class LoginServiceImpl implements LoginService{
 		return loginDao.getUserDetailsBy(id);
 	}
 
+	@Override
+	public boolean checkUsernameExists(String userName) {
+		return loginDao.checkUsernameExists(userName);
+	}
 
+	@Override
+	public boolean checkMobileExists(String mobile) {
+		return loginDao.checkMobileExists(mobile);
+	}
 }

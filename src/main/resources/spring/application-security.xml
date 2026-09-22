@@ -23,6 +23,8 @@
 	<intercept-url pattern="/TermAndCondition/**" access="permitAll"></intercept-url>
 	<intercept-url pattern="/validateMobile/**" access="permitAll"></intercept-url>
 	<intercept-url pattern="/validateEmail/**" access="permitAll"></intercept-url>
+	<intercept-url pattern="/validateUser/**" access="permitAll"></intercept-url>
+	<intercept-url pattern="/checkUserAndMobileAvailability/**" access="permitAll"></intercept-url>
 	<intercept-url pattern="/registrationLogin/**" access="permitAll"></intercept-url>
 	<intercept-url pattern="/regImgUpload" access="permitAll"></intercept-url>
 	

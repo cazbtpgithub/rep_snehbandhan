@@ -743,6 +743,7 @@ public class LocationController {
 				js.put("kundaliImage", ow.writeValueAsString(kundaliImgs));
 				js.put("userName", userModel.getUserName());
 				js.put("password", userModel.getPassword());
+				js.put("firstName", userModel.getFirstName() != null ? userModel.getFirstName() : "");
 
 				try {
 					js.put("userImage", ow.writeValueAsString(imgs[0]));

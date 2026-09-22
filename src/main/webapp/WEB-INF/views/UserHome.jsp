@@ -331,6 +331,74 @@
         .user-profile-dropdown-menu .dropdown-item[href*="logout"]:hover i {
             color: #b91c1c !important;
         }
+
+        /* Shortlist Modal Styles matching target screenshot */
+        #myModal .modal-dialog {
+            max-width: 580px;
+            margin: 60px auto;
+        }
+        #myModal .modal-content {
+            border-radius: 6px;
+            border: 1px solid rgba(0, 0, 0, 0.15);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.25);
+            background: #ffffff;
+            overflow: hidden;
+        }
+        #myModal .modal-header {
+            padding: 16px 22px 14px 22px;
+            border-bottom: 1px solid #eeeeee;
+            position: relative;
+        }
+        #myModal .modal-header .close {
+            position: absolute;
+            right: 18px;
+            top: 14px;
+            font-size: 28px;
+            font-weight: 300;
+            color: #888888;
+            opacity: 0.7;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            line-height: 1;
+            padding: 0;
+            margin: 0;
+        }
+        #myModal .modal-header .close:hover {
+            opacity: 1;
+            color: #333333;
+        }
+        #myModal .modal-body {
+            padding: 20px 22px;
+        }
+        .custom-shortlist-breadcrumb {
+            background-color: var(--primary, #d21a5a);
+            color: #ffffff;
+            padding: 12px 10px;
+            border-radius: 6px;
+            display: flex;
+            text-align: center;
+            margin-bottom: 18px;
+        }
+        .custom-shortlist-breadcrumb a,
+        .custom-shortlist-breadcrumb span {
+            color: #ffffff !important;
+            text-decoration: none !important;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            display: block;
+        }
+        .custom-shortlist-breadcrumb a:hover,
+        .custom-shortlist-breadcrumb span:hover {
+            opacity: 0.9;
+        }
+        #menu3ViewContact {
+            font-size: 14.5px;
+            color: #333333;
+            line-height: 2.1;
+            padding: 5px 0 10px 0;
+        }
     </style>
 </head>
 <body>
@@ -1143,20 +1211,64 @@
     </form>
 
     <!-- Shortlist Modal -->
-    <div id="myModal" class="modal fade" role="dialog">
+    <div id="myModal" class="modal fade" role="dialog" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
                     <font color="green" size="3;">You have shortlisted successfully...</font>
-                    <h4 class="modal-title" id="shortName"></h4>
+                    <h4 class="modal-title" id="shortName" style="color: #222222; font-size: 22px; font-weight: 700; margin-top: 4px; margin-bottom: 0;"></h4>
                 </div>
                 <div class="modal-body">
-                    <div class="form-group">
-                        <label>Send Message to Shortlisted Profile</label>
-                        <textarea class="form-control" rows="3" id="ShortlistMSG" maxlength="104"></textarea>
+                    <!-- Pink Navigation Bar: Send Sms, Send Email, Contact Details -->
+                    <nav class="custom-shortlist-breadcrumb">
+                        <div style="flex: 1;">
+                            <a href="#menu1" id="imenu1" onclick="show1('menu1'); return false;">Send Sms</a>
+                        </div>
+                        <div style="flex: 1;">
+                            <a href="#menu2" id="imenu2" onclick="show1('menu2'); return false;">Send Email</a>
+                        </div>
+                        <div style="flex: 1;">
+                            <span id="imenu3" href="#menu3" onclick="show1('menu3'); return false;">Contact Details</span>
+                        </div>
+                    </nav>
+
+                    <div class="tab-content" style="padding: 0 4px;">
+                        <!-- Menu 1: Send SMS -->
+                        <div id="menu1" class="tab-pane" style="display: none;">
+                            <form id="sms" onsubmit="event.preventDefault(); ShortlistSendMSG();">
+                                <div class="form-group" style="margin-bottom: 14px;">
+                                    <label style="font-size: 13px; color: #555555; margin-bottom: 6px; display: block;">104 characters only</label>
+                                    <textarea class="form-control" rows="3" id="ShortlistMSG" maxlength="104" style="width: 100%; border: 1px solid #cccccc; border-radius: 4px; padding: 10px; font-size: 14px; box-sizing: border-box;"></textarea>
+                                </div>
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <input type="button" class="btn btn-primary" style="background: var(--primary, #d21a5a); border-color: var(--primary, #d21a5a); color: #ffffff; padding: 7px 20px; font-size: 14px; border-radius: 4px; font-weight: 500; cursor: pointer;" onclick="ShortlistSendMSG();" value="Send MSG">
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Menu 2: Send Email -->
+                        <div id="menu2" class="tab-pane" style="display: none;">
+                            <form id="email" onsubmit="event.preventDefault(); ShortlistSendEmail();">
+                                <div class="form-group" style="margin-bottom: 14px;">
+                                    <textarea class="form-control" rows="5" id="ShortlistEmail" placeholder="Enter message..." style="width: 100%; border: 1px solid #cccccc; border-radius: 4px; padding: 10px; font-size: 14px; box-sizing: border-box;"></textarea>
+                                </div>
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <input type="button" class="btn btn-primary" style="background: var(--primary, #d21a5a); border-color: var(--primary, #d21a5a); color: #ffffff; padding: 7px 20px; font-size: 14px; border-radius: 4px; font-weight: 500; cursor: pointer;" onclick="ShortlistSendEmail();" value="Send Email">
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Menu 3: Contact Details -->
+                        <div id="menu3" class="tab-pane" style="display: block;">
+                            <div id="menu3ViewContact" class="tab-pane"></div>
+                        </div>
+
+                        <form id="ShortlistForm">
+                            <input type="hidden" id="ShortlistVisitedId" name="ShortlistVisitedId">
+                            <input type="hidden" id="ShortlistName" name="ShortlistName">
+                        </form>
                     </div>
-                    <button type="button" class="btn btn-primary" onclick="ShortlistSendMSG();">Send Message</button>
                 </div>
             </div>
         </div>
@@ -1660,7 +1772,34 @@
             });
         }
 
+        // Tab Switcher for Shortlist Modal
+        window.show1 = function(txt) {
+            $('#menu1').hide();
+            $('#menu2').hide();
+            $('#menu3').hide();
+            $('#' + txt).show();
+        };
+
         $(document).ready(function() {
+            // Default to Contact Details tab whenever Shortlist modal opens as requested
+            $('#myModal').on('show.bs.modal', function() {
+                window.show1('menu3');
+            });
+
+            // Ensure Landmark is always displayed in Contact Details
+            var contactElem = document.getElementById('menu3ViewContact');
+            if (contactElem && window.MutationObserver) {
+                var observer = new MutationObserver(function() {
+                    var html = $('#menu3ViewContact').html();
+                    if (html && html.indexOf('Address:') !== -1 && html.indexOf('Landmark') === -1) {
+                        observer.disconnect();
+                        $('#menu3ViewContact').html(html + 'Landmark : <br>');
+                        observer.observe(contactElem, { childList: true });
+                    }
+                });
+                observer.observe(contactElem, { childList: true });
+            }
+
             $(document).on('click', '.btn-load-more-floating', function(e) {
                 e.preventDefault();
                 window.loadLatestMatches();

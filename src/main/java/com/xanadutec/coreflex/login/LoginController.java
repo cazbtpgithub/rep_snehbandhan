@@ -1540,6 +1540,34 @@ public class LoginController {
 		return "success";
 	}
 	
-	
-	
+	@RequestMapping(value = "/checkUserAndMobileAvailability", method = {RequestMethod.POST, RequestMethod.GET}, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String checkUserAndMobileAvailability(
+			@RequestParam(value = "userName", required = false) String userName,
+			@RequestParam(value = "mobile", required = false) String mobile) {
+		JSONObject json = new JSONObject();
+		try {
+			boolean userExists = false;
+			boolean mobileExists = false;
+			if (userName != null && !userName.trim().isEmpty()) {
+				userExists = loginService.checkUsernameExists(userName.trim());
+			}
+			if (mobile != null && !mobile.trim().isEmpty()) {
+				mobileExists = loginService.checkMobileExists(mobile.trim());
+			}
+
+			json.put("status", "success");
+			json.put("userExists", userExists);
+			json.put("mobileExists", mobileExists);
+		} catch (Exception e) {
+			e.printStackTrace();
+			try {
+				json.put("status", "error");
+				json.put("userExists", false);
+				json.put("mobileExists", false);
+			} catch (Exception ex) {
+			}
+		}
+		return json.toString();
+	}
 }

@@ -298,10 +298,9 @@ label {
 													</li>
 													<li class="list-group-item"><b>Name</b>
 													
-														<input type="text" id="firstName" name="firstName" class="pull-right"
-															class="form-control"
+														<input type="text" id="firstName" name="firstName" class="pull-right form-control"
 															placeholder="First Name     Last Name"
-															onkeypress="return ((event.charCode "> 64 && event.charCode < 91)||(event.charCode >  96 && event.charCode < 123)) || event.charCode === 32  || charCode === 8 || event.keyCode === 9 ' />
+															onkeypress="return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || event.charCode === 32 || event.keyCode === 8 || event.keyCode === 9);" />
 																
 													</li>
 													<li class="list-group-item"><b>Email</b>

@@ -416,10 +416,9 @@ label {
 													</li>
 													<li class="list-group-item"><b>Name</b>
 													
-														<input type="text" id="firstName" name="firstName" class="pull-right"
-															class="form-control"
+														<input type="text" id="firstName" name="firstName" class="pull-right form-control" style="width: 220px; max-width: 60%; height: 26px; padding: 2px 6px; display: inline-block;"
 															placeholder="First Name     Last Name"
-															onkeypress="return ((event.charCode "> 64 && event.charCode < 91)||(event.charCode >  96 && event.charCode < 123)) || event.charCode === 32  || charCode === 8 || event.keyCode === 9 ' />
+															onkeypress="return ((event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || event.charCode === 32 || event.keyCode === 8 || event.keyCode === 9);" />
 																
 													</li>
 													<li class="list-group-item"><b>Email</b>
@@ -443,7 +442,7 @@ label {
 														 
 														 
 														<li class="list-group-item"><b>Mobile Number</b> 
-														<input type="text" class="pull-right"  id="mobile" maxlength="10" onkeypress="return event.charCode ">= 48 && event.charCode <= 57 || event.keyCode === 8 || event.keyCode === 9 '"/>
+														<input type="text" class="pull-right"  id="mobile" maxlength="10" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.keyCode === 8 || event.keyCode === 9;"/>
 														</li>
 														<li class="list-group-item"><b>DOB</b> 
 														<input type="text" class="pull-right"  id="dob"/>
@@ -451,7 +450,7 @@ label {
 														<li class="list-group-item"><b>Marital Status</b>
 														<select id="materialStatus" name="materialStatus" class="pull-right"
 																style="color: gray; font-size: 14px;"
-																class="form-control   label label-default" ">
+																class="form-control label label-default">
 																<option value="0">Select Status</option>
 																<option value='Single'>Single</option>
 																<option value='Married'>Married</option>
@@ -1638,27 +1637,27 @@ label {
 													<div class="form-group">
 															<label class="control-label col-sm-5" for="messages">No Of Messages:</label>
 															<div class="col-sm-5">
-																 <input type="number" value="0" id="noOfMessage" onkeypress="return event.charCode ">= 48 && event.charCode <= 57 || event.keyCode === 8 || event.keyCode === 9 '>
+																 <input type="number" value="0" id="noOfMessage" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.keyCode === 8 || event.keyCode === 9;">
 															</div>
 														</div>
 														 
 														<div class="form-group">
 															<label class="control-label col-sm-5" for="noofdays">No Of Days:</label>
 															<div class="col-sm-5">
-																 <input type="number"  value="0" id="noOfDay" onkeypress="return event.charCode ">= 48 && event.charCode <= 57 || event.keyCode === 8 || event.keyCode === 9 '>
+																 <input type="number"  value="0" id="noOfDay" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.keyCode === 8 || event.keyCode === 9;">
 															</div>
 														</div>
 														
 														<div class="form-group">
 															<label class="control-label col-sm-5" for="noofprofile">No Of Profiles:</label>
 															<div class="col-sm-5">
-																 <input type="number" value="0" id="noOfProfile" onkeypress="return event.charCode ">= 48 && event.charCode <= 57 || event.keyCode === 8 || event.keyCode === 9 '/>
+																 <input type="number" value="0" id="noOfProfile" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.keyCode === 8 || event.keyCode === 9;"/>
 															</div>
 														</div>   
 														<div class="form-group">
 															<label class="control-label col-sm-5" for="noofprofile">No Of Emails:</label>
 															<div class="col-sm-5">
-																 <input type="number" value="0" id="noOfEmail" onkeypress="return event.charCode ">= 48 && event.charCode <= 57 || event.keyCode === 8 || event.keyCode === 9 '>
+																 <input type="number" value="0" id="noOfEmail" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.keyCode === 8 || event.keyCode === 9;">
 															</div>
 														</div>
 														<div class="form-group">
@@ -1938,8 +1937,18 @@ label {
 		});
 
 		function fun(aa) {
-			var userId=$(aa).closest('td').prev().prev().prev().prev().prev().prev().prev().text();
-			
+			var rowData = null;
+			try {
+				rowData = table.row($(aa).closest('tr')).data();
+			} catch (e) {}
+
+			var userId = (rowData && rowData.userId) ? rowData.userId : $(aa).closest('td').prev().prev().prev().prev().prev().prev().prev().text().trim();
+			var initialFirstName = (rowData && rowData.firstName) ? rowData.firstName : "";
+			if (initialFirstName) {
+				$("#userName").text(initialFirstName);
+				$("#firstName").val(initialFirstName);
+			}
+
 			// Here i am directlly passing the userModel id fot getting the userMOdel details
 			$("#userId").val(userId);
 			$("#hiddenuserId").val(userId);
@@ -1952,13 +1961,17 @@ label {
 				},
 				success : function(data) {
 				 //incomeAmount
-				    var jsonData1 = JSON.parse(JSON.stringify(data));
+				    var jsonData1 = (typeof data === "string") ? JSON.parse(data) : data;
 					var userNameForAdmin = jsonData1.userName;
-					var jsonData2 = JSON.parse(JSON.stringify(data));
-					var passwordForAdmin = jsonData2.password;
+					var passwordForAdmin = jsonData1.password;
+					var firstNameForAdmin = jsonData1.firstName;
 					
 					$("#userUname").text(userNameForAdmin);
 					$("#userPassword").text(passwordForAdmin);
+					if (firstNameForAdmin) {
+						$("#userName").text(firstNameForAdmin);
+						$("#firstName").val(firstNameForAdmin);
+					}
 					
 					
 				    var userid=$("#hiddenuserId").val();
@@ -2237,13 +2250,31 @@ label {
 					}
 
 			// user details list
-					var counter1=jsonData.userDetail;
-					var cntForiterateobj1 = JSON.parse(counter1);
-					$("#userName").text(cntForiterateobj1.userModel.firstName);
-					$("#firstName").val(cntForiterateobj1.userModel.firstName);
-					$("#userState").text(cntForiterateobj1.state_Country.state_Name);
-					$("#userCity").text(cntForiterateobj1.districts.district_Name); 
-					$("#userDesignation").text(cntForiterateobj1.occupation.occupation_name);
+					var counter1 = jsonData.userDetail;
+					var cntForiterateobj1 = null;
+					if (counter1) {
+						try {
+							cntForiterateobj1 = (typeof counter1 === "string") ? JSON.parse(counter1) : counter1;
+						} catch (e) {
+							cntForiterateobj1 = null;
+						}
+					}
+					var userFirstName = firstNameForAdmin || (cntForiterateobj1 && cntForiterateobj1.userModel && cntForiterateobj1.userModel.firstName) || initialFirstName || "";
+					if (userFirstName) {
+						$("#userName").text(userFirstName);
+						$("#firstName").val(userFirstName);
+					}
+					if (cntForiterateobj1) {
+						if (cntForiterateobj1.state_Country && cntForiterateobj1.state_Country.state_Name) {
+							$("#userState").text(cntForiterateobj1.state_Country.state_Name);
+						}
+						if (cntForiterateobj1.districts && cntForiterateobj1.districts.district_Name) {
+							$("#userCity").text(cntForiterateobj1.districts.district_Name); 
+						}
+						if (cntForiterateobj1.occupation && cntForiterateobj1.occupation.occupation_name) {
+							$("#userDesignation").text(cntForiterateobj1.occupation.occupation_name);
+						}
+					}
 				
 		            var userEmailId = cntForiterateobj1.email;
 
