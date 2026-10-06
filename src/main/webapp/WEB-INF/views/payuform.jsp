@@ -105,7 +105,7 @@ public boolean empty(String s)
 <html>
 
 <script>
-var hash="<%= hash %">';
+var hash="<%= hash %>";
 function submitPayuForm() {
 	
 	if (hash == '')
@@ -120,10 +120,10 @@ function submitPayuForm() {
 
 		
 
-<form action="<%= action1 %">" method="post" name="payuForm">
-<input type="hidden" name="key" value="<%= merchant_key %">" />
-      <input type="hidden" name="hash" value="<%= hash %">"/>
-      <input type="hidden" name="txnid" value="<%= txnid %">" />
+<form action="<%= action1 %>" method="post" name="payuForm">
+<input type="hidden" name="key" value="<%= merchant_key %>" />
+      <input type="hidden" name="hash" value="<%= hash %>"/>
+      <input type="hidden" name="txnid" value="<%= txnid %>" />
       <table>
         <tr>
           <td><!-- <b>Mandatory Parameters</b> --></td>

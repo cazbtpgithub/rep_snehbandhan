@@ -13,15 +13,159 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="resources/Template/css/font-awesome.min.css">
     <link rel="stylesheet" href="resources/Template/css/bootstrap.min.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/Template/css/flexslider.css">
     <link rel="stylesheet" href="resources/customcss/dashboard_new.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/confirmBox/jquery-confirm.css" media="screen">
 
     <script src="${pageContext.request.contextPath}/resources/Template/js/jquery-min.js"></script>
     <script src="${pageContext.request.contextPath}/resources/Template/js/bootstrap.min.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/Template/js/jquery.flexslider.js"></script>
     <script src="${pageContext.request.contextPath}/resources/confirmBox/jquery-confirm.js" type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/resources/ProfileViewer/profileView.js"></script>
 
     <style>
+        /* Conversation Containers & Profile Styling */
+        .conversation-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .conversation-header-card {
+            background: #ffffff;
+            border-radius: var(--radius-md, 12px);
+            padding: 16px 22px;
+            border: 1px solid var(--border-color, #f0e4e8);
+            box-shadow: var(--shadow-sm, 0 2px 8px rgba(0,0,0,0.04));
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .conversation-header-card h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 700;
+            color: #222;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .conversation-header-card .header-subtext {
+            margin: 4px 0 0 0;
+            font-size: 12px;
+            color: #777;
+        }
+        .btn-back-dashboard {
+            background: #fdf0f4;
+            color: #d21a5a !important;
+            border: 1px solid #f3c2d4;
+            border-radius: 20px;
+            padding: 6px 16px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-back-dashboard:hover {
+            background: #d21a5a;
+            color: #ffffff !important;
+        }
+
+        /* User Profile Cards in Conversations */
+        .user-profile {
+            background: #ffffff;
+            border-radius: var(--radius-md, 12px);
+            padding: 20px;
+            border: 1px solid var(--border-color, #f0e4e8);
+            box-shadow: var(--shadow-sm, 0 2px 8px rgba(0,0,0,0.04));
+            margin-bottom: 20px;
+            transition: all 0.25s ease;
+            clear: both;
+            overflow: hidden;
+        }
+        .user-profile:hover {
+            box-shadow: 0 6px 20px rgba(210, 26, 90, 0.1);
+            border-color: #f3c2d4;
+        }
+        .user-profile .user-slider {
+            max-width: 270px;
+            padding: 0 10px;
+        }
+        .user-profile .user-slider .flexslider {
+            margin-bottom: 8px;
+            border: 1px solid #f0e4e8;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #fff;
+        }
+        .user-profile .user-slider .flexslider .slides img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        .user-profile .member-name {
+            color: #d21a5a;
+            font-size: 18px;
+            font-weight: 700;
+            margin-top: 0;
+            margin-bottom: 8px;
+        }
+        .user-profile .detail-profile ul {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 12px 0;
+            font-size: 13px;
+            color: #555;
+            line-height: 1.8;
+        }
+        .user-profile .detail-profile ul li span {
+            color: #222;
+            font-weight: 500;
+        }
+        .user-profile .about-info h6 {
+            font-weight: 700;
+            font-size: 13px;
+            color: #333;
+            margin-top: 8px;
+            margin-bottom: 6px;
+        }
+        .user-profile .about-info p {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+        .user-profile .pinkbtn {
+            background: linear-gradient(135deg, #d21a5a, #e63974);
+            color: #ffffff !important;
+            border: none;
+            border-radius: 20px;
+            padding: 6px 18px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s;
+        }
+        .user-profile .pinkbtn:hover {
+            opacity: 0.92;
+            transform: translateY(-1px);
+        }
+        .user-profile div[style*="background-color: #d23779"] {
+            left: 0 !important;
+            width: 100% !important;
+            margin-top: 15px;
+            border-radius: 10px !important;
+            background: linear-gradient(135deg, #d21a5a, #e63974) !important;
+            border: none !important;
+            box-shadow: 0 4px 12px rgba(210, 26, 90, 0.2);
+            padding: 12px !important;
+            color: #fff;
+        }
+
         /* Supplementary inline styles for exact alignment */
         .dash-search-container {
             position: relative;
@@ -487,41 +631,41 @@
             <nav class="sidebar-menu">
                 <ul>
                     <li>
-                        <a href="#" class="active" onclick="switchConversation('mainDivForUser');">
+                        <a href="#" class="active" id="sidebarDashboard" onclick="switchConversation('mainDivForUser', this); return false;">
                             <div class="menu-left"><i class="fa fa-dashboard"></i> Dashboard</div>
                         </a>
                     </li>
                     <li>
-                        <a href="#" onclick="switchConversation('inbox_conversation');">
+                        <a href="#" id="sidebarInbox" onclick="switchConversation('inbox_conversation', this); return false;">
                             <div class="menu-left"><i class="fa fa-envelope-o"></i> Inbox</div>
                             <span class="badge-count">12</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#" onclick="switchConversation('mainDivForUser');">
+                        <a href="#" id="sidebarInterestReceived" onclick="switchConversation('invitation_conversation', this); return false;">
                             <div class="menu-left"><i class="fa fa-heart-o"></i> Interest Received</div>
                             <span class="badge-count">8</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#" onclick="switchConversation('sent_conversation');">
+                        <a href="#" id="sidebarInterestSent" onclick="switchConversation('sent_conversation', this); return false;">
                             <div class="menu-left"><i class="fa fa-paper-plane-o"></i> Interest Sent</div>
                             <span class="badge-count">6</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#" onclick="switchConversation('mainDivForUser');">
+                        <a href="#" onclick="switchConversation('mainDivForUser', this); return false;">
                             <div class="menu-left"><i class="fa fa-users"></i> Matches</div>
                         </a>
                     </li>
                     <li>
-                        <a href="#" onclick="switchConversation('mainDivForUser');">
+                        <a href="#" onclick="switchConversation('mainDivForUser', this); switchMatchTab('viewedYet'); return false;">
                             <div class="menu-left"><i class="fa fa-eye"></i> Who Viewed Me</div>
                             <span class="badge-count">15</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#" onclick="switchConversation('mainDivForUser');">
+                        <a href="#" onclick="switchConversation('mainDivForUser', this); switchMatchTab('shortlisted'); return false;">
                             <div class="menu-left"><i class="fa fa-star-o"></i> Shortlisted</div>
                             <span class="badge-count">4</span>
                         </a>
@@ -1054,6 +1198,48 @@
 
         </main>
 
+        <!-- Column 2b: Inbox Conversation Container -->
+        <main class="dash-main conversation-container" id="inbox_conversation" style="display: none;">
+            <div class="conversation-header-card">
+                <div>
+                    <h3><i class="fa fa-envelope-o" style="color: #d21a5a;"></i> Inbox</h3>
+                    <p class="header-subtext">Messages and communications received</p>
+                </div>
+                <button type="button" class="btn-back-dashboard" onclick="switchConversation('mainDivForUser');">
+                    <i class="fa fa-arrow-left"></i> Back to Matches
+                </button>
+            </div>
+            <div id="latest_inbox_conversationView"></div>
+        </main>
+
+        <!-- Column 2c: Interest Received Container -->
+        <main class="dash-main conversation-container" id="invitation_conversation" style="display: none;">
+            <div class="conversation-header-card">
+                <div>
+                    <h3><i class="fa fa-heart-o" style="color: #d21a5a;"></i> Interest Received</h3>
+                    <p class="header-subtext">Invitations and interest received from members</p>
+                </div>
+                <button type="button" class="btn-back-dashboard" onclick="switchConversation('mainDivForUser');">
+                    <i class="fa fa-arrow-left"></i> Back to Matches
+                </button>
+            </div>
+            <div id="latest_invitation_conversationView"></div>
+        </main>
+
+        <!-- Column 2d: Interest Sent Container -->
+        <main class="dash-main conversation-container" id="sent_conversation" style="display: none;">
+            <div class="conversation-header-card">
+                <div>
+                    <h3><i class="fa fa-paper-plane-o" style="color: #d21a5a;"></i> Interest Sent</h3>
+                    <p class="header-subtext">Invitations and messages sent by you</p>
+                </div>
+                <button type="button" class="btn-back-dashboard" onclick="switchConversation('mainDivForUser');">
+                    <i class="fa fa-arrow-left"></i> Back to Matches
+                </button>
+            </div>
+            <div id="latest_sent_conversationView"></div>
+        </main>
+
         <!-- Column 3: Right Sidebar -->
         <aside class="dash-rightbar">
 
@@ -1287,7 +1473,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <a href="${pageContext.request.contextPath}/upgradeAndPayment" class="btn btn-primary">Upgrade Package</a>
+                    <a href="<c:url value='/KitUpgradeAndPayment'/>" class="btn btn-primary">Upgrade Package</a>
                 </div>
             </div>
         </div>
@@ -1307,6 +1493,107 @@
 
     <!-- Load More Profiles & Logout Script -->
     <script type="text/javascript">
+        // Switch Conversation View (Inbox, Interest Received, Interest Sent, Dashboard)
+        window.switchConversation = function(loadDiv, elem) {
+            // Update active link in sidebar
+            $('.sidebar-menu li a').removeClass('active');
+            if (elem) {
+                $(elem).addClass('active');
+            } else {
+                if (loadDiv === 'inbox_conversation') {
+                    $('#sidebarInbox').addClass('active');
+                } else if (loadDiv === 'invitation_conversation') {
+                    $('#sidebarInterestReceived').addClass('active');
+                } else if (loadDiv === 'sent_conversation') {
+                    $('#sidebarInterestSent').addClass('active');
+                } else if (loadDiv === 'mainDivForUser') {
+                    $('#sidebarDashboard').addClass('active');
+                }
+            }
+
+            // Hide all main containers
+            $('#mainDivForUser').hide();
+            $('#inbox_conversation').hide();
+            $('#invitation_conversation').hide();
+            $('#sent_conversation').hide();
+
+            // Smooth scroll to top of main area
+            $('html, body').animate({ scrollTop: 0 }, 150);
+
+            if (loadDiv === 'mainDivForUser') {
+                $('#mainDivForUser').fadeIn(200);
+                return;
+            }
+
+            var spinnerHtml = '<div style="text-align:center; padding: 40px; background:#fff; border-radius:12px; border:1px solid #f0e4e8; margin-top:10px;">' +
+                '<i class="fa fa-spinner fa-spin fa-2x" style="color:#d21a5a;"></i>' +
+                '<p style="margin-top:12px; color:#666; font-size:14px; font-weight:500;">Loading...</p>' +
+                '</div>';
+
+            if (loadDiv === 'inbox_conversation') {
+                $('#inbox_conversation').show();
+                $('#latest_inbox_conversationView').html(spinnerHtml);
+                $.ajax({
+                    url: "${pageContext.request.contextPath}/latest_inbox_conversation",
+                    type: "POST",
+                    processData: false,
+                    contentType: false,
+                    success: function(data) {
+                        $('#latest_inbox_conversationView').html(data);
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        console.error("Error loading inbox: " + thrownError);
+                        $('#latest_inbox_conversationView').html(
+                            '<div style="text-align:center; padding: 30px; background:#fff; border-radius:12px; border:1px solid #f0e4e8;">' +
+                            '<p style="color:#d21a5a; font-weight:600;">Failed to load Inbox messages. Please try again.</p>' +
+                            '</div>'
+                        );
+                    }
+                });
+            } else if (loadDiv === 'invitation_conversation') {
+                $('#invitation_conversation').show();
+                $('#latest_invitation_conversationView').html(spinnerHtml);
+                $.ajax({
+                    url: "${pageContext.request.contextPath}/invitation_conversation",
+                    type: "POST",
+                    processData: false,
+                    contentType: false,
+                    success: function(data) {
+                        $('#latest_invitation_conversationView').html(data);
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        console.error("Error loading invitations: " + thrownError);
+                        $('#latest_invitation_conversationView').html(
+                            '<div style="text-align:center; padding: 30px; background:#fff; border-radius:12px; border:1px solid #f0e4e8;">' +
+                            '<p style="color:#d21a5a; font-weight:600;">Failed to load received interests. Please try again.</p>' +
+                            '</div>'
+                        );
+                    }
+                });
+            } else if (loadDiv === 'sent_conversation') {
+                $('#sent_conversation').show();
+                $('#latest_sent_conversationView').html(spinnerHtml);
+                $.ajax({
+                    url: "${pageContext.request.contextPath}/latest_sent_conversation",
+                    type: "POST",
+                    processData: false,
+                    contentType: false,
+                    success: function(data) {
+                        $('#latest_sent_conversationView').html(data);
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        console.error("Error loading sent conversations: " + thrownError);
+                        $('#latest_sent_conversationView').html(
+                            '<div style="text-align:center; padding: 30px; background:#fff; border-radius:12px; border:1px solid #f0e4e8;">' +
+                            '<p style="color:#d21a5a; font-weight:600;">Failed to load sent interests. Please try again.</p>' +
+                            '</div>'
+                        );
+                    }
+                });
+            } else {
+                $('#' + loadDiv).show();
+            }
+        };
         window.performLogout = function(e) {
             if (e && e.preventDefault) e.preventDefault();
             var email = "${userEmail}";
