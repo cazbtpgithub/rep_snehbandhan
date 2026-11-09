@@ -614,69 +614,69 @@ public class LoginController {
 
 			obj = new JSONObject(request.getParameter("jsonObjectData"));
 			final JSONObject jsonObj = obj;
-			String refineheightSelectPartnerFirst = jsonObj
-					.getString("refineheightSelectPartnerFirst");
-			String refineheightSelectPartnerSecond = jsonObj
-					.getString("refineheightSelectPartnerSecond");
-			String refineageFrom = jsonObj.getString("refineageFrom");
-			String refineageTo = jsonObj.getString("refineageTo");
-			String refinematerialStatus = jsonObj
-					.getString("refinematerialStatus");
-			String refinereligionSelectPartner = jsonObj
-					.getString("refinereligionSelectPartner");
-			String casteSelect = jsonObj.getString("casteSelect");
-			String refineoccupationCategorySelect = jsonObj
-					.getString("refineoccupationCategorySelect");
-			String checkBoxDistrict = jsonObj.getString("checkBoxDistrict");
-			String RefineSearchProfile = jsonObj
-					.get("RefineSearchProfile").toString();
+			String refineheightSelectPartnerFirst = jsonObj.optString("refineheightSelectPartnerFirst", "");
+			String refineheightSelectPartnerSecond = jsonObj.optString("refineheightSelectPartnerSecond", "");
+			String refineageFrom = jsonObj.optString("refineageFrom", "");
+			String refineageTo = jsonObj.optString("refineageTo", "");
+			String refinematerialStatus = jsonObj.optString("refinematerialStatus", "");
+			String refinereligionSelectPartner = jsonObj.optString("refinereligionSelectPartner", "");
+			String casteSelect = jsonObj.optString("casteSelect", "");
+			String refineoccupationCategorySelect = jsonObj.optString("refineoccupationCategorySelect", "");
+			String checkBoxDistrict = jsonObj.optString("checkBoxDistrict", "");
+			String profileId = jsonObj.optString("profileId", "");
+			String nameSearch = jsonObj.optString("nameSearch", "");
+			String regDate = jsonObj.optString("regDate", "");
+			String dob = jsonObj.optString("dob", "");
+			String education = jsonObj.optString("education", "");
+			String RefineSearchProfile = jsonObj.optString("RefineSearchProfile", "[]");
 
-			StringBuffer builder = new StringBuffer(RefineSearchProfile);
-			builder.deleteCharAt(0);
-			builder.deleteCharAt(builder.toString().length() - 1);
-
-			String visitorArray[] = builder.toString().split(",");
 			List<UserModel> models = new ArrayList<>();
+			if (RefineSearchProfile.startsWith("[") && RefineSearchProfile.length() > 2) {
+				StringBuffer builder = new StringBuffer(RefineSearchProfile);
+				builder.deleteCharAt(0);
+				builder.deleteCharAt(builder.toString().length() - 1);
 
-			for (String string : visitorArray) {
-				if (string.equalsIgnoreCase("null") || string.equals("")) {
-
-				} else {
-					UserModel model2 = new UserModel();
-					model2.setUserId(Long.parseLong(string));
-					models.add(model2);
-
+				String visitorArray[] = builder.toString().split(",");
+				for (String string : visitorArray) {
+					if (string != null && !string.equalsIgnoreCase("null") && !string.trim().isEmpty()) {
+						try {
+							UserModel model2 = new UserModel();
+							model2.setUserId(Long.parseLong(string.replace("\"", "").trim()));
+							models.add(model2);
+						} catch (NumberFormatException ignored) {}
+					}
 				}
-
 			}
 
 			HttpSession httpSession = request.getSession();
 			UserModel userModel = (UserModel) httpSession
 					.getAttribute("ActUserId");
+			if (userModel == null) {
+				try {
+					UserDetails user = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+					userModel = userService.getUserByUname(user.getUsername());
+					httpSession.setAttribute("ActUserId", userModel);
+				} catch (Exception ignored) {}
+			}
 			UserModelDetails modelDetails = userService
 					.getUserdetails(userModel);
 
-			List<UserProfileView> profileViews;
-			if (modelDetails != null && "male".equalsIgnoreCase(modelDetails.getGender())) {
-				profileViews = userService
-						.getlistOfRefineSearchByUserExcludeUserModels(request,
-								userModel, "female",
-								refineheightSelectPartnerFirst,
-								refineheightSelectPartnerSecond, refineageFrom,
-								refineageTo, refinematerialStatus,
-								refinereligionSelectPartner, casteSelect,
-								refineoccupationCategorySelect,
-								checkBoxDistrict, models);
-			} else {
-				profileViews = userService.getlistOfRefineSearchByUserExcludeUserModels(request,
-								userModel, "male",
-								refineheightSelectPartnerFirst,
-								refineheightSelectPartnerSecond, refineageFrom,
-								refineageTo, refinematerialStatus,
-								refinereligionSelectPartner, casteSelect,
-								refineoccupationCategorySelect,
-								checkBoxDistrict, models);
+			String searchGender = "female";
+			if (modelDetails != null && "female".equalsIgnoreCase(modelDetails.getGender())) {
+				searchGender = "male";
 			}
+
+			List<UserProfileView> profileViews = userService
+					.getlistOfRefineSearchByUserExcludeUserModels(request,
+							userModel, searchGender,
+							refineheightSelectPartnerFirst,
+							refineheightSelectPartnerSecond, refineageFrom,
+							refineageTo, refinematerialStatus,
+							refinereligionSelectPartner, casteSelect,
+							refineoccupationCategorySelect,
+							checkBoxDistrict,
+							profileId, nameSearch, regDate, dob, education,
+							models);
 
 			model.addAttribute("LatestMatch", profileViews);
 
@@ -899,11 +899,23 @@ public class LoginController {
 			UserModelDetails modelDetails = userService
 					.getUserdetails(userModel);
 
-			List<UserProfileViewForMessages> profileViews;
-
-			profileViews = userService.getlistOfSentMessagesAndEmail(request,
-					userModel);
-
+			List<UserProfileViewForMessages> profileViews = new ArrayList<UserProfileViewForMessages>();
+			try {
+				Map<String, List<UserProfileViewForMessages>> invMap = userService.getlistOfInvitationByUser(request, userModel);
+				if (invMap != null && invMap.get("ByYou") != null) {
+					profileViews.addAll(invMap.get("ByYou"));
+				}
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+			try {
+				List<UserProfileViewForMessages> msgViews = userService.getlistOfSentMessagesAndEmail(request, userModel);
+				if (msgViews != null) {
+					profileViews.addAll(msgViews);
+				}
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
 			model.addAttribute("LatestMatch", profileViews);
 
 			return new ModelAndView("latest_sent_conversation");
@@ -1306,8 +1318,6 @@ public class LoginController {
 				long latestMachesTotalCount= userService.getCountOfAllLatestMatchAccordingToGender("Female");
 				latestMatchCount = (latestMachesTotalCount + 25000) ;
 			latestUpgraded = userService.getCountOfAllLatestUpgradedMatchAccordingToGender("Female");
-			seenyet = userService.getCountOfAllSeenYetToGender("Female",userModel);
-			sortlisted = userService.getCountOfShortlistedToGender("Female",userModel);
 			// onlineuserlist=userService.getListOfOnlineUser("Female");
 
 		} else {
@@ -1316,10 +1326,16 @@ public class LoginController {
 		   long latestMachesTotalCount = userService.getCountOfAllLatestMatchAccordingToGender("Male");
 		   latestMatchCount = (latestMachesTotalCount + 35000) ;
 			latestUpgraded = userService.getCountOfAllLatestUpgradedMatchAccordingToGender("Male");
-			seenyet = userService.getCountOfAllSeenYetToGender("Male",userModel);
-			sortlisted = userService.getCountOfShortlistedToGender("Male",userModel);
 			// onlineuserlist=userService.getListOfOnlineUser("Male");
 		}
+
+		long shortlistedMeCount = userService.getCountOfShortlistedMe(userModel);
+		long shortlistedCount = userService.getCountOfShortlistedByMe(userModel);
+		long inboxCount = userService.getCountOfInboxMessages(userModel);
+		long interestReceivedCount = userService.getCountOfInterestReceived(userModel);
+		long interestSentCount = userService.getCountOfInterestSent(userModel);
+		seenyet = userService.getCountOfWhoViewedMe(userModel);
+		sortlisted = shortlistedMeCount;
 		try {
 			notseenyet = latestMatchCount - seenyet;
 		} catch (Exception e) {
@@ -1338,6 +1354,11 @@ public class LoginController {
 			model.addAttribute("onlineProfiles", onlineProfiles);
 			model.addAttribute("latestMatchCount", latestMatchCount);
 			model.addAttribute("latestUpgraded", latestUpgraded);
+			model.addAttribute("inboxCount", inboxCount);
+			model.addAttribute("interestReceivedCount", interestReceivedCount);
+			model.addAttribute("interestSentCount", interestSentCount);
+			model.addAttribute("shortlistedCount", shortlistedCount);
+			model.addAttribute("shortlistedMeCount", shortlistedMeCount);
 			model.addAttribute("seenyet", seenyet);
 			model.addAttribute("notseenyet", notseenyet);
 			model.addAttribute("sortlisted", sortlisted);

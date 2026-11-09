@@ -318,7 +318,51 @@ public class UserServiceImpl implements UserService {
 		return userDao.getlistOfRefineSearchByUserExcludeUserModels(request, userModel, gender,
 				refineheightSelectPartnerFirst, refineheightSelectPartnerSecond, refineageFrom, refineageTo,
 				refinematerialStatus, refinereligionSelectPartner, casteSelect, refineoccupationCategorySelect,
-				refineDistrict, excludeUserModelsRefineSearch);
+				refineDistrict, null, null, null, null, null, excludeUserModelsRefineSearch);
+	}
+
+	@Override
+	public List<UserProfileView> getlistOfRefineSearchByUserExcludeUserModels(HttpServletRequest request,
+			UserModel userModel, String gender, String refineheightSelectPartnerFirst,
+			String refineheightSelectPartnerSecond, String refineageFrom, String refineageTo,
+			String refinematerialStatus, String refinereligionSelectPartner, String casteSelect,
+			String refineoccupationCategorySelect, String refineDistrict,
+			String profileId, String nameSearch, String regDate, String dob, String education,
+			List<UserModel> excludeUserModelsRefineSearch) {
+		return userDao.getlistOfRefineSearchByUserExcludeUserModels(request, userModel, gender,
+				refineheightSelectPartnerFirst, refineheightSelectPartnerSecond, refineageFrom, refineageTo,
+				refinematerialStatus, refinereligionSelectPartner, casteSelect, refineoccupationCategorySelect,
+				refineDistrict, profileId, nameSearch, regDate, dob, education, excludeUserModelsRefineSearch);
+	}
+
+	@Override
+	public Long getCountOfShortlistedMe(UserModel userModel) {
+		return userDao.getCountOfShortlistedMe(userModel);
+	}
+
+	@Override
+	public Long getCountOfShortlistedByMe(UserModel userModel) {
+		return userDao.getCountOfShortlistedByMe(userModel);
+	}
+
+	@Override
+	public Long getCountOfInboxMessages(UserModel userModel) {
+		return userDao.getCountOfInboxMessages(userModel);
+	}
+
+	@Override
+	public Long getCountOfInterestReceived(UserModel userModel) {
+		return userDao.getCountOfInterestReceived(userModel);
+	}
+
+	@Override
+	public Long getCountOfInterestSent(UserModel userModel) {
+		return userDao.getCountOfInterestSent(userModel);
+	}
+
+	@Override
+	public Long getCountOfWhoViewedMe(UserModel userModel) {
+		return userDao.getCountOfWhoViewedMe(userModel);
 	}
 
 	@Override

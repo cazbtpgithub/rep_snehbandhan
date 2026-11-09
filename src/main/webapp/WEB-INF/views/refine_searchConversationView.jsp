@@ -1,111 +1,82 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<c:if test="${fn:length(LatestMatch) == 0}">
- <div class="user-profile clearfix" " id="noRecordDiv">
-                    <div class="user-slider col-lg-2 col-md-2 col-sm-2 col-xs-12">
-			<p>No Records Found</p>      
-        </div>
-       </div>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+
+<c:if test="${empty LatestMatch}">
+    <div style="text-align: center; padding: 48px 24px; background: #ffffff; border-radius: 12px; border: 1px solid #f0e4e8; margin-bottom: 20px;">
+        <i class="fa fa-filter fa-3x" style="color: #d21a5a; opacity: 0.6; margin-bottom: 12px;"></i>
+        <h4 style="color: #333333; font-weight: 700; margin-bottom: 8px;">No Profiles Match Your Filters</h4>
+        <p style="color: #777777; font-size: 14px; margin-bottom: 16px;">Try adjusting or clearing your filters (Age, Height, Religion, Caste, Location) to see more profiles.</p>
+        <button type="button" class="btn-search-submit" style="display: inline-block; padding: 8px 22px; font-size: 13px;" onclick="clearAllAdvanceFilters();">Clear Filters</button>
+    </div>
 </c:if>
-              <c:forEach var="profile" items="${LatestMatch}"  varStatus="theCount">
-                 <div class="user-profile clearfix  div_hover" >
-                    <div class="user-slider col-lg-4 col-md-6 col-sm-5 col-xs-12">
-     <section class="refineSearchOneslider${profile.visitorUserId}">
-        <div id="refineSearchOneslider${profile.visitorUserId}" class="flexslider">
-          <ul class="slides">
-              <c:forEach var="img" items="${profile.imageObject}">
-            <li>
-  	    	    <img src="${pageContext.request.contextPath}/resources/UserImages/${img}" "/ onerror="this.onerror=null; this.src='resources/UserImages/userImage.png';">
-  	    		</li>
-  	    		</c:forEach>
-  	    		
-          </ul>
-        </div>
-        <div id="refineSearchOnecarousel${profile.visitorUserId}" class="flexslider">
-          <ul class="slides">
-              <c:forEach var="img" items="${profile.imageObject}">
-            <li>
-  	    	    <img src="${pageContext.request.contextPath}/resources/UserImages/${img}" width:50px"/ onerror="this.onerror=null; this.src='resources/UserImages/userImage.png';">
-  	    		</li>
-  	    		  </c:forEach> 
-          </ul>
-        </div>
-      </section>  
-    
-        <script>     
-           $('#refineSearchOnecarousel${profile.visitorUserId}').flexslider({
-        animation: "slide",
-        controlNav: false,
-        animationLoop: false,
-        slideshow: false,
-        itemWidth: 100,
-        itemMargin: 5,
-        asNavFor: '#refineSearchOneslider${profile.visitorUserId}'
-      });
-      $('#refineSearchOneslider${profile.visitorUserId}').flexslider({
-        animation: "slide",
-        controlNav: false,
-        animationLoop: false,
-        slideshow: false,
-        sync: "#refineSearchOnecarousel${profile.visitorUserId}",
-        start: function(slider){
-          $('body').removeClass('loading');
-        }
-      });
-        </script>    
-        
-    <!--end-->
-                    </div>
-                    <div class="detail-profile col-lg-3 col-md-6 col-sm-7 col-xs-12">
-                        <h5 class="member-name">${profile.name}</h5>
-                        <ul class="mb10">
-                            <li>Located in: <span class="member-location">${profile.location}</span></li>
-                            <li>Age: <span class="member-age">${profile.age} Years</span></li>
-                            <li>Education: <span class="member-edu">${profile.education}</span></li>
-                            <li>Occupation: <span class="member-occu">${profile.occupation}</span></li>
-                            <li>Caste: <span class="member-age">${profile.caste}</span></li>
-                        </ul>
-                        <div class="connect-icon">
-                            <a href="#" class="circle"><i class="fa fa-comment"></i></a>
-                         	<a href="#" class="circle" onclick="Shortlist('${profile.visitorUserId}','${profile.name}');"><i class="fa fa-mobile" ></i></a> 
-							<a href="#" class="circle" onclick="Shortlist('${profile.visitorUserId}','${profile.name}');"><i class="fa fa-envelope" ></i></a>
-                        </div>
-                    </div>
-                    <div class="about-info col-lg-5 col-md-12 col-sm-12 col-xs-12">
-                        <p class="text-xs-right"><span class="viewed-ic"></span> 
-                        <c:if test="${not empty profile.viewedOnDate}">
-  						<b> <font color="#d23779">	Viewed on <fmt:formatDate type="both" value="${profile.viewedOnDate}" /> </font></b>
-						</c:if>
-                        <c:if test="${empty profile.viewedOnDate}">
-						<b> <font color="#d23779"> Profile Not Viewed </font></b>
-						</c:if>
-                        
-                       
-                      <!--   <a href="#" class="similarpro">View Similar Profiles</a>     -->
-                        </p>
-                            <h6>About Me</h6>
-                            
-                        <p>${profile.aboutHer}
-                        </p>
-                        <div class="float-xs-left mr5">
-                        <button type="button" class="btn btn-secondary btn-sm pinkbtn"  onclick="Shortlist('${profile.visitorUserId}','${profile.name}');">Shortlist</button>
-                        </div>
-                        <div class="float-xs-left ml5">
-                        
-                        <a target="_blank"  href="<c:url value="ViewProfileWithPartner">
-					                       <c:param name="userId" value="${profile.visitorUserId}"/>
-					                </c:url>> <button type="button"  class="btn btn-secondary btn-sm pinkbtn">Full Profile</button> 
-					    </a>
-                        </div>
-                        
-                       <script>
-                       RefineSearchProfile.push(${profile.visitorUserId});
-                        </script>
-                        
-                    </div>
-              
-                </div>
-                
+
+<c:forEach var="profile" items="${LatestMatch}" varStatus="theCount">
+    <div class="profile-card" data-user-id="${profile.visitorUserId}">
+        <div class="profile-photos" onclick="imageSlider('${profile.visitorUserId}');" style="cursor: pointer;">
+            <div class="main-photo-wrapper">
+                <span class="verified-badge"><i class="fa fa-check"></i> Verified</span>
+                <c:set var="mainImg" value="userImage.png" />
+                <c:if test="${not empty profile.imageObject && not empty profile.imageObject[0]}">
+                    <c:set var="mainImg" value="${profile.imageObject[0]}" />
+                </c:if>
+                <img src="${pageContext.request.contextPath}/resources/UserImages/${mainImg}" onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/resources/UserImages/userImage.png';" alt="Profile">
+            </div>
+            <div class="thumb-photos">
+                <c:forEach var="img" items="${profile.imageObject}" begin="1" end="2">
+                    <c:if test="${not empty img}">
+                        <img src="${pageContext.request.contextPath}/resources/UserImages/${img}" onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/resources/UserImages/userImage.png';" alt="Thumb">
+                    </c:if>
                 </c:forEach>
-                
+            </div>
+        </div>
+
+        <div class="profile-details">
+            <h3 class="profile-name">
+                ${profile.name} <span class="online-dot"></span>
+            </h3>
+            <div class="profile-meta-line">
+                <span>${profile.age} yrs</span> &bull; <span>${profile.location}</span>
+            </div>
+            <div class="profile-meta-line">
+                <span>${profile.education}</span> &bull; <span>${profile.occupation}</span>
+            </div>
+            <div class="profile-meta-line">
+                <span>${profile.caste}</span>
+            </div>
+            <p class="profile-bio">
+                <c:choose>
+                    <c:when test="${not empty profile.aboutHer}">
+                        ${profile.aboutHer}
+                    </c:when>
+                    <c:otherwise>
+                        Looking for a compatible and understanding life partner.
+                    </c:otherwise>
+                </c:choose>
+            </p>
+        </div>
+
+        <div class="profile-actions-wrapper">
+            <div class="profile-status-bar">
+                <c:if test="${not empty profile.viewedOnDate}">
+                    Last Active: <fmt:formatDate type="both" dateStyle="short" timeStyle="short" value="${profile.viewedOnDate}" />
+                </c:if>
+                <c:if test="${empty profile.viewedOnDate}">
+                    Last Active: Recently
+                </c:if>
+                <span class="tag-premium">Premium</span>
+            </div>
+
+            <div class="card-action-btns">
+                <a href="#" class="btn-shortlist-outline" onclick="Shortlist('${profile.visitorUserId}','${profile.name}');">
+                    <i class="fa fa-heart-o"></i> Shortlist
+                </a>
+                <a target="_blank" href="<c:url value='/ViewProfileWithPartner'><c:param name='userId' value='${profile.visitorUserId}'/></c:url>" class="btn-view-profile-solid">
+                    View Profile
+                </a>
+                <a href="#" class="btn-circle-icon"><i class="fa fa-comment-o"></i></a>
+                <a href="#" class="btn-circle-icon" onclick="Shortlist('${profile.visitorUserId}','${profile.name}');"><i class="fa fa-envelope-o"></i></a>
+            </div>
+        </div>
+    </div>
+</c:forEach>

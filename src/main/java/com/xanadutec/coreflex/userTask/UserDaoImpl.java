@@ -203,8 +203,8 @@ public class UserDaoImpl implements UserDao {
 				Date today = new Date();
 				long diff = today.getTime() - d1.getTime();
 				long i = diff / (1000 * 60 * 60 * 24);
-				int dob = (int) (i / 365);
-				profileView.setAge(dob);
+				int userAge = (int) (i / 365);
+				profileView.setAge(userAge);
 			} catch (Exception e) {
 
 			}
@@ -291,8 +291,12 @@ public class UserDaoImpl implements UserDao {
 					Date today = new Date();
 					long diff = today.getTime() - d1.getTime();
 					long i = diff / (1000 * 60 * 60 * 24);
-					int dob = (int) (i / 365);
-					compareUserProfileView.setAge(dob);
+					int userAge = (int) (i / 365);
+					compareUserProfileView.setAge(userAge);
+					try {
+						SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy");
+						compareUserProfileView.setDateOfBirth(sdf.format(date));
+					} catch(Exception ex) {}
 				}
 			} catch (Exception e) {
 
@@ -315,9 +319,29 @@ public class UserDaoImpl implements UserDao {
 
 			NumberFormat numberFormat = new DecimalFormat("###.#");
 			try {
-				if (userModelDetails.getHeight() != null) {
-					double dd = userModelDetails.getHeight() / 30.48;
-					compareUserProfileView.setHeight(numberFormat.format(dd) + "");
+				if (userModelDetails.getHeight() != null && userModelDetails.getHeight() > 0) {
+					double h = userModelDetails.getHeight();
+					int feet;
+					int inches;
+					if (h < 10) {
+						feet = (int) h;
+						inches = (int) Math.round((h - feet) * 10.0);
+					} else {
+						double totalInches = h / 2.54;
+						feet = (int) (totalInches / 12);
+						inches = (int) Math.round(totalInches % 12);
+						if (inches == 12) {
+							feet++;
+							inches = 0;
+						}
+					}
+					if (inches > 0) {
+						compareUserProfileView.setHeight(feet + " ft " + inches + " in");
+					} else {
+						compareUserProfileView.setHeight(feet + " ft");
+					}
+				} else {
+					compareUserProfileView.setHeight("-");
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -345,6 +369,11 @@ public class UserDaoImpl implements UserDao {
 				compareUserProfileView.setOccupation(userModelDetails.getOccupation().getOccupation_name());
 			}
 			compareUserProfileView.setPhysicalStatus(userModelDetails.getPhysicalStatus());
+			compareUserProfileView.setFamilyType(userModelDetails.getFamilyType());
+			compareUserProfileView.setFamilyClass(userModelDetails.getFamilyClass());
+			compareUserProfileView.setFamilyValues(userModelDetails.getFamilyValues());
+			compareUserProfileView.setBodyType(userModelDetails.getBodyType());
+			compareUserProfileView.setComplexion(userModelDetails.getComplexion());
 
 			try {
 				criteria = session.createCriteria(UserModelImagesName.class);
@@ -708,8 +737,8 @@ public class UserDaoImpl implements UserDao {
 				Date today = new Date();
 				long diff = today.getTime() - d1.getTime();
 				long i = diff / (1000 * 60 * 60 * 24);
-				int dob = (int) (i / 365);
-				profileView.setAge(dob);
+				int userAge = (int) (i / 365);
+				profileView.setAge(userAge);
 			} catch (Exception e) {
               e.printStackTrace();
 			}
@@ -848,8 +877,8 @@ public class UserDaoImpl implements UserDao {
 						Date today = new Date();
 						long diff = today.getTime() - d1.getTime();
 						long i = diff / (1000 * 60 * 60 * 24);
-						int dob = (int) (i / 365);
-						profileView.setAge(dob);
+						int userAge = (int) (i / 365);
+						profileView.setAge(userAge);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -956,8 +985,8 @@ public class UserDaoImpl implements UserDao {
 				Date today = new Date();
 				long diff = today.getTime() - d1.getTime();
 				long i = diff / (1000 * 60 * 60 * 24);
-				int dob = (int) (i / 365);
-				profileView.setAge(dob);
+				int userAge = (int) (i / 365);
+				profileView.setAge(userAge);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -1068,8 +1097,8 @@ public class UserDaoImpl implements UserDao {
 					Date today = new Date();
 					long diff = today.getTime() - d1.getTime();
 					long i = diff / (1000 * 60 * 60 * 24);
-					int dob = (int) (i / 365);
-					profileView.setAge(dob);
+					int userAge = (int) (i / 365);
+					profileView.setAge(userAge);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -1118,8 +1147,8 @@ public class UserDaoImpl implements UserDao {
 					Date today = new Date();
 					long diff = today.getTime() - d1.getTime();
 					long i = diff / (1000 * 60 * 60 * 24);
-					int dob = (int) (i / 365);
-					profileView.setAge(dob);
+					int userAge = (int) (i / 365);
+					profileView.setAge(userAge);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -1219,8 +1248,8 @@ public class UserDaoImpl implements UserDao {
 					Date today = new Date();
 					long diff = today.getTime() - d1.getTime();
 					long i = diff / (1000 * 60 * 60 * 24);
-					int dob = (int) (i / 365);
-					profileView.setAge(dob);
+					int userAge = (int) (i / 365);
+					profileView.setAge(userAge);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -1270,8 +1299,8 @@ public class UserDaoImpl implements UserDao {
 					Date today = new Date();
 					long diff = today.getTime() - d1.getTime();
 					long i = diff / (1000 * 60 * 60 * 24);
-					int dob = (int) (i / 365);
-					profileView.setAge(dob);
+					int userAge = (int) (i / 365);
+					profileView.setAge(userAge);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -1370,8 +1399,8 @@ public class UserDaoImpl implements UserDao {
 					Date today = new Date();
 					long diff = today.getTime() - d1.getTime();
 					long i = diff / (1000 * 60 * 60 * 24);
-					int dob = (int) (i / 365);
-					profileView.setAge(dob);
+					int userAge = (int) (i / 365);
+					profileView.setAge(userAge);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -1422,8 +1451,8 @@ public class UserDaoImpl implements UserDao {
 					Date today = new Date();
 					long diff = today.getTime() - d1.getTime();
 					long i = diff / (1000 * 60 * 60 * 24);
-					int dob = (int) (i / 365);
-					profileView.setAge(dob);
+					int userAge = (int) (i / 365);
+					profileView.setAge(userAge);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -1501,8 +1530,8 @@ public class UserDaoImpl implements UserDao {
 						Date today = new Date();
 						long diff = today.getTime() - d1.getTime();
 						long i = diff / (1000 * 60 * 60 * 24);
-						int dob = (int) (i / 365);
-						profileView.setAge(dob);
+						int userAge = (int) (i / 365);
+						profileView.setAge(userAge);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -1586,8 +1615,8 @@ public class UserDaoImpl implements UserDao {
 						Date today = new Date();
 						long diff = today.getTime() - d1.getTime();
 						long i = diff / (1000 * 60 * 60 * 24);
-						int dob = (int) (i / 365);
-						profileView.setAge(dob);
+						int userAge = (int) (i / 365);
+						profileView.setAge(userAge);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -1652,8 +1681,8 @@ public class UserDaoImpl implements UserDao {
 						Date today = new Date();
 						long diff = today.getTime() - d1.getTime();
 						long i = diff / (1000 * 60 * 60 * 24);
-						int dob = (int) (i / 365);
-						profileView.setAge(dob);
+						int userAge = (int) (i / 365);
+						profileView.setAge(userAge);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -1738,8 +1767,8 @@ public class UserDaoImpl implements UserDao {
 						Date today = new Date();
 						long diff = today.getTime() - d1.getTime();
 						long i = diff / (1000 * 60 * 60 * 24);
-						int dob = (int) (i / 365);
-						profileView.setAge(dob);
+						int userAge = (int) (i / 365);
+						profileView.setAge(userAge);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -1803,8 +1832,8 @@ public class UserDaoImpl implements UserDao {
 						Date today = new Date();
 						long diff = today.getTime() - d1.getTime();
 						long i = diff / (1000 * 60 * 60 * 24);
-						int dob = (int) (i / 365);
-						profileView.setAge(dob);
+						int userAge = (int) (i / 365);
+						profileView.setAge(userAge);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -1889,8 +1918,8 @@ public class UserDaoImpl implements UserDao {
 						Date today = new Date();
 						long diff = today.getTime() - d1.getTime();
 						long i = diff / (1000 * 60 * 60 * 24);
-						int dob = (int) (i / 365);
-						profileView.setAge(dob);
+						int userAge = (int) (i / 365);
+						profileView.setAge(userAge);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -1955,8 +1984,8 @@ public class UserDaoImpl implements UserDao {
 						Date today = new Date();
 						long diff = today.getTime() - d1.getTime();
 						long i = diff / (1000 * 60 * 60 * 24);
-						int dob = (int) (i / 365);
-						profileView.setAge(dob);
+						int userAge = (int) (i / 365);
+						profileView.setAge(userAge);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -2099,8 +2128,8 @@ public class UserDaoImpl implements UserDao {
 					Date today = new Date();
 					long diff = today.getTime() - d1.getTime();
 					long i = diff / (1000 * 60 * 60 * 24);
-					int dob = (int) (i / 365);
-					profileView.setAge(dob);
+					int userAge = (int) (i / 365);
+					profileView.setAge(userAge);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -2267,8 +2296,8 @@ public class UserDaoImpl implements UserDao {
 						Date today = new Date();
 						long diff = today.getTime() - d1.getTime();
 						long i = diff / (1000 * 60 * 60 * 24);
-						int dob = (int) (i / 365);
-						profileView.setAge(dob);
+						int userAge = (int) (i / 365);
+						profileView.setAge(userAge);
 					} catch (Exception e) {
 					}
 					profileView.setEducation(userModelDetails2.getEducation().getEducation_name());
@@ -2355,6 +2384,20 @@ public class UserDaoImpl implements UserDao {
 		return list;
 	}
 
+		private double parseHeightCm(String str) {
+		double val = Double.parseDouble(str.trim());
+		if (val >= 30.0) {
+			return val;
+		}
+		int feet = (int) val;
+		double fractional = val - feet;
+		double inches = Math.round(fractional * 10.0);
+		if (fractional > 0.095 && fractional < 0.125) {
+			inches = 10.0;
+		}
+		return (feet * 12.0 + inches) * 2.54;
+	}
+
 	@Override
 	public List<UserProfileView> getlistOfRefineSearchByUserExcludeUserModels(HttpServletRequest request,
 			UserModel userModel, String gender, String refineheightSelectPartnerFirst,
@@ -2362,78 +2405,232 @@ public class UserDaoImpl implements UserDao {
 			String refinematerialStatus, String refinereligionSelectPartner, String casteSelect,
 			String refineoccupationCategorySelect, String refineDistrict,
 			List<UserModel> excludeUserModelsRefineSearch) {
+		return getlistOfRefineSearchByUserExcludeUserModels(request, userModel, gender,
+				refineheightSelectPartnerFirst, refineheightSelectPartnerSecond, refineageFrom, refineageTo,
+				refinematerialStatus, refinereligionSelectPartner, casteSelect,
+				refineoccupationCategorySelect, refineDistrict,
+				null, null, null, null, null,
+				excludeUserModelsRefineSearch);
+	}
+
+	@Override
+	public List<UserProfileView> getlistOfRefineSearchByUserExcludeUserModels(HttpServletRequest request,
+			UserModel userModel, String gender, String refineheightSelectPartnerFirst,
+			String refineheightSelectPartnerSecond, String refineageFrom, String refineageTo,
+			String refinematerialStatus, String refinereligionSelectPartner, String casteSelect,
+			String refineoccupationCategorySelect, String refineDistrict,
+			String profileId, String nameSearch, String regDate, String dob, String education,
+			List<UserModel> excludeUserModelsRefineSearch) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(UserModelDetails.class);
 		criteria.add(Restrictions.eq("gender", gender));
 		criteria.addOrder(Order.desc("registrationDate"));
-		criteria.add(Restrictions.not(Restrictions.in("userModel", excludeUserModelsRefineSearch)));
-		List<State_Districts>districtList=new ArrayList<>();
-		if(refineDistrict.length()!=0 ||! (refineDistrict.equalsIgnoreCase("0")))
-		{
-			try {
-				StringBuffer builder = new StringBuffer(refineDistrict);
-				builder.deleteCharAt(0);
-				builder.deleteCharAt(builder.toString().length() - 1);
-				String arr[]=builder.toString().split(",");
-				for (String string : arr) {
-					String withoutQuotesDistrictId = string.replace("\"", "");
-					int districtId = Integer.parseInt(withoutQuotesDistrictId);
-					State_Districts dist=new State_Districts();
-					dist.setState_district_id(districtId);
-					districtList.add(dist);
-				}
-			} catch (Exception e) {
+		// FIX: Guard against empty list to prevent Hibernate crash
+		if (excludeUserModelsRefineSearch != null && !excludeUserModelsRefineSearch.isEmpty()) {
+			criteria.add(Restrictions.not(Restrictions.in("userModel", excludeUserModelsRefineSearch)));
+		}
+
+		// Alias for userModel to filter by Profile ID or Name if needed
+		boolean needUserAlias = (profileId != null && !profileId.trim().isEmpty())
+				|| (nameSearch != null && !nameSearch.trim().isEmpty());
+		if (needUserAlias) {
+			criteria.createAlias("userModel", "um");
+			if (profileId != null && !profileId.trim().isEmpty()) {
+				try {
+					criteria.add(Restrictions.eq("um.userId", Long.parseLong(profileId.trim())));
+				} catch (NumberFormatException ignored) {}
+			}
+			if (nameSearch != null && !nameSearch.trim().isEmpty()) {
+				criteria.add(Restrictions.ilike("um.firstName", "%" + nameSearch.trim() + "%"));
 			}
 		}
-		if(districtList.size()!=0)
+
+		// Registration date filter
+		if (regDate != null && !regDate.trim().isEmpty()) {
+			try {
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				Date rDate = sdf.parse(regDate.trim());
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(rDate);
+				cal.set(Calendar.HOUR_OF_DAY, 0);
+				cal.set(Calendar.MINUTE, 0);
+				cal.set(Calendar.SECOND, 0);
+				Date start = cal.getTime();
+				cal.set(Calendar.HOUR_OF_DAY, 23);
+				cal.set(Calendar.MINUTE, 59);
+				cal.set(Calendar.SECOND, 59);
+				Date end = cal.getTime();
+				criteria.add(Restrictions.between("registrationDate", start, end));
+			} catch (Exception ignored) {}
+		}
+
+		// Exact DOB filter
+		if (dob != null && !dob.trim().isEmpty()) {
+			try {
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				Date bDate = sdf.parse(dob.trim());
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(bDate);
+				cal.set(Calendar.HOUR_OF_DAY, 0);
+				cal.set(Calendar.MINUTE, 0);
+				cal.set(Calendar.SECOND, 0);
+				Date start = cal.getTime();
+				cal.set(Calendar.HOUR_OF_DAY, 23);
+				cal.set(Calendar.MINUTE, 59);
+				cal.set(Calendar.SECOND, 59);
+				Date end = cal.getTime();
+				criteria.add(Restrictions.between("dateOfBirth", start, end));
+			} catch (Exception ignored) {}
+		}
+
+		// Education filter
+		if (education != null && !education.trim().isEmpty() && !education.equalsIgnoreCase("0")) {
+			criteria.createAlias("education", "edu");
+			criteria.add(Restrictions.ilike("edu.education_name", "%" + education.trim() + "%"));
+		}
+
+		List<State_Districts> districtList = new ArrayList<>();
+		if (refineDistrict != null && !refineDistrict.trim().isEmpty())
 		{
-			criteria.add(Restrictions.in("districts",districtList));	
+			try {
+				// FIX: Support both numeric ID list ["123"] and plain text location/state name
+				String trimmedDistrict = refineDistrict.trim();
+				boolean parsedAsIds = false;
+				if (trimmedDistrict.startsWith("[")) {
+					StringBuffer builder = new StringBuffer(trimmedDistrict);
+					builder.deleteCharAt(0);
+					if (builder.length() > 0) builder.deleteCharAt(builder.toString().length() - 1);
+					String arr[] = builder.toString().split(",");
+					for (String string : arr) {
+						if (string != null && !string.trim().isEmpty()) {
+							String withoutQuotesDistrictId = string.replace("\"", "").trim();
+							int districtId = Integer.parseInt(withoutQuotesDistrictId);
+							State_Districts dist = new State_Districts();
+							dist.setState_district_id(districtId);
+							districtList.add(dist);
+						}
+					}
+					parsedAsIds = !districtList.isEmpty();
+				}
+				// Text-based location search: match district name or state name using LIKE
+				if (!parsedAsIds && !trimmedDistrict.isEmpty()) {
+					criteria.createAlias("districts", "distAlias", org.hibernate.criterion.CriteriaSpecification.LEFT_JOIN);
+					criteria.createAlias("state_Country", "stateAlias", org.hibernate.criterion.CriteriaSpecification.LEFT_JOIN);
+					criteria.add(Restrictions.or(
+						Restrictions.ilike("distAlias.district_Name", "%" + trimmedDistrict + "%"),
+						Restrictions.ilike("stateAlias.state_Name", "%" + trimmedDistrict + "%")
+					));
+				}
+			} catch (Exception e) {
+				// Skip malformed location filter
+			}
 		}
-		if (!refineheightSelectPartnerFirst.equalsIgnoreCase("0")
+		if (!districtList.isEmpty()) {
+			criteria.add(Restrictions.in("districts", districtList));
+		}
+		// FIX: Height - safely parse double and convert feet (<20) to cm if needed
+		if (refineheightSelectPartnerFirst != null && !refineheightSelectPartnerFirst.trim().isEmpty()
+				&& !refineheightSelectPartnerFirst.equalsIgnoreCase("0")
+				&& refineheightSelectPartnerSecond != null && !refineheightSelectPartnerSecond.trim().isEmpty()
 				&& !refineheightSelectPartnerSecond.equalsIgnoreCase("0")) {
-			criteria.add(Restrictions.ge("height", Double.parseDouble(refineheightSelectPartnerFirst)));
-			criteria.add(Restrictions.le("height", Double.parseDouble(refineheightSelectPartnerSecond)));
+			try {
+				double h1 = parseHeightCm(refineheightSelectPartnerFirst);
+				double h2 = parseHeightCm(refineheightSelectPartnerSecond);
+				if (h1 > h2) {
+					double temp = h1;
+					h1 = h2;
+					h2 = temp;
+				}
+				criteria.add(Restrictions.ge("height", h1));
+				criteria.add(Restrictions.le("height", h2));
+			} catch (NumberFormatException e) {
+				// Ignore non-numeric height strings
+			}
 		}
-		if (!refineageFrom.equalsIgnoreCase("0") && !refineageTo.equalsIgnoreCase("0")) {
+		// FIX: Age - handles Min-only, Max-only, and Min-to-Max; uses Calendar.MONTH + 1
+		boolean hasFrom = refineageFrom != null && !refineageFrom.trim().isEmpty() && !refineageFrom.equalsIgnoreCase("0");
+		boolean hasTo = refineageTo != null && !refineageTo.trim().isEmpty() && !refineageTo.equalsIgnoreCase("0");
+		if (hasFrom || hasTo) {
+			int fromAge = hasFrom ? Integer.parseInt(refineageFrom.trim()) : 18;
+			int toAge = hasTo ? Integer.parseInt(refineageTo.trim()) : 70;
+			if (fromAge > toAge) {
+				int temp = fromAge;
+				fromAge = toAge;
+				toAge = temp;
+			}
 			Calendar now = Calendar.getInstance();
-			now = Calendar.getInstance();
 			Date actFromDate = null;
 			Date actToDate = null;
 			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			try {
-				now.add(Calendar.YEAR, -Integer.parseInt(refineageFrom));
-				actFromDate = df.parse(now.get(Calendar.YEAR) + "-" + now.get(Calendar.MONTH) + "-"
-						+ now.get(Calendar.DATE) + " 00:00:00");
-				now = Calendar.getInstance();
-				now.add(Calendar.YEAR, -Integer.parseInt(refineageTo));
-				actToDate = df.parse(now.get(Calendar.YEAR) + "-" + now.get(Calendar.MONTH) + "-"
+				now.add(Calendar.YEAR, -fromAge);
+				actFromDate = df.parse(now.get(Calendar.YEAR) + "-" + (now.get(Calendar.MONTH) + 1) + "-"
 						+ now.get(Calendar.DATE) + " 23:59:59");
+				now = Calendar.getInstance();
+				now.add(Calendar.YEAR, -toAge);
+				actToDate = df.parse(now.get(Calendar.YEAR) + "-" + (now.get(Calendar.MONTH) + 1) + "-"
+						+ now.get(Calendar.DATE) + " 00:00:00");
 				criteria.add(Restrictions.between("dateOfBirth", actToDate, actFromDate));
-
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
 		}
-		if (!refinematerialStatus.equalsIgnoreCase("0")) {
+		if (refinematerialStatus != null && !refinematerialStatus.trim().isEmpty() && !refinematerialStatus.equalsIgnoreCase("0")) {
 			criteria.add(Restrictions.eq("materialStatus", refinematerialStatus));
 		}
-		if (!refinereligionSelectPartner.equalsIgnoreCase("0")) {
-			Religion religion = new Religion();
-			religion.setReligion_id(Long.parseLong(refinereligionSelectPartner));
-			criteria.createCriteria("caste", "c");
-			criteria.add(Restrictions.eq("c.religion_id", religion));
-		}
-		if (!refinereligionSelectPartner.equalsIgnoreCase("0")) {
-			if (!casteSelect.equalsIgnoreCase("0")) {
+		// FIX: Religion - safely parse Long or search by name; support Caste inside
+		if (refinereligionSelectPartner != null && !refinereligionSelectPartner.trim().isEmpty()
+				&& !refinereligionSelectPartner.equalsIgnoreCase("0")) {
+			try {
+				Religion religion = new Religion();
+				religion.setReligion_id(Long.parseLong(refinereligionSelectPartner.trim()));
+				criteria.createAlias("caste", "c");
+				criteria.add(Restrictions.eq("c.religion_id", religion));
+				if (casteSelect != null && !casteSelect.trim().isEmpty() && !casteSelect.equalsIgnoreCase("0")) {
+					try {
+						Caste caste = new Caste();
+						caste.setCaste_id(Long.parseLong(casteSelect.trim()));
+						criteria.add(Restrictions.eq("caste", caste));
+					} catch (NumberFormatException e) {
+						criteria.add(Restrictions.ilike("c.caste_name", "%" + casteSelect.trim() + "%"));
+					}
+				}
+			} catch (NumberFormatException e) {
+				// Religion passed as name (e.g. "Hindu")
+				criteria.createAlias("caste", "c");
+				criteria.createAlias("c.religion_id", "r");
+				criteria.add(Restrictions.ilike("r.religion_name", "%" + refinereligionSelectPartner.trim() + "%"));
+				if (casteSelect != null && !casteSelect.trim().isEmpty() && !casteSelect.equalsIgnoreCase("0")) {
+					try {
+						Caste caste = new Caste();
+						caste.setCaste_id(Long.parseLong(casteSelect.trim()));
+						criteria.add(Restrictions.eq("caste", caste));
+					} catch (NumberFormatException ex) {
+						criteria.add(Restrictions.ilike("c.caste_name", "%" + casteSelect.trim() + "%"));
+					}
+				}
+			}
+		} else if (casteSelect != null && !casteSelect.trim().isEmpty() && !casteSelect.equalsIgnoreCase("0")) {
+			// Caste-only filter
+			try {
 				Caste caste = new Caste();
-				caste.setCaste_id(Long.parseLong(casteSelect));
+				caste.setCaste_id(Long.parseLong(casteSelect.trim()));
 				criteria.add(Restrictions.eq("caste", caste));
+			} catch (NumberFormatException e) {
+				criteria.createAlias("caste", "c");
+				criteria.add(Restrictions.ilike("c.caste_name", "%" + casteSelect.trim() + "%"));
 			}
 		}
-		if (!refineoccupationCategorySelect.equalsIgnoreCase("0")) {
-			Occupation category = new Occupation();
-			category.setOccupation_id(Long.parseLong(refineoccupationCategorySelect));
-			criteria.add(Restrictions.eq("occupation", category));
+		// FIX: Occupation - safely parse Long or match occupation_name
+		if (refineoccupationCategorySelect != null && !refineoccupationCategorySelect.trim().isEmpty() && !refineoccupationCategorySelect.equalsIgnoreCase("0")) {
+			try {
+				Occupation category = new Occupation();
+				category.setOccupation_id(Long.parseLong(refineoccupationCategorySelect.trim()));
+				criteria.add(Restrictions.eq("occupation", category));
+			} catch (NumberFormatException e) {
+				criteria.createAlias("occupation", "occ");
+				criteria.add(Restrictions.ilike("occ.occupation_name", "%" + refineoccupationCategorySelect.trim() + "%"));
+			}
 		}
 		
 		Status stat = new Status();
@@ -2443,7 +2640,7 @@ public class UserDaoImpl implements UserDao {
 		or.add(Restrictions.eq("status", stat));
 		criteria.add(or);
 		criteria.addOrder(Order.desc("registrationDate"));
-		criteria.setMaxResults(10);
+		criteria.setMaxResults(20);
 		List<UserModelDetails> userModelDetails = criteria.list();
 		List<UserProfileView> profileViews = new ArrayList<>();
 		for (UserModelDetails details : userModelDetails) {
@@ -2463,8 +2660,8 @@ public class UserDaoImpl implements UserDao {
 					Date today = new Date();
 					long diff = today.getTime() - d1.getTime();
 					long i = diff / (1000 * 60 * 60 * 24);
-					int dob = (int) (i / 365);
-					profileView.setAge(dob);
+					int userAge = (int) (i / 365);
+					profileView.setAge(userAge);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -2504,6 +2701,96 @@ public class UserDaoImpl implements UserDao {
 
 		}
 		return profileViews;
+	}
+
+	@Override
+	public Long getCountOfShortlistedMe(UserModel model) {
+		try {
+			Session session = sessionFactory.getCurrentSession();
+			String sql = "select count(*) from SortlistedProfileUserWithDate where sortlistedUserModel = :userModel";
+			Query query = session.createQuery(sql);
+			query.setParameter("userModel", model);
+			Long result = (Long) query.uniqueResult();
+			return result == null ? 0L : result;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0L;
+	}
+
+	@Override
+	public Long getCountOfShortlistedByMe(UserModel model) {
+		try {
+			Session session = sessionFactory.getCurrentSession();
+			String sql = "select count(*) from SortlistedProfileUserWithDate where userModel = :userModel";
+			Query query = session.createQuery(sql);
+			query.setParameter("userModel", model);
+			Long result = (Long) query.uniqueResult();
+			return result == null ? 0L : result;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0L;
+	}
+
+	@Override
+	public Long getCountOfInboxMessages(UserModel model) {
+		try {
+			Session session = sessionFactory.getCurrentSession();
+			String sql = "select count(*) from SentMessagesEmail where received_msg_email_UserModel = :userModel";
+			Query query = session.createQuery(sql);
+			query.setParameter("userModel", model);
+			Long result = (Long) query.uniqueResult();
+			return result == null ? 0L : result;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0L;
+	}
+
+	@Override
+	public Long getCountOfInterestReceived(UserModel model) {
+		try {
+			Session session = sessionFactory.getCurrentSession();
+			String sql = "select count(*) from SortlistedProfileUserWithDate where sortlistedUserModel = :userModel";
+			Query query = session.createQuery(sql);
+			query.setParameter("userModel", model);
+			Long result = (Long) query.uniqueResult();
+			return result == null ? 0L : result;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0L;
+	}
+
+	@Override
+	public Long getCountOfInterestSent(UserModel model) {
+		try {
+			Session session = sessionFactory.getCurrentSession();
+			String sql = "select count(*) from SortlistedProfileUserWithDate where userModel = :userModel";
+			Query query = session.createQuery(sql);
+			query.setParameter("userModel", model);
+			Long result = (Long) query.uniqueResult();
+			return result == null ? 0L : result;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0L;
+	}
+
+	@Override
+	public Long getCountOfWhoViewedMe(UserModel model) {
+		try {
+			Session session = sessionFactory.getCurrentSession();
+			String sql = "select count(*) from VisitedProfileUserWithDate where visitedUserModel = :userModel";
+			Query query = session.createQuery(sql);
+			query.setParameter("userModel", model);
+			Long result = (Long) query.uniqueResult();
+			return result == null ? 0L : result;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0L;
 	}
 
 	@Override
@@ -2825,8 +3112,8 @@ public class UserDaoImpl implements UserDao {
 				Date today = new Date();
 				long diff = today.getTime() - d1.getTime();
 				long i = diff / (1000 * 60 * 60 * 24);
-				int dob = (int) (i / 365);
-				profileView.setAge(dob);
+				int userAge = (int) (i / 365);
+				profileView.setAge(userAge);
 			} catch (Exception e) {
 
 			}
@@ -3269,8 +3556,8 @@ public class UserDaoImpl implements UserDao {
 				Date today = new Date();
 				long diff = today.getTime() - d1.getTime();
 				long i = diff / (1000 * 60 * 60 * 24);
-				int dob = (int) (i / 365);
-				profileView.setAge(dob);
+				int userAge = (int) (i / 365);
+				profileView.setAge(userAge);
 			} catch (Exception e) {
 			}
 			if (userModelDetails2.getEducation() != null) {
@@ -3403,8 +3690,8 @@ public class UserDaoImpl implements UserDao {
 						Date today = new Date();
 						long diff = today.getTime() - d1.getTime();
 						long i = diff / (1000 * 60 * 60 * 24);
-						int dob = (int) (i / 365);
-						profileView.setAge(dob);
+						int userAge = (int) (i / 365);
+						profileView.setAge(userAge);
 					} catch (Exception e) {}
 				}
 
@@ -3612,8 +3899,20 @@ public class UserDaoImpl implements UserDao {
 				}
 				if (uDetails.getHeight() != null && uDetails.getHeight() > 0) {
 					double h = uDetails.getHeight();
-					int feet = (int) h;
-					int inches = (int) Math.round((h - feet) * 10.0);
+					int feet;
+					int inches;
+					if (h < 10) {
+						feet = (int) h;
+						inches = (int) Math.round((h - feet) * 10.0);
+					} else {
+						double totalInches = h / 2.54;
+						feet = (int) (totalInches / 12);
+						inches = (int) Math.round(totalInches % 12);
+						if (inches == 12) {
+							feet++;
+							inches = 0;
+						}
+					}
 					profileView.setHeight(feet + "'" + inches + "\"");
 				}
 			}

@@ -787,12 +787,12 @@ body {
                     <div class="detail-card-item">
                         <div class="detail-card-title"><i class="fa fa-address-card-o"></i> Personal Details</div>
                         <div class="detail-kv-list">
-                            <div class="detail-kv-row"><span class="detail-k-label">Marital Status</span><span class="detail-v-val">${compareUserProfileView.materialStatus}</span></div>
-                            <div class="detail-kv-row"><span class="detail-k-label">Date of Birth</span><span class="detail-v-val">21 Jan 1998</span></div>
-                            <div class="detail-kv-row"><span class="detail-k-label">Height</span><span class="detail-v-val">${compareUserProfileView.height}</span></div>
-                            <div class="detail-kv-row"><span class="detail-k-label">Physical Status</span><span class="detail-v-val">${compareUserProfileView.physicalStatus}</span></div>
-                            <div class="detail-kv-row"><span class="detail-k-label">Body Type</span><span class="detail-v-val">Slim</span></div>
-                            <div class="detail-kv-row"><span class="detail-k-label">Complexion</span><span class="detail-v-val">Wheatish</span></div>
+                            <div class="detail-kv-row"><span class="detail-k-label">Marital Status</span><span class="detail-v-val">${not empty compareUserProfileView.materialStatus ? compareUserProfileView.materialStatus : 'Not Specified'}</span></div>
+                            <div class="detail-kv-row"><span class="detail-k-label">Date of Birth</span><span class="detail-v-val">${not empty compareUserProfileView.dateOfBirth ? compareUserProfileView.dateOfBirth : 'Not Specified'}</span></div>
+                            <div class="detail-kv-row"><span class="detail-k-label">Height</span><span class="detail-v-val">${not empty compareUserProfileView.height ? compareUserProfileView.height : 'Not Specified'}</span></div>
+                            <div class="detail-kv-row"><span class="detail-k-label">Physical Status</span><span class="detail-v-val">${not empty compareUserProfileView.physicalStatus ? compareUserProfileView.physicalStatus : 'Normal'}</span></div>
+                            <div class="detail-kv-row"><span class="detail-k-label">Body Type</span><span class="detail-v-val">${not empty compareUserProfileView.bodyType ? compareUserProfileView.bodyType : 'Average'}</span></div>
+                            <div class="detail-kv-row"><span class="detail-k-label">Complexion</span><span class="detail-v-val">${not empty compareUserProfileView.complexion ? compareUserProfileView.complexion : 'Fair'}</span></div>
                         </div>
                     </div>
                     
@@ -812,11 +812,9 @@ body {
                     <div class="detail-card-item">
                         <div class="detail-card-title"><i class="fa fa-users"></i> Family Details</div>
                         <div class="detail-kv-list">
-                            <div class="detail-kv-row"><span class="detail-k-label">Father's Name</span><span class="detail-v-val">Nitin Patil</span></div>
-                            <div class="detail-kv-row"><span class="detail-k-label">Mother's Name</span><span class="detail-v-val">Archana Patil</span></div>
-                            <div class="detail-kv-row"><span class="detail-k-label">Siblings</span><span class="detail-v-val">1 Sister</span></div>
-                            <div class="detail-kv-row"><span class="detail-k-label">Family Type</span><span class="detail-v-val">Nuclear</span></div>
-                            <div class="detail-kv-row"><span class="detail-k-label">Family Status</span><span class="detail-v-val">Middle Class</span></div>
+                            <div class="detail-kv-row"><span class="detail-k-label">Family Type</span><span class="detail-v-val">${not empty compareUserProfileView.familyType ? compareUserProfileView.familyType : 'Not Specified'}</span></div>
+                            <div class="detail-kv-row"><span class="detail-k-label">Family Status</span><span class="detail-v-val">${not empty compareUserProfileView.familyClass ? compareUserProfileView.familyClass : 'Not Specified'}</span></div>
+                            <div class="detail-kv-row"><span class="detail-k-label">Family Values</span><span class="detail-v-val">${not empty compareUserProfileView.familyValues ? compareUserProfileView.familyValues : 'Not Specified'}</span></div>
                         </div>
                     </div>
                     
@@ -827,7 +825,7 @@ body {
                             <div class="detail-kv-row"><span class="detail-k-label">Religion</span><span class="detail-v-val">${compareUserProfileView.relogion}</span></div>
                             <div class="detail-kv-row"><span class="detail-k-label">Caste</span><span class="detail-v-val">${compareUserProfileView.caste}</span></div>
                             <div class="detail-kv-row"><span class="detail-k-label">Sub Caste</span><span class="detail-v-val">${compareUserProfileView.caste}</span></div>
-                            <div class="detail-kv-row"><span class="detail-k-label">Gotra</span><span class="detail-v-val">Kashyap</span></div>
+                            <div class="detail-kv-row"><span class="detail-k-label">Gotra</span><span class="detail-v-val">-</span></div>
                         </div>
                     </div>
                     

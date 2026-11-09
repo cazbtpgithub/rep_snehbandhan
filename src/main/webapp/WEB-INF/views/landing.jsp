@@ -220,7 +220,9 @@
                                 scroll-behavior: smooth;
                             }
 
-                            #success-stories {
+                            #success-stories,
+                            #faqs,
+                            #featured-profiles {
                                 scroll-margin-top: 85px;
                             }
 
@@ -1937,11 +1939,11 @@
                         <!-- Navbar -->
                         <nav class="navbar">
                             <div class="logo">
-                                <a href="Home"><img src="resources/images/logo.png" alt="Snehbandhan Logo"
+                                <a href="#" onclick="window.scrollTo({top: 0, behavior: 'smooth'}); return false;"><img src="resources/images/logo.png" alt="Snehbandhan Logo"
                                         style="height: 50px"></a>
                             </div>
                             <div class="nav-links">
-                                <a href="Home" style="color: var(--primary); font-weight: 600;"><i
+                                <a href="#" onclick="window.scrollTo({top: 0, behavior: 'smooth'}); return false;" style="color: var(--primary); font-weight: 600;"><i
                                         class="fa fa-home"></i>
                                     Home</a>
                                 <!-- <a href="#"
@@ -1997,7 +1999,8 @@
                                     <a href="#" class="btn-primary" style="height: var(--btn-height);"
                                         onclick="document.getElementById('registrationModal').style.display='flex'; return false;">Register
                                         Free</a>
-                                    <a href="#" class="btn-outline" style="height: var(--btn-height);">Browse
+                                    <a href="#featured-profiles" class="btn-outline" style="height: var(--btn-height);"
+                                        onclick="var el = document.getElementById('featured-profiles'); if(el){ el.scrollIntoView({behavior: 'smooth'}); return false; }">Browse
                                         Profiles</a>
                                 </div>
                             </div>
@@ -3144,12 +3147,14 @@
                                 <div class="footer-col">
                                     <h4>Quick Links</h4>
                                     <ul class="footer-links">
-                                        <li><a href="Home">Home</a></li>
-                                        <li><a href="#">Find Matches</a></li>
+                                        <li><a href="#"
+                                                onclick="window.scrollTo({top: 0, behavior: 'smooth'}); return false;">Home</a></li>
+                                        <li><a href="#featured-profiles"
+                                                onclick="var el = document.getElementById('featured-profiles'); if(el){ el.scrollIntoView({behavior: 'smooth'}); return false; }">Find Matches</a></li>
                                         <li><a href="#success-stories"
                                                 onclick="var el = document.getElementById('success-stories'); if(el){ el.scrollIntoView({behavior: 'smooth'}); return false; }">Success
                                                 Stories</a></li>
-                                        <li><a href="PackageHome">Membership Plans</a></li>
+                                        <li><a href="javascript:void(0)" onclick="return false;">Membership Plans</a></li>
                                         <li><a href="aboutus">About Us</a></li>
                                         <li><a href="contactus">Contact Us</a></li>
                                     </ul>
@@ -3158,25 +3163,28 @@
                                 <div class="footer-col">
                                     <h4>Help & Support</h4>
                                     <ul class="footer-links">
-                                        <li><a href="#">How it Works</a></li>
-                                        <li><a href="#">FAQs</a></li>
-                                        <li><a href="#">Privacy Policy</a></li>
-                                        <li><a href="#">Terms & Conditions</a></li>
-                                        <li><a href="#">Safety Tips</a></li>
-                                        <li><a href="#">Sitemap</a></li>
+                                        <li><a href="javascript:void(0)" onclick="return false;">How it Works</a></li>
+                                        <li><a href="#faqs"
+                                                onclick="var el = document.getElementById('faqs'); if(el){ el.scrollIntoView({behavior: 'smooth'}); return false; }">FAQs</a></li>
+                                        <li><a href="privacyPolicy">Privacy Policy</a></li>
+                                        <li><a href="TermAndCondition">Terms &amp; Conditions</a></li>
+                                        <li><a href="javascript:void(0)" onclick="return false;">Safety Tips</a></li>
+                                        <li><a href="javascript:void(0)" onclick="return false;">Sitemap</a></li>
                                     </ul>
                                 </div>
 
                                 <div class="footer-col">
                                     <h4>For Members</h4>
                                     <ul class="footer-links">
-                                        <li><a href="Login">Login</a></li>
+                                        <li><a href="#"
+                                                onclick="document.getElementById('loginModal').style.display='flex'; return false;">Login</a></li>
                                         <li><a href="#"
                                                 onclick="document.getElementById('registrationModal').style.display='flex'; return false;">Register
                                                 Free</a></li>
-                                        <li><a href="#">My Account</a></li>
-                                        <li><a href="#">Premium Plans</a></li>
-                                        <li><a href="#">Verification</a></li>
+                                        <li><a href="#"
+                                                onclick="document.getElementById('loginModal').style.display='flex'; return false;">My Account</a></li>
+                                        <li><a href="javascript:void(0)" onclick="return false;">Premium Plans</a></li>
+                                        <li><a href="javascript:void(0)" onclick="return false;">Verification</a></li>
                                     </ul>
                                 </div>
 
@@ -3597,7 +3605,7 @@
                                         <div class="terms-row">
                                             <input type="checkbox" required id="regTerms">
                                             <label for="regTerms">
-                                                I agree to the <a href="termsCondition" target="_blank">Terms &amp; Conditions</a> and <a href="privacyPolicy" target="_blank">Privacy Policy</a> of Snehbandhan.
+                                                I agree to the <a href="TermAndCondition" target="_blank">Terms &amp; Conditions</a> and <a href="privacyPolicy" target="_blank">Privacy Policy</a> of Snehbandhan.
                                             </label>
                                         </div>
 

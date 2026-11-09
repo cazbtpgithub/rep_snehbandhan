@@ -638,19 +638,19 @@
                     <li>
                         <a href="#" id="sidebarInbox" onclick="switchConversation('inbox_conversation', this); return false;">
                             <div class="menu-left"><i class="fa fa-envelope-o"></i> Inbox</div>
-                            <span class="badge-count">12</span>
+                            <span class="badge-count">${inboxCount != null ? inboxCount : 0}</span>
                         </a>
                     </li>
                     <li>
                         <a href="#" id="sidebarInterestReceived" onclick="switchConversation('invitation_conversation', this); return false;">
                             <div class="menu-left"><i class="fa fa-heart-o"></i> Interest Received</div>
-                            <span class="badge-count">8</span>
+                            <span class="badge-count">${interestReceivedCount != null ? interestReceivedCount : 0}</span>
                         </a>
                     </li>
                     <li>
                         <a href="#" id="sidebarInterestSent" onclick="switchConversation('sent_conversation', this); return false;">
                             <div class="menu-left"><i class="fa fa-paper-plane-o"></i> Interest Sent</div>
-                            <span class="badge-count">6</span>
+                            <span class="badge-count">${interestSentCount != null ? interestSentCount : 0}</span>
                         </a>
                     </li>
                     <li>
@@ -661,13 +661,13 @@
                     <li>
                         <a href="#" onclick="switchConversation('mainDivForUser', this); switchMatchTab('viewedYet'); return false;">
                             <div class="menu-left"><i class="fa fa-eye"></i> Who Viewed Me</div>
-                            <span class="badge-count">15</span>
+                            <span class="badge-count">${seenyet != null ? seenyet : 0}</span>
                         </a>
                     </li>
                     <li>
                         <a href="#" onclick="switchConversation('mainDivForUser', this); switchMatchTab('shortlisted'); return false;">
                             <div class="menu-left"><i class="fa fa-star-o"></i> Shortlisted</div>
-                            <span class="badge-count">4</span>
+                            <span class="badge-count">${shortlistedCount != null ? shortlistedCount : 0}</span>
                         </a>
                     </li>
                     <li>
@@ -737,7 +737,7 @@
                 <div class="stat-card" onclick="switchMatchTab('viewedYet', this);">
                     <div class="icon-circle"><i class="fa fa-eye"></i></div>
                     <div class="stat-info">
-                        <h3><fmt:formatNumber value="${seenyet != null ? seenyet : 792}"/></h3>
+                        <h3><fmt:formatNumber value="${seenyet != null ? seenyet : 0}"/></h3>
                         <p>Viewed My Profile</p>
                     </div>
                 </div>
@@ -745,7 +745,7 @@
                 <div class="stat-card" onclick="switchMatchTab('shortlisted', this);">
                     <div class="icon-circle"><i class="fa fa-heart"></i></div>
                     <div class="stat-info">
-                        <h3><fmt:formatNumber value="${sortlisted != null ? sortlisted : 305}"/></h3>
+                        <h3><fmt:formatNumber value="${shortlistedMeCount != null ? shortlistedMeCount : (sortlisted != null ? sortlisted : 0)}"/></h3>
                         <p>Shortlisted Me</p>
                     </div>
                 </div>
@@ -753,7 +753,7 @@
                 <div class="stat-card" onclick="switchMatchTab('notSeenYet', this);">
                     <div class="icon-circle"><i class="fa fa-star"></i></div>
                     <div class="stat-info">
-                        <h3><fmt:formatNumber value="${notseenyet != null ? notseenyet : 4}"/></h3>
+                        <h3><fmt:formatNumber value="${notseenyet != null ? notseenyet : 0}"/></h3>
                         <p>Profile Visits Today</p>
                     </div>
                 </div>
@@ -768,46 +768,51 @@
                     <div class="filter-group">
                         <label>Age</label>
                         <div style="display: flex; align-items: center; gap: 6px;">
+                            <%-- Age min: empty value means "no filter" --%>
                             <select id="filterAgeMin" style="min-width: 65px;">
+                                <option value="">Any</option>
                                 <option value="18">18</option>
                                 <option value="20">20</option>
-                                <option value="22" selected>22</option>
+                                <option value="22">22</option>
                                 <option value="25">25</option>
+                                <option value="28">28</option>
                                 <option value="30">30</option>
+                                <option value="35">35</option>
                             </select>
                             <span style="font-size: 11px; color: #888;">to</span>
                             <select id="filterAgeMax" style="min-width: 65px;">
+                                <option value="">Any</option>
                                 <option value="25">25</option>
+                                <option value="28">28</option>
                                 <option value="30">30</option>
-                                <option value="32" selected>32</option>
+                                <option value="32">32</option>
                                 <option value="35">35</option>
                                 <option value="40">40</option>
+                                <option value="45">45</option>
                                 <option value="50">50</option>
                             </select>
                         </div>
                     </div>
 
                     <div class="filter-group">
+                        <%-- Height: values are numeric decimals (feet.inches) that the DAO can parse --%>
                         <label>Height</label>
                         <select id="filterHeight" style="min-width: 100px;">
                             <option value="">Any Height</option>
-                            <option value="4'6 to 5'0">4'6" to 5'0"</option>
-                            <option value="5'0 to 5'5">5'0" to 5'5"</option>
-                            <option value="5'6 to 6'0">5'6" to 6'0"</option>
-                            <option value="6'0+">6'0" & Above</option>
+                            <option value="4.0|4.6">4'0" to 4'6"</option>
+                            <option value="4.6|5.0">4'6" to 5'0"</option>
+                            <option value="5.0|5.3">5'0" to 5'3"</option>
+                            <option value="5.3|5.6">5'3" to 5'6"</option>
+                            <option value="5.6|6.0">5'6" to 6'0"</option>
+                            <option value="6.0|7.0">6'0" &amp; Above</option>
                         </select>
                     </div>
 
                     <div class="filter-group">
+                        <%-- FIX: Religion dropdown uses only dynamic DB options (religion_id as value) --%>
                         <label>Religion</label>
                         <select id="filterReligion" style="min-width: 100px;">
                             <option value="">Any Religion</option>
-                            <option value="Hindu">Hindu</option>
-                            <option value="Jain">Jain</option>
-                            <option value="Buddhist">Buddhist</option>
-                            <option value="Sikh">Sikh</option>
-                            <option value="Christian">Christian</option>
-                            <option value="Muslim">Muslim</option>
                             <c:forEach var="religion" items="${religions}">
                                 <option value="${religion.religion_id}">${religion.religion_name}</option>
                             </c:forEach>
@@ -815,21 +820,17 @@
                     </div>
 
                     <div class="filter-group">
+                        <%-- FIX: Caste dropdown is dynamically loaded via AJAX when religion is selected --%>
                         <label>Caste</label>
                         <select id="filterCaste" style="min-width: 100px;">
                             <option value="">Any Caste</option>
-                            <option value="Maratha">Maratha</option>
-                            <option value="Kunbi">Kunbi</option>
-                            <option value="Brahmin">Brahmin</option>
-                            <option value="Baniya">Baniya</option>
-                            <option value="Lingayat">Lingayat</option>
-                            <option value="Dhangar">Dhangar</option>
                         </select>
                     </div>
 
                     <div class="filter-group" style="flex: 1; min-width: 140px;">
+                        <%-- FIX: Location now uses free-text search (state/district name) matched server-side --%>
                         <label>Location</label>
-                        <input type="text" id="filterLocation" placeholder="Enter city, district or state">
+                        <input type="text" id="filterLocation" placeholder="City, District or State" autocomplete="off">
                     </div>
                 </div>
 
@@ -936,11 +937,6 @@
                         </div>
 
                         <div class="checkbox-group-row">
-                            <label class="custom-checkbox-label">
-                                <input type="checkbox" id="chkPhotoOnly" checked>
-                                With Photo Only
-                            </label>
-
                             <label class="custom-checkbox-label">
                                 <input type="checkbox" id="chkVerifiedOnly">
                                 Verified Profiles Only
@@ -1864,19 +1860,33 @@
 
             var ageMin = $('#filterAgeMin').val();
             var ageMax = $('#filterAgeMax').val();
-            if (ageMin || ageMax) chips.push({ key: 'Age', label: 'Age: ' + ageMin + '-' + ageMax });
+            if (ageMin || ageMax) chips.push({ key: 'Age', label: 'Age: ' + (ageMin || 'Any') + '-' + (ageMax || 'Any') });
 
-            var height = $('#filterHeight').val();
-            if (height) chips.push({ key: 'filterHeight', label: 'Height: ' + height });
+            // FIX: Height uses pipe-separated numeric format "4.6|5.0" now
+            var heightVal = $('#filterHeight').val();
+            var heightFirst = '';
+            var heightSecond = '';
+            if (heightVal) {
+                var hParts = heightVal.split('|');
+                heightFirst = hParts[0] || '';
+                heightSecond = hParts[1] || '';
+                chips.push({ key: 'filterHeight', label: 'Height: ' + $('#filterHeight option:selected').text() });
+            }
 
             var religion = $('#filterReligion').val();
-            if (religion) chips.push({ key: 'filterReligion', label: 'Religion: ' + religion });
+            if (religion) chips.push({ key: 'filterReligion', label: 'Religion: ' + $('#filterReligion option:selected').text() });
 
             var caste = $('#filterCaste').val();
-            if (caste) chips.push({ key: 'filterCaste', label: 'Caste: ' + caste });
+            if (caste) chips.push({ key: 'filterCaste', label: 'Caste: ' + $('#filterCaste option:selected').text() });
 
             var location = $('#filterLocation').val();
+            var advState = $('#advState').val();
+            var combinedLoc = location;
+            if (advState) {
+                combinedLoc = combinedLoc ? (combinedLoc + ' ' + advState) : advState;
+            }
             if (location) chips.push({ key: 'filterLocation', label: 'Loc: ' + location });
+            if (advState) chips.push({ key: 'advState', label: 'State: ' + advState });
 
             var marital = $('#advMaritalStatus').val();
             if (marital) chips.push({ key: 'advMaritalStatus', label: 'Status: ' + marital });
@@ -1911,7 +1921,6 @@
             var dob = $('#searchDob').val();
             if (dob) chips.push({ key: 'searchDob', label: 'DOB: ' + dob });
 
-            if ($('#chkPhotoOnly').is(':checked')) chips.push({ key: 'chkPhotoOnly', label: 'Photo Only' });
             if ($('#chkVerifiedOnly').is(':checked')) chips.push({ key: 'chkVerifiedOnly', label: 'Verified Only' });
             if ($('#chkOnlineOnly').is(':checked')) chips.push({ key: 'chkOnlineOnly', label: 'Online Only' });
 
@@ -1935,19 +1944,20 @@
             // Fire AJAX Refine Search
             var oMyForm = new FormData();
             var searchData = {
-                refineheightSelectPartnerFirst: height ? height.split(' to ')[0] || '' : '',
-                refineheightSelectPartnerSecond: height ? height.split(' to ')[1] || '' : '',
-                refineageFrom: ageMin || '18',
-                refineageTo: ageMax || '50',
+                refineheightSelectPartnerFirst: heightFirst,
+                refineheightSelectPartnerSecond: heightSecond,
+                refineageFrom: ageMin || '',
+                refineageTo: ageMax || '',
                 refinematerialStatus: marital || '',
                 refinereligionSelectPartner: religion || '',
                 casteSelect: caste || '',
                 refineoccupationCategorySelect: occ || '',
-                checkBoxDistrict: location || '',
+                checkBoxDistrict: combinedLoc || '',
                 profileId: profId || '',
                 nameSearch: profName || '',
                 regDate: regDate || '',
                 dob: dob || '',
+                education: edu || '',
                 RefineSearchProfile: "[]"
             };
             oMyForm.append("jsonObjectData", JSON.stringify(searchData));
@@ -1992,23 +2002,27 @@
         // Remove Individual Filter Chip
         window.removeFilterChip = function(key) {
             if (key === 'Age') {
-                $('#filterAgeMin').val('18');
-                $('#filterAgeMax').val('50');
+                $('#filterAgeMin').val('');
+                $('#filterAgeMax').val('');
             } else if (key.startsWith('chk')) {
                 $('#' + key).prop('checked', false);
             } else {
                 $('#' + key).val('');
+                if (key === 'filterReligion') {
+                    $('#filterCaste').html('<option value="">Any Caste</option>');
+                }
             }
             applyAdvanceSearch();
         };
 
         // Clear All Advance Filters
         window.clearAllAdvanceFilters = function() {
-            $('#filterAgeMin').val('18');
-            $('#filterAgeMax').val('32');
+            $('#filterAgeMin').val('');
+            $('#filterAgeMax').val('');
             $('#filterHeight').val('');
             $('#filterReligion').val('');
-            $('#filterCaste').val('');
+            // FIX: Reset caste and reload empty options
+            $('#filterCaste').html('<option value="">Any Caste</option>');
             $('#filterLocation').val('');
             $('#advMaritalStatus').val('');
             $('#advMotherTongue').val('');
@@ -2022,7 +2036,6 @@
             $('#searchName').val('');
             $('#searchRegDate').val('');
             $('#searchDob').val('');
-            $('#chkPhotoOnly').prop('checked', false);
             $('#chkVerifiedOnly').prop('checked', false);
             $('#chkOnlineOnly').prop('checked', false);
 
@@ -2036,8 +2049,10 @@
         // Client Mock Profile Filter Fallback
         function filterClientMockProfiles() {
             var locationFilter = ($('#filterLocation').val() || '').toLowerCase();
-            var casteFilter = ($('#filterCaste').val() || '').toLowerCase();
-            var religionFilter = ($('#filterReligion').val() || '').toLowerCase();
+            var casteText = $('#filterCaste option:selected').text() || '';
+            var casteFilter = (casteText === 'Any Caste' || casteText === 'Loading castes...') ? '' : casteText.toLowerCase();
+            var relText = $('#filterReligion option:selected').text() || '';
+            var religionFilter = (relText === 'Any Religion') ? '' : relText.toLowerCase();
             var nameFilter = ($('#searchName').val() || '').toLowerCase();
             var idFilter = ($('#searchProfileId').val() || '').toLowerCase();
 
@@ -2068,6 +2083,45 @@
         };
 
         $(document).ready(function() {
+            // Dynamically load castes when religion changes
+            $('#filterReligion').on('change', function() {
+                var religionId = $(this).val();
+                var $casteSelect = $('#filterCaste');
+                $casteSelect.html('<option value="">Loading castes...</option>');
+                if (religionId) {
+                    $.ajax({
+                        url: "${pageContext.request.contextPath}/educationOccupation/loadCasteAccordingToReligion",
+                        type: "GET",
+                        data: { id: religionId },
+                        dataType: "json",
+                        success: function(data) {
+                            $casteSelect.html('<option value="">Any Caste</option>');
+                            if (data && data.length) {
+                                $.each(data, function(index, caste) {
+                                    $casteSelect.append($('<option>', {
+                                        value: caste.caste_id,
+                                        text: caste.caste_name
+                                    }));
+                                });
+                            }
+                        },
+                        error: function() {
+                            $casteSelect.html('<option value="">Any Caste</option>');
+                        }
+                    });
+                } else {
+                    $casteSelect.html('<option value="">Any Caste</option>');
+                }
+            });
+
+            // Pressing Enter in location input triggers search
+            $('#filterLocation').on('keypress', function(e) {
+                if (e.which === 13) {
+                    e.preventDefault();
+                    applyAdvanceSearch();
+                }
+            });
+
             // Default to Contact Details tab whenever Shortlist modal opens as requested
             $('#myModal').on('show.bs.modal', function() {
                 window.show1('menu3');

@@ -282,4 +282,48 @@ public class CompareUserProfileView {
 	
 	
 	
+
+	private String dateOfBirth;
+	private String familyType;
+	private String familyClass;
+	private String familyValues;
+	private String bodyType;
+	private String complexion;
+
+	public String getDateOfBirth() {
+		return dateOfBirth;
+	}
+	public void setDateOfBirth(String dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
+	}
+	public String getFamilyType() {
+		return familyType;
+	}
+	public void setFamilyType(String familyType) {
+		this.familyType = familyType;
+	}
+	public String getFamilyClass() {
+		return familyClass;
+	}
+	public void setFamilyClass(String familyClass) {
+		this.familyClass = familyClass;
+	}
+	public String getFamilyValues() {
+		return familyValues;
+	}
+	public void setFamilyValues(String familyValues) {
+		this.familyValues = familyValues;
+	}
+	public String getBodyType() {
+		return bodyType;
+	}
+	public void setBodyType(String bodyType) {
+		this.bodyType = bodyType;
+	}
+	public String getComplexion() {
+		return complexion;
+	}
+	public void setComplexion(String complexion) {
+		this.complexion = complexion;
+	}
 }

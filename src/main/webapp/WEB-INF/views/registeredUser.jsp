@@ -301,7 +301,7 @@ label {
 						style="height: 750px; width: 1180px; margin-left: -250px;overflow: auto;overflow-x:hidden;">
 						<div class="modal-header" >
 							<button type="button" class="close" data-dismiss="modal" onclick="closeModel();">&times;</button>
-							<h4 class="modal-title">Registered User Detail</h4>
+							<h4 class="modal-title">Registered User Detail <a id="viewFullProfileModalBtn" href="#" target="_blank" class="btn btn-default btn-xs pull-right" style="margin-right:20px;"><i class="fa fa-external-link"></i> View Full Profile</a></h4>
 						</div>
 						<div class="modal-body">
  		<div class="alert alert-danger alert-dismissable"
@@ -875,7 +875,7 @@ label {
 											<b>Family Preference</b>
 											<div class="pull-right" >
 														<input name="familyClassInfo" id="familyClassInfo" 
-													value="Middle class" type="radio" checked /> <label
+													value="Middle class" type="radio" /> <label
 													style="color: gray; font-size: 15px;">Middle class</label>&nbsp;&nbsp; <input
 													name="familyClassInfo" id="familyClassInfo"
 													value="Upper middle class" type="radio" /> <label
@@ -892,7 +892,7 @@ label {
 														<li class="list-group-item"><b>Family Type </b>
 														<!-- <input type="text" class="pull-right"  id="userFamilyType"/> -->
 														<div class="pull-right">
-														<input name="familyTypeInfo" value="Joint" type="radio" checked /><label
+														<input name="familyTypeInfo" value="Joint" type="radio" /><label
 													style="color: gray; font-size: 15px;">Joint</label>&nbsp;&nbsp; <input
 													name="familyTypeInfo" value="Nuclear" type="radio" /><label
 													style="color: gray; font-size: 15px;">Nuclear</label>&nbsp;&nbsp;
@@ -900,8 +900,7 @@ label {
 													</li>
 													<li class="list-group-item"><b>Family Values </b>
 													<div class="pull-right">
-														<input name="familyValueInfo" value="Orthodox" type="radio"
-														checked /><label style="color: gray; font-size: 15px;">Orthodox</label>&nbsp;&nbsp;
+														<input name="familyValueInfo" value="Orthodox" type="radio" /><label style="color: gray; font-size: 15px;">Orthodox</label>&nbsp;&nbsp;
 													<input name="familyValueInfo" value="Traditional" type="radio" /><label
 														style="color: gray; font-size: 15px;">Traditional</label> &nbsp;&nbsp;<input
 														name="familyValueInfo" value="Moderate" type="radio" /><label
@@ -1889,14 +1888,14 @@ label {
 									{
 										"data" : "dateOfBirth",
 										"render" : function(data) {
-											if(!data) return "";
+											if(!data) return "-";
 											var date = new Date(data);
-											if (isNaN(date.getTime())) return "";
+											if (isNaN(date.getTime()) || date.getFullYear() <= 1970) return "-";
 											var day = (date.getDate() < 10 ? "0" : "") + date.getDate();
 											var month = (date.getMonth() + 1 < 10 ? "0" : "") + (date.getMonth() + 1);
 											return day + "-" + month + "-" + date.getFullYear();
 										},
-										"defaultContent": ""
+										"defaultContent": "-"
 									},
 									{
 										"data" : "kit",
@@ -1914,7 +1913,11 @@ label {
 									},
 									{
 										"data" : null,
-										"defaultContent" : "<button type='button' class='btn btn-info btn-xs' onclick='fun(this)' title='View Profile' style='padding:3px 8px;'><i class='fa fa-eye'></i> View</button>",
+										"render" : function(data, type, row) {
+											var uid = (row && row.userId) ? row.userId : "";
+											return "<button type='button' class='btn btn-info btn-xs' onclick='fun(this)' title='View/Edit Profile' style='padding:3px 8px;'><i class='fa fa-edit'></i> Edit</button> " +
+											       "<a href='ViewProfileWithPartner?userId=" + uid + "' target='_blank' class='btn btn-default btn-xs' title='View Full Profile' style='padding:3px 8px;'><i class='fa fa-eye'></i> View</a>";
+										},
 										"orderable": false
 									},
 									{
@@ -1936,6 +1939,41 @@ label {
 			table.column($(this).parent().index()).search(this.value).draw();
 		});
 
+				function selectClosestHeightOption(selectElem, heightVal) {
+			if (!heightVal) {
+				selectElem.val("0");
+				return;
+			}
+			var h = parseFloat(heightVal);
+			if (isNaN(h) || h <= 0) {
+				selectElem.val("0");
+				return;
+			}
+			// If height is in feet decimal (e.g. 5.2 = 5 ft 2 in)
+			if (h < 10) {
+				var f = Math.floor(h);
+				var inc = Math.round((h - f) * 10.0);
+				h = (f * 12 + inc) * 2.54;
+			}
+			var bestVal = "0";
+			var minDiff = 999999;
+			selectElem.find('option').each(function() {
+				var optVal = parseFloat($(this).val());
+				if (optVal > 0) {
+					var diff = Math.abs(optVal - h);
+					if (diff < minDiff) {
+						minDiff = diff;
+						bestVal = $(this).val();
+					}
+				}
+			});
+			if (minDiff <= 3.0) {
+				selectElem.val(bestVal);
+			} else {
+				selectElem.val("0");
+			}
+		}
+
 		function fun(aa) {
 			var rowData = null;
 			try {
@@ -1951,6 +1989,7 @@ label {
 
 			// Here i am directlly passing the userModel id fot getting the userMOdel details
 			$("#userId").val(userId);
+			$("#viewFullProfileModalBtn").attr("href", "ViewProfileWithPartner?userId=" + userId);
 			$("#hiddenuserId").val(userId);
 			 $.ajax({
 				url : '${pageContext.request.contextPath}/getUserModelPartnerPreferancesByUserModelId',
@@ -1994,21 +2033,22 @@ label {
 					    return ($(this).val() == cntForiterateobj.physicalStatus); 
 					}).prop('selected', true); 
 					
-					$('input[name=bodyTypePartner][value="'+cntForiterateobj.bodyType+'"]')
-					.attr('checked', true);
+					$('input[name=bodyTypePartner]').prop('checked', false);
+					if (cntForiterateobj.bodyType) {
+						$('input[name=bodyTypePartner]').filter(function() {
+							return $(this).val().trim().toLowerCase() === cntForiterateobj.bodyType.trim().toLowerCase();
+						}).prop('checked', true);
+					}
 					
-					$('input[name=complexionPartner][value="'+cntForiterateobj.complexion+'"]') 
-					.attr('checked', true);
+					$('input[name=complexionPartner]').prop('checked', false);
+					if (cntForiterateobj.complexion) {
+						$('input[name=complexionPartner]').filter(function() {
+							return $(this).val().trim().toLowerCase() === cntForiterateobj.complexion.trim().toLowerCase();
+						}).prop('checked', true);
+					}
 					
-					
-					$('[name=heightSelectPartnerFirst] option').filter(function() { 
-					    return ($(this).val() == cntForiterateobj.heightFrom); 
-					}).prop('selected', true); 
-					
-					
-					$('[name=heightSelectPartnerSecond] option').filter(function() { 
-					    return ($(this).val() == cntForiterateobj.heightTo); 
-					}).prop('selected', true); 
+					selectClosestHeightOption($('#heightSelectPartnerFirst'), cntForiterateobj.heightFrom);
+					selectClosestHeightOption($('#heightSelectPartnerSecond'), cntForiterateobj.heightTo); 
 					
 					$('[name=stateSelectPartner] option').filter(function() { 
 					    return ($(this).val() == cntForiterateobj.state_Country.state_Country_id); 
@@ -2304,15 +2344,19 @@ label {
 												return ($(this).text() == cntForiterateobj1.profileCreatedFor);
 											}).prop('selected', true);
 
-							$(
-									'input[name=gender][value="'
-											+ cntForiterateobj1.gender + '"]')
-									.attr('checked', true);
+							$('input[name=gender]').prop('checked', false);
+							if (cntForiterateobj1.gender) {
+								$('input[name=gender]').filter(function() {
+									return $(this).val().trim().toLowerCase() === cntForiterateobj1.gender.trim().toLowerCase();
+								}).prop('checked', true);
+							}
 
 							var regex = /<br\s*[\/]?>/gi;
-							$("#aboutMe").val(
-									cntForiterateobj1.aboutMe.replace(regex,
-											"\n"));
+							if (cntForiterateobj1.aboutMe) {
+								$("#aboutMe").val(cntForiterateobj1.aboutMe.replace(regex, "\n"));
+							} else {
+								$("#aboutMe").val("");
+							}
 							$('[name=materialStatus] option')
 									.filter(
 											function() {
@@ -2325,21 +2369,21 @@ label {
 												return ($(this).text() == cntForiterateobj1.physicalStatus);
 											}).prop('selected', true);
 
-							$(
-									'input[name=bodyType][value="'
-											+ cntForiterateobj1.bodyType + '"]')
-									.attr('checked', true);
+							$('input[name=bodyType]').prop('checked', false);
+							if (cntForiterateobj1.bodyType) {
+								$('input[name=bodyType]').filter(function() {
+									return $(this).val().trim().toLowerCase() === cntForiterateobj1.bodyType.trim().toLowerCase();
+								}).prop('checked', true);
+							}
 
-							$(
-									'input[name=complexion][value="'
-											+ cntForiterateobj1.complexion
-											+ '"]').attr('checked', true);
+							$('input[name=complexion]').prop('checked', false);
+							if (cntForiterateobj1.complexion) {
+								$('input[name=complexion]').filter(function() {
+									return $(this).val().trim().toLowerCase() === cntForiterateobj1.complexion.trim().toLowerCase();
+								}).prop('checked', true);
+							}
 
-							$('[name=heightSelect] option')
-									.filter(
-											function() {
-												return ($(this).val() == cntForiterateobj1.height);
-											}).prop('selected', true);
+							selectClosestHeightOption($('#heightSelect'), cntForiterateobj1.height);
 
 							$('[name=weightSelect] option')
 									.filter(
@@ -2563,102 +2607,101 @@ label {
 									});
 
 							try {
-								$(
-										'input[name=employedIn][value="'
-												+ cntForiterateobj1.employeedIn
-												+ '"]').attr('checked', true);
-
-							} catch (e) {
-							}
-							try {
-								$(
-										'input[name=income][value="'
-												+ cntForiterateobj1.incomeType
-												+ '"]').attr('checked', true);
-
-							} catch (e) {
-							}
+								$('input[name=employedIn]').prop('checked', false);
+								if (cntForiterateobj1.employeedIn) {
+									$('input[name=employedIn]').filter(function() {
+										return $(this).val().trim().toLowerCase() === cntForiterateobj1.employeedIn.trim().toLowerCase();
+									}).prop('checked', true);
+								}
+							} catch (e) {}
 
 							try {
-								$("#incomeAmount").val(
-										cntForiterateobj1.incomeAmount);
-							} catch (e) {
-							}
-							try {
-
-								$(
-										'input[name=familyClassInfo][value="'
-												+ cntForiterateobj1.familyClass
-												+ '"]').attr('checked', true);
-							} catch (e) {
-							}
-							try {
-								$(
-										'input[name=familyTypeInfo][value="'
-												+ cntForiterateobj1.familyType
-												+ '"]').attr('checked', true);
-
-							} catch (e) {
-							}
-							try {
-
-								$(
-										'input[name=familyValueInfo][value="'
-												+ cntForiterateobj1.familyValues
-												+ '"]').attr('checked', true);
-							} catch (e) {
-								// TODO: handle exception
-							}
+								$('input[name=income]').prop('checked', false);
+								if (cntForiterateobj1.incomeType) {
+									$('input[name=income]').filter(function() {
+										return $(this).val().trim().toLowerCase() === cntForiterateobj1.incomeType.trim().toLowerCase();
+									}).prop('checked', true);
+								}
+							} catch (e) {}
 
 							try {
-								$(
-										'input[name=eating][value="'
-												+ cntForiterateobj1.eating
-												+ '"]').attr('checked', true);
-
-							} catch (e) {
-								// TODO: handle exception
-							}
+								$("#incomeAmount").val(cntForiterateobj1.incomeAmount || "");
+							} catch (e) {}
 
 							try {
-								$(
-										'input[name=drink][value="'
-												+ cntForiterateobj1.drink
-												+ '"]').attr('checked', true);
-
-							} catch (e) {
-							}
+								$('input[name=familyClassInfo]').prop('checked', false);
+								if (cntForiterateobj1.familyClass) {
+									$('input[name=familyClassInfo]').filter(function() {
+										return $(this).val().trim().toLowerCase() === cntForiterateobj1.familyClass.trim().toLowerCase();
+									}).prop('checked', true);
+								}
+							} catch (e) {}
 
 							try {
-								$(
-										'input[name=smoke][value="'
-												+ cntForiterateobj1.smoke
-												+ '"]').attr('checked', true);
-							} catch (e) {
-							}
+								$('input[name=familyTypeInfo]').prop('checked', false);
+								if (cntForiterateobj1.familyType) {
+									$('input[name=familyTypeInfo]').filter(function() {
+										return $(this).val().trim().toLowerCase() === cntForiterateobj1.familyType.trim().toLowerCase();
+									}).prop('checked', true);
+								}
+							} catch (e) {}
 
-							//$("#userMstatus").val(cntForiterateobj1.materialStatus);
-							// End of 18-04 code
+							try {
+								$('input[name=familyValueInfo]').prop('checked', false);
+								if (cntForiterateobj1.familyValues) {
+									$('input[name=familyValueInfo]').filter(function() {
+										return $(this).val().trim().toLowerCase() === cntForiterateobj1.familyValues.trim().toLowerCase();
+									}).prop('checked', true);
+								}
+							} catch (e) {}
+
+							try {
+								$('input[name=eating]').prop('checked', false);
+								if (cntForiterateobj1.eating) {
+									$('input[name=eating]').filter(function() {
+										return $(this).val().trim().toLowerCase() === cntForiterateobj1.eating.trim().toLowerCase();
+									}).prop('checked', true);
+								}
+							} catch (e) {}
+
+							try {
+								$('input[name=drink]').prop('checked', false);
+								if (cntForiterateobj1.drink) {
+									$('input[name=drink]').filter(function() {
+										return $(this).val().trim().toLowerCase() === cntForiterateobj1.drink.trim().toLowerCase();
+									}).prop('checked', true);
+								}
+							} catch (e) {}
+
+							try {
+								$('input[name=smoke]').prop('checked', false);
+								if (cntForiterateobj1.smoke) {
+									$('input[name=smoke]').filter(function() {
+										return $(this).val().trim().toLowerCase() === cntForiterateobj1.smoke.trim().toLowerCase();
+									}).prop('checked', true);
+								}
+							} catch (e) {}
 
 							$("#hiddenUsermodelId").val(cntForiterateobj1.userDetailsId);
 							$("#mobile").val(cntForiterateobj1.mobileNum);
 							$("#editUserMobileNoHidden").val(cntForiterateobj1.mobileNum);
-							var time = new Date(cntForiterateobj1.dateOfBirth);
-							
-							
-							
-							var year = time.getFullYear();
-							var month = time.getMonth() + 1;
-							var today = time.getDate();
-							if (today < 10) {
 
-								today = '0' + today;
+							if (cntForiterateobj1.dateOfBirth) {
+								var time = new Date(cntForiterateobj1.dateOfBirth);
+								if (!isNaN(time.getTime()) && time.getFullYear() > 1900 && time.getFullYear() < 2100) {
+									var year = time.getFullYear();
+									var month = time.getMonth() + 1;
+									var today = time.getDate();
+									if (today < 10) today = '0' + today;
+									if (month < 10) month = '0' + month;
+									var fullYear = today + "/" + month + "/" + year;
+									$("#dob").val(fullYear);
+								} else {
+									$("#dob").val("");
+								}
+							} else {
+								$("#dob").val("");
 							}
-							if (month < 10) {
-								month = '0' + month;
-							}
-							var fullYear = today + "/" + month + "/" + year;
-							$("#dob").val(fullYear);
 							
 							var userRegistrationDate = new Date(cntForiterateobj1.registrationDate);
 							var userRegistrationDay =userRegistrationDate.getDate();

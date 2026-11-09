@@ -133,6 +133,13 @@ public interface UserService {
 			String refineheightSelectPartnerFirst, String refineheightSelectPartnerSecond, String refineageFrom,
 			String refineageTo, String refinematerialStatus, String refinereligionSelectPartner, String casteSelect,
 			String refineoccupationCategorySelect,String refineDistrict,List<UserModel>excludeUserModelsRefineSearch);
+
+	public List<UserProfileView> getlistOfRefineSearchByUserExcludeUserModels(HttpServletRequest request, UserModel userModel,String gender,
+			String refineheightSelectPartnerFirst, String refineheightSelectPartnerSecond, String refineageFrom,
+			String refineageTo, String refinematerialStatus, String refinereligionSelectPartner, String casteSelect,
+			String refineoccupationCategorySelect,String refineDistrict,
+			String profileId, String nameSearch, String regDate, String dob, String education,
+			List<UserModel>excludeUserModelsRefineSearch);
 	
 
 	public List<UserModelDetails> getListOfUserModelDetailsByGender(String gender,HttpServletRequest request);
@@ -143,6 +150,13 @@ public interface UserService {
 	public List<OnlineUser> getListOfOnlineUser(String sex);
 	List<UserProfileView> getListOFProfileForChattingAccordingToGender(String gender, HttpServletRequest request);
 	public void updateUserModelDetails(UserModelDetails usermodeldetails);
+		public Long getCountOfShortlistedMe(UserModel userModel);
+	public Long getCountOfShortlistedByMe(UserModel userModel);
+	public Long getCountOfInboxMessages(UserModel userModel);
+	public Long getCountOfInterestReceived(UserModel userModel);
+	public Long getCountOfInterestSent(UserModel userModel);
+	public Long getCountOfWhoViewedMe(UserModel userModel);
+
 	public List<AdminUserModel> getListOfUserModelDetailsForDealerByDealer(Dealer dealer);
 	public void  saveDeleteUserDetail(UserModel usermodel,UserModel deleteBy);
 	
