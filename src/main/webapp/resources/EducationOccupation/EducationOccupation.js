@@ -38,6 +38,9 @@ function SaveRegistrationDetails() {
 	var eatingPartner = $("input[name=eatingPartner]:checked").val() || "vegetarian";
 	var drinkPartner = $("input[name=drinkPartner]:checked").val() || "Never";
 	var smokePartner = $("input[name=smokePartner]:checked").val() || "Non-smoker";
+	var relocatePartner = $("input[name=relocatePartner]").is(":checked") ? "Yes" : "No";
+	var settleAbroadPartner = $("input[name=settleAbroadPartner]").is(":checked") ? "Yes" : "No";
+	var horoscopePartner = $("input[name=horoscopePartner]").is(":checked") ? "Yes" : "No";
     var kundaliImg = "No";
 	
 	  if (materialStatusPartner == 0) {
@@ -242,7 +245,10 @@ function SaveRegistrationDetails() {
 		kitId : kitId,
 		kitPassword : kitPassword,
 		ladmark : ladmark,
-		kundaliImg :kundaliImg},
+		kundaliImg :kundaliImg,
+		relocatePartner : relocatePartner,
+		settleAbroadPartner : settleAbroadPartner,
+		horoscopePartner : horoscopePartner},
 		timeout:8000000,
 		success : function(data) 
 		{

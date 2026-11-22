@@ -76,7 +76,7 @@
     <div class="ep-v3-nav-right">
         <div class="ep-v3-bell-btn">
             <i class="fa fa-bell"></i>
-            <span class="ep-v3-bell-badge">3</span>
+            <span class="ep-v3-bell-badge">${notificationCount != null ? notificationCount : 0}</span>
         </div>
         <div class="ep-v3-user-chip dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <img class="ep-v3-user-avatar" src="resources/UserImages/${UserProfile}" alt="User Avatar" onerror="this.onerror=null; this.src='resources/UserImages/userImage.png';">
@@ -106,10 +106,10 @@
             <div class="ep-v3-progress-wrapper">
                 <div class="ep-v3-progress-header">
                     <span>Profile Completeness</span>
-                    <span class="ep-v3-progress-val">65%</span>
+                    <span class="ep-v3-progress-val">${profileCompleteness != null ? profileCompleteness : 65}%</span>
                 </div>
                 <div class="ep-v3-progress-bar">
-                    <div class="ep-v3-progress-fill" style="width: 65%;"></div>
+                    <div class="ep-v3-progress-fill" style="width: ${profileCompleteness != null ? profileCompleteness : 65}%;"></div>
                 </div>
             </div>
         </div>
@@ -140,21 +140,21 @@
 
             <div class="ep-v3-menu-group">
                 <div class="ep-v3-menu-title">ACTIVITY</div>
-                <a href="#" class="ep-v3-menu-item">
+                <a href="<c:url value='userHome'></c:url>" class="ep-v3-menu-item">
                     <span><i class="fa fa-envelope-o"></i> Messages</span>
-                    <span class="ep-v3-badge">12</span>
+                    <span class="ep-v3-badge">${inboxCount != null ? inboxCount : 0}</span>
                 </a>
-                <a href="#" class="ep-v3-menu-item">
+                <a href="<c:url value='userHome'></c:url>" class="ep-v3-menu-item">
                     <span><i class="fa fa-heart-o"></i> Interested In You</span>
-                    <span class="ep-v3-badge">8</span>
+                    <span class="ep-v3-badge">${interestReceivedCount != null ? interestReceivedCount : 0}</span>
                 </a>
-                <a href="#" class="ep-v3-menu-item">
+                <a href="<c:url value='userHome'></c:url>" class="ep-v3-menu-item">
                     <span><i class="fa fa-eye"></i> Who Viewed You</span>
-                    <span class="ep-v3-badge">15</span>
+                    <span class="ep-v3-badge">${seenyet != null ? seenyet : 0}</span>
                 </a>
-                <a href="#" class="ep-v3-menu-item">
+                <a href="<c:url value='userHome'></c:url>" class="ep-v3-menu-item">
                     <span><i class="fa fa-star-o"></i> Shortlisted</span>
-                    <span class="ep-v3-badge">6</span>
+                    <span class="ep-v3-badge">${shortlistedCount != null ? shortlistedCount : 0}</span>
                 </a>
             </div>
 
@@ -320,11 +320,16 @@
                                 <label class="ep-v3-label">Created For <span class="ep-v3-req">*</span></label>
                                 <select id="ProfileCreatedFor" name="ProfileCreatedFor" class="ep-v3-select">
                                     <option value="Self" ${modelDetails.profileCreatedFor == 'Self' ? 'selected' : ''}>Self</option>
-                                    <option value="Parents" ${modelDetails.profileCreatedFor == 'Parents' ? 'selected' : ''}>Parents</option>
-                                    <option value="Sibling" ${modelDetails.profileCreatedFor == 'Sibling' ? 'selected' : ''}>Sibling</option>
-                                    <option value="Relative" ${modelDetails.profileCreatedFor == 'Relative' ? 'selected' : ''}>Relative</option>
+                                    <option value="Son" ${modelDetails.profileCreatedFor == 'Son' ? 'selected' : ''}>Son</option>
+                                    <option value="Daughter" ${modelDetails.profileCreatedFor == 'Daughter' ? 'selected' : ''}>Daughter</option>
+                                    <option value="Son / Daughter" ${modelDetails.profileCreatedFor == 'Son / Daughter' ? 'selected' : ''}>Son / Daughter</option>
+                                    <option value="Brother" ${modelDetails.profileCreatedFor == 'Brother' ? 'selected' : ''}>Brother</option>
                                     <option value="Sister" ${modelDetails.profileCreatedFor == 'Sister' ? 'selected' : ''}>Sister</option>
+                                    <option value="Brother / Sister" ${modelDetails.profileCreatedFor == 'Brother / Sister' || modelDetails.profileCreatedFor == 'Sibling' ? 'selected' : ''}>Brother / Sister (Sibling)</option>
+                                    <option value="Relative" ${modelDetails.profileCreatedFor == 'Relative' ? 'selected' : ''}>Relative</option>
                                     <option value="Friend" ${modelDetails.profileCreatedFor == 'Friend' ? 'selected' : ''}>Friend</option>
+                                    <option value="Relative / Friend" ${modelDetails.profileCreatedFor == 'Relative / Friend' ? 'selected' : ''}>Relative / Friend</option>
+                                    <option value="Parents" ${modelDetails.profileCreatedFor == 'Parents' ? 'selected' : ''}>Parents</option>
                                 </select>
                             </div>
                             <div class="ep-v3-field ep-v3-col-1">
@@ -358,7 +363,10 @@
                             <div class="ep-v3-field ep-v3-col-1">
                                 <label class="ep-v3-label">Marital Status <span class="ep-v3-req">*</span></label>
                                 <select id="materialStatus" name="materialStatus" class="ep-v3-select">
+                                    <option value="0">Select marital status</option>
+                                    <option value="Single" ${modelDetails.materialStatus == 'Single' ? 'selected' : ''}>Single</option>
                                     <option value="Never Married" ${modelDetails.materialStatus == 'Never Married' ? 'selected' : ''}>Never Married</option>
+                                    <option value="Married" ${modelDetails.materialStatus == 'Married' ? 'selected' : ''}>Married</option>
                                     <option value="Divorced" ${modelDetails.materialStatus == 'Divorced' ? 'selected' : ''}>Divorced</option>
                                     <option value="Widowed" ${modelDetails.materialStatus == 'Widowed' ? 'selected' : ''}>Widowed</option>
                                     <option value="Awaiting Divorce" ${modelDetails.materialStatus == 'Awaiting Divorce' ? 'selected' : ''}>Awaiting Divorce</option>
@@ -381,28 +389,177 @@
                             <div class="ep-v3-field ep-v3-col-1">
                                 <label class="ep-v3-label">Height <span class="ep-v3-req">*</span></label>
                                 <select id="heightSelect" name="heightSelect" class="ep-v3-select">
-                                    <option value="4.5">4' 5"</option>
-                                    <option value="5.0">5' 0"</option>
-                                    <option value="5.2" selected>5' 2"</option>
-                                    <option value="5.5">5' 5"</option>
-                                    <option value="5.8">5' 8"</option>
-                                    <option value="6.0">6' 0"</option>
-                                    <option value="6.2">6' 2"</option>
+                                    <option value="0">Select Height</option>
+                                    <option value="121.92">4 feet</option>
+                                    <option value="124.46">4 feet 1 inches</option>
+                                    <option value="127.00">4 feet 2 inches</option>
+                                    <option value="129.54">4 feet 3 inches</option>
+                                    <option value="132.08">4 feet 4 inches</option>
+                                    <option value="134.62">4 feet 5 inches</option>
+                                    <option value="137.16">4 feet 6 inches</option>
+                                    <option value="139.70">4 feet 7 inches</option>
+                                    <option value="142.24">4 feet 8 inches</option>
+                                    <option value="144.78">4 feet 9 inches</option>
+                                    <option value="147.32">4 feet 10 inches</option>
+                                    <option value="149.86">4 feet 11 inches</option>
+                                    <option value="152.40">5 feet</option>
+                                    <option value="154.94">5 feet 1 inches</option>
+                                    <option value="157.48">5 feet 2 inches</option>
+                                    <option value="160.02">5 feet 3 inches</option>
+                                    <option value="162.56">5 feet 4 inches</option>
+                                    <option value="165.10">5 feet 5 inches</option>
+                                    <option value="167.64">5 feet 6 inches</option>
+                                    <option value="170.18">5 feet 7 inches</option>
+                                    <option value="172.72">5 feet 8 inches</option>
+                                    <option value="175.26">5 feet 9 inches</option>
+                                    <option value="177.80">5 feet 10 inches</option>
+                                    <option value="180.34">5 feet 11 inches</option>
+                                    <option value="182.88">6 feet</option>
+                                    <option value="185.42">6 feet 1 inches</option>
+                                    <option value="187.96">6 feet 2 inches</option>
+                                    <option value="190.50">6 feet 3 inches</option>
+                                    <option value="193.04">6 feet 4 inches</option>
+                                    <option value="195.58">6 feet 5 inches</option>
+                                    <option value="198.12">6 feet 6 inches</option>
+                                    <option value="200.66">6 feet 7 inches</option>
+                                    <option value="203.20">6 feet 8 inches</option>
+                                    <option value="205.74">6 feet 9 inches</option>
+                                    <option value="208.28">6 feet 10 inches</option>
+                                    <option value="210.82">6 feet 11 inches</option>
+                                    <option value="213.36">7 feet</option>
+                                    <option value="215.90">7 feet 1 inches</option>
+                                    <option value="218.44">7 feet 2 inches</option>
+                                    <option value="220.98">7 feet 3 inches</option>
+                                    <option value="223.52">7 feet 4 inches</option>
+                                    <option value="226.06">7 feet 5 inches</option>
+                                    <option value="228.60">7 feet 6 inches</option>
+                                    <option value="231.14">7 feet 7 inches</option>
+                                    <option value="233.68">7 feet 8 inches</option>
+                                    <option value="236.22">7 feet 9 inches</option>
+                                    <option value="238.76">7 feet 10 inches</option>
+                                    <option value="241.30">7 feet 11 inches</option>
                                 </select>
                             </div>
                             <div class="ep-v3-field ep-v3-col-1">
                                 <label class="ep-v3-label">Weight (kg) <span class="ep-v3-req">*</span></label>
                                 <select id="weightSelect" name="weightSelect" class="ep-v3-select">
-                                    <option value="45 kg">45 kg</option>
-                                    <option value="50 kg">50 kg</option>
-                                    <option value="55 kg" selected>55 kg</option>
-                                    <option value="60 kg">60 kg</option>
-                                    <option value="65 kg">65 kg</option>
-                                    <option value="70 kg">70 kg</option>
-                                    <option value="75 kg">75 kg</option>
+                                    <option value="0">Select Weight</option>
+                                    <option value="41">41 kg</option>
+                                    <option value="42">42 kg</option>
+                                    <option value="43">43 kg</option>
+                                    <option value="44">44 kg</option>
+                                    <option value="45">45 kg</option>
+                                    <option value="46">46 kg</option>
+                                    <option value="47">47 kg</option>
+                                    <option value="48">48 kg</option>
+                                    <option value="49">49 kg</option>
+                                    <option value="50">50 kg</option>
+                                    <option value="51">51 kg</option>
+                                    <option value="52">52 kg</option>
+                                    <option value="53">53 kg</option>
+                                    <option value="54">54 kg</option>
+                                    <option value="55">55 kg</option>
+                                    <option value="56">56 kg</option>
+                                    <option value="57">57 kg</option>
+                                    <option value="58">58 kg</option>
+                                    <option value="59">59 kg</option>
+                                    <option value="60">60 kg</option>
+                                    <option value="61">61 kg</option>
+                                    <option value="62">62 kg</option>
+                                    <option value="63">63 kg</option>
+                                    <option value="64">64 kg</option>
+                                    <option value="65">65 kg</option>
+                                    <option value="66">66 kg</option>
+                                    <option value="67">67 kg</option>
+                                    <option value="68">68 kg</option>
+                                    <option value="69">69 kg</option>
+                                    <option value="70">70 kg</option>
+                                    <option value="71">71 kg</option>
+                                    <option value="72">72 kg</option>
+                                    <option value="73">73 kg</option>
+                                    <option value="74">74 kg</option>
+                                    <option value="75">75 kg</option>
+                                    <option value="76">76 kg</option>
+                                    <option value="77">77 kg</option>
+                                    <option value="78">78 kg</option>
+                                    <option value="79">79 kg</option>
+                                    <option value="80">80 kg</option>
+                                    <option value="81">81 kg</option>
+                                    <option value="82">82 kg</option>
+                                    <option value="83">83 kg</option>
+                                    <option value="84">84 kg</option>
+                                    <option value="85">85 kg</option>
+                                    <option value="86">86 kg</option>
+                                    <option value="87">87 kg</option>
+                                    <option value="88">88 kg</option>
+                                    <option value="89">89 kg</option>
+                                    <option value="90">90 kg</option>
+                                    <option value="91">91 kg</option>
+                                    <option value="92">92 kg</option>
+                                    <option value="93">93 kg</option>
+                                    <option value="94">94 kg</option>
+                                    <option value="95">95 kg</option>
+                                    <option value="96">96 kg</option>
+                                    <option value="97">97 kg</option>
+                                    <option value="98">98 kg</option>
+                                    <option value="99">99 kg</option>
+                                    <option value="100">100 kg</option>
+                                    <option value="101">101 kg</option>
+                                    <option value="102">102 kg</option>
+                                    <option value="103">103 kg</option>
+                                    <option value="104">104 kg</option>
+                                    <option value="105">105 kg</option>
+                                    <option value="106">106 kg</option>
+                                    <option value="107">107 kg</option>
+                                    <option value="108">108 kg</option>
+                                    <option value="109">109 kg</option>
+                                    <option value="110">110 kg</option>
+                                    <option value="111">111 kg</option>
+                                    <option value="112">112 kg</option>
+                                    <option value="113">113 kg</option>
+                                    <option value="114">114 kg</option>
+                                    <option value="115">115 kg</option>
+                                    <option value="116">116 kg</option>
+                                    <option value="117">117 kg</option>
+                                    <option value="118">118 kg</option>
+                                    <option value="119">119 kg</option>
+                                    <option value="120">120 kg</option>
+                                    <option value="121">121 kg</option>
+                                    <option value="122">122 kg</option>
+                                    <option value="123">123 kg</option>
+                                    <option value="124">124 kg</option>
+                                    <option value="125">125 kg</option>
+                                    <option value="126">126 kg</option>
+                                    <option value="127">127 kg</option>
+                                    <option value="128">128 kg</option>
+                                    <option value="129">129 kg</option>
+                                    <option value="130">130 kg</option>
+                                    <option value="131">131 kg</option>
+                                    <option value="132">132 kg</option>
+                                    <option value="133">133 kg</option>
+                                    <option value="134">134 kg</option>
+                                    <option value="135">135 kg</option>
+                                    <option value="136">136 kg</option>
+                                    <option value="137">137 kg</option>
+                                    <option value="138">138 kg</option>
+                                    <option value="139">139 kg</option>
+                                    <option value="140">140 kg</option>
                                 </select>
                             </div>
                             <div class="ep-v3-field ep-v3-col-1">
+                                <label class="ep-v3-label">Physical Status <span class="ep-v3-req">*</span></label>
+                                <select id="physicalStatus" name="physicalStatus" class="ep-v3-select">
+                                    <option value="0">Select physical status</option>
+                                    <option value="Normal" ${modelDetails.physicalStatus == 'Normal' || empty modelDetails.physicalStatus ? 'selected' : ''}>Normal</option>
+                                    <option value="Physically challenged" ${modelDetails.physicalStatus == 'Physically challenged' || modelDetails.physicalStatus == 'Physically Challenged' ? 'selected' : ''}>Physically challenged</option>
+                                    <option value="Mentally Challenged" ${modelDetails.physicalStatus == 'Mentally Challenged' ? 'selected' : ''}>Mentally Challenged</option>
+                                    <option value="Deaf" ${modelDetails.physicalStatus == 'Deaf' ? 'selected' : ''}>Deaf</option>
+                                    <option value="Dumb" ${modelDetails.physicalStatus == 'Dumb' ? 'selected' : ''}>Dumb</option>
+                                    <option value="Other Disability" ${modelDetails.physicalStatus == 'Other Disability' ? 'selected' : ''}>Other Disability</option>
+                                    <option value="Blind" ${modelDetails.physicalStatus == 'Blind' ? 'selected' : ''}>Blind</option>
+                                </select>
+                            </div>
+                            <div class="ep-v3-field ep-v3-col-2">
                                 <label class="ep-v3-label">Body Type <span class="ep-v3-req">*</span></label>
                                 <div class="ep-v3-radio-group">
                                     <label class="ep-v3-radio"><input type="radio" name="bodyType" value="Slim" ${modelDetails.bodyType == 'Slim' ? 'checked' : ''}> Slim</label>
@@ -411,19 +568,13 @@
                                     <label class="ep-v3-radio"><input type="radio" name="bodyType" value="Heavy" ${modelDetails.bodyType == 'Heavy' ? 'checked' : ''}> Heavy</label>
                                 </div>
                             </div>
-                            <div class="ep-v3-field ep-v3-col-1">
-                                <label class="ep-v3-label">Physical Status <span class="ep-v3-req">*</span></label>
-                                <select id="physicalStatus" name="physicalStatus" class="ep-v3-select">
-                                    <option value="Normal" ${modelDetails.physicalStatus == 'Normal' || empty modelDetails.physicalStatus ? 'selected' : ''}>Normal</option>
-                                    <option value="Physically Challenged" ${modelDetails.physicalStatus == 'Physically Challenged' ? 'selected' : ''}>Physically Challenged</option>
-                                </select>
-                            </div>
-                            <div class="ep-v3-field ep-v3-col-1">
+                            <div class="ep-v3-field ep-v3-col-2">
                                 <label class="ep-v3-label">Complexion <span class="ep-v3-req">*</span></label>
                                 <div class="ep-v3-radio-group">
-                                    <label class="ep-v3-radio"><input type="radio" name="complexion" value="Fair" ${modelDetails.complexion == 'Fair' || empty modelDetails.complexion ? 'checked' : ''}> Fair</label>
                                     <label class="ep-v3-radio"><input type="radio" name="complexion" value="Very Fair" ${modelDetails.complexion == 'Very Fair' ? 'checked' : ''}> Very Fair</label>
+                                    <label class="ep-v3-radio"><input type="radio" name="complexion" value="Fair" ${modelDetails.complexion == 'Fair' || empty modelDetails.complexion ? 'checked' : ''}> Fair</label>
                                     <label class="ep-v3-radio"><input type="radio" name="complexion" value="Wheatish" ${modelDetails.complexion == 'Wheatish' ? 'checked' : ''}> Wheatish</label>
+                                    <label class="ep-v3-radio"><input type="radio" name="complexion" value="Wheatish brown" ${modelDetails.complexion == 'Wheatish brown' ? 'checked' : ''}> Wheatish Brown</label>
                                     <label class="ep-v3-radio"><input type="radio" name="complexion" value="Dark" ${modelDetails.complexion == 'Dark' ? 'checked' : ''}> Dark</label>
                                 </div>
                             </div>
@@ -539,16 +690,17 @@
                                 </select>
                             </div>
                             <div class="ep-v3-field ep-v3-col-1">
-                                <label class="ep-v3-label">Employed In</label>
-                                <div class="ep-v3-radio-group">
-                                    <label class="ep-v3-radio"><input type="radio" name="employedIn" value="Private" ${modelDetails.employeedIn == 'Private' || empty modelDetails.employeedIn ? 'checked' : ''}> Private</label>
-                                    <label class="ep-v3-radio"><input type="radio" name="employedIn" value="Government" ${modelDetails.employeedIn == 'Government' ? 'checked' : ''}> Government</label>
-                                    <label class="ep-v3-radio"><input type="radio" name="employedIn" value="Business" ${modelDetails.employeedIn == 'Business' ? 'checked' : ''}> Business</label>
-                                </div>
-                            </div>
-                            <div class="ep-v3-field ep-v3-col-1">
                                 <label class="ep-v3-label">Annual Income (Lakhs)</label>
                                 <input type="text" id="incomeAmount" name="incomeAmount" class="ep-v3-input" value="${modelDetails.incomeAmount != null ? modelDetails.incomeAmount : '5-10 Lakhs'}">
+                            </div>
+                            <div class="ep-v3-field ep-v3-col-2">
+                                <label class="ep-v3-label">Employed In</label>
+                                <div class="ep-v3-radio-group">
+                                    <label class="ep-v3-radio"><input type="radio" name="employedIn" value="Government" ${modelDetails.employeedIn == 'Government' ? 'checked' : ''}> Government</label>
+                                    <label class="ep-v3-radio"><input type="radio" name="employedIn" value="Defence" ${modelDetails.employeedIn == 'Defence' ? 'checked' : ''}> Defence</label>
+                                    <label class="ep-v3-radio"><input type="radio" name="employedIn" value="Private" ${modelDetails.employeedIn == 'Private' || empty modelDetails.employeedIn ? 'checked' : ''}> Private</label>
+                                    <label class="ep-v3-radio"><input type="radio" name="employedIn" value="Business" ${modelDetails.employeedIn == 'Business' ? 'checked' : ''}> Business</label>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -572,7 +724,7 @@
                                 </label>
                                 <div class="ep-v3-segmented-control">
                                     <label class="ep-v3-segmented-option">
-                                        <input type="radio" name="eating" value="Vegetarian" ${modelDetails.eating == 'Vegetarian' ? 'checked' : ''}>
+                                        <input type="radio" name="eating" value="vegetarian" ${modelDetails.eating == 'vegetarian' || modelDetails.eating == 'Vegetarian' ? 'checked' : ''}>
                                         <div class="ep-v3-chip-content">
                                             <span class="ep-v3-chip-icon veg-icon"><i class="fa fa-leaf"></i></span>
                                             <span class="ep-v3-chip-text">Vegetarian</span>
@@ -580,18 +732,18 @@
                                         </div>
                                     </label>
                                     <label class="ep-v3-segmented-option">
-                                        <input type="radio" name="eating" value="Non-Vegetarian" ${modelDetails.eating == 'Non-Vegetarian' || empty modelDetails.eating ? 'checked' : ''}>
+                                        <input type="radio" name="eating" value="Non vegetarian" ${modelDetails.eating == 'Non vegetarian' || modelDetails.eating == 'Non-Vegetarian' || empty modelDetails.eating ? 'checked' : ''}>
                                         <div class="ep-v3-chip-content">
                                             <span class="ep-v3-chip-icon nonveg-icon"><i class="fa fa-cutlery"></i></span>
-                                            <span class="ep-v3-chip-text">Non-Veg</span>
+                                            <span class="ep-v3-chip-text">Non vegetarian</span>
                                             <i class="fa fa-check-circle ep-v3-chip-check"></i>
                                         </div>
                                     </label>
                                     <label class="ep-v3-segmented-option">
-                                        <input type="radio" name="eating" value="Eggetarian" ${modelDetails.eating == 'Eggetarian' ? 'checked' : ''}>
+                                        <input type="radio" name="eating" value="Eggs Only" ${modelDetails.eating == 'Eggs Only' || modelDetails.eating == 'Eggetarian' ? 'checked' : ''}>
                                         <div class="ep-v3-chip-content">
                                             <span class="ep-v3-chip-icon nopref-icon"><i class="fa fa-cutlery"></i></span>
-                                            <span class="ep-v3-chip-text">Eggetarian</span>
+                                            <span class="ep-v3-chip-text">Eggs Only</span>
                                             <i class="fa fa-check-circle ep-v3-chip-check"></i>
                                         </div>
                                     </label>
@@ -605,7 +757,7 @@
                                 </label>
                                 <div class="ep-v3-segmented-control">
                                     <label class="ep-v3-segmented-option">
-                                        <input type="radio" name="drink" value="No" ${modelDetails.drink == 'No' || empty modelDetails.drink ? 'checked' : ''}>
+                                        <input type="radio" name="drink" value="Never" ${modelDetails.drink == 'Never' || modelDetails.drink == 'No' || empty modelDetails.drink ? 'checked' : ''}>
                                         <div class="ep-v3-chip-content">
                                             <span class="ep-v3-chip-icon never-icon"><i class="fa fa-ban"></i></span>
                                             <span class="ep-v3-chip-text">Never</span>
@@ -613,10 +765,18 @@
                                         </div>
                                     </label>
                                     <label class="ep-v3-segmented-option">
-                                        <input type="radio" name="drink" value="Yes" ${modelDetails.drink == 'Yes' ? 'checked' : ''}>
+                                        <input type="radio" name="drink" value="Social drinker" ${modelDetails.drink == 'Social drinker' || modelDetails.drink == 'Social Drinker' || modelDetails.drink == 'Yes' ? 'checked' : ''}>
                                         <div class="ep-v3-chip-content">
                                             <span class="ep-v3-chip-icon social-icon"><i class="fa fa-glass"></i></span>
-                                            <span class="ep-v3-chip-text">Socially</span>
+                                            <span class="ep-v3-chip-text">Social drinker</span>
+                                            <i class="fa fa-check-circle ep-v3-chip-check"></i>
+                                        </div>
+                                    </label>
+                                    <label class="ep-v3-segmented-option">
+                                        <input type="radio" name="drink" value="Regular drinker" ${modelDetails.drink == 'Regular drinker' || modelDetails.drink == 'Regular Drinker' ? 'checked' : ''}>
+                                        <div class="ep-v3-chip-content">
+                                            <span class="ep-v3-chip-icon social-icon"><i class="fa fa-glass"></i></span>
+                                            <span class="ep-v3-chip-text">Regular drinker</span>
                                             <i class="fa fa-check-circle ep-v3-chip-check"></i>
                                         </div>
                                     </label>
@@ -630,18 +790,26 @@
                                 </label>
                                 <div class="ep-v3-segmented-control">
                                     <label class="ep-v3-segmented-option">
-                                        <input type="radio" name="smoke" value="No" ${modelDetails.smoke == 'No' || empty modelDetails.smoke ? 'checked' : ''}>
+                                        <input type="radio" name="smoke" value="Non-smoker" ${modelDetails.smoke == 'Non-smoker' || modelDetails.smoke == 'Non Smoker' || modelDetails.smoke == 'No' || empty modelDetails.smoke ? 'checked' : ''}>
                                         <div class="ep-v3-chip-content">
                                             <span class="ep-v3-chip-icon never-icon"><i class="fa fa-shield"></i></span>
-                                            <span class="ep-v3-chip-text">Never</span>
+                                            <span class="ep-v3-chip-text">Non-smoker</span>
                                             <i class="fa fa-check-circle ep-v3-chip-check"></i>
                                         </div>
                                     </label>
                                     <label class="ep-v3-segmented-option">
-                                        <input type="radio" name="smoke" value="Yes" ${modelDetails.smoke == 'Yes' ? 'checked' : ''}>
+                                        <input type="radio" name="smoke" value="Social smoker" ${modelDetails.smoke == 'Social smoker' || modelDetails.smoke == 'Social Smoker' || modelDetails.smoke == 'Yes' ? 'checked' : ''}>
                                         <div class="ep-v3-chip-content">
                                             <span class="ep-v3-chip-icon social-icon"><i class="fa fa-fire"></i></span>
-                                            <span class="ep-v3-chip-text">Socially</span>
+                                            <span class="ep-v3-chip-text">Social smoker</span>
+                                            <i class="fa fa-check-circle ep-v3-chip-check"></i>
+                                        </div>
+                                    </label>
+                                    <label class="ep-v3-segmented-option">
+                                        <input type="radio" name="smoke" value="Chain smoker" ${modelDetails.smoke == 'Chain smoker' || modelDetails.smoke == 'Chain Smoker' ? 'checked' : ''}>
+                                        <div class="ep-v3-chip-content">
+                                            <span class="ep-v3-chip-icon social-icon"><i class="fa fa-fire"></i></span>
+                                            <span class="ep-v3-chip-text">Chain smoker</span>
                                             <i class="fa fa-check-circle ep-v3-chip-check"></i>
                                         </div>
                                     </label>
@@ -676,51 +844,144 @@
                             <div class="ep-v3-field ep-v3-col-1">
                                 <label class="ep-v3-label">Marital Status</label>
                                 <select id="materialStatusPartner" name="materialStatusPartner" class="ep-v3-select">
+                                    <option value="0">Select Status</option>
+                                    <option value="Single" ${userPartnerPreferances.materialStatus == 'Single' ? 'selected' : ''}>Single</option>
                                     <option value="Never Married" ${userPartnerPreferances.materialStatus == 'Never Married' ? 'selected' : ''}>Never Married</option>
+                                    <option value="Married" ${userPartnerPreferances.materialStatus == 'Married' ? 'selected' : ''}>Married</option>
                                     <option value="Divorced" ${userPartnerPreferances.materialStatus == 'Divorced' ? 'selected' : ''}>Divorced</option>
                                     <option value="Widowed" ${userPartnerPreferances.materialStatus == 'Widowed' ? 'selected' : ''}>Widowed</option>
                                     <option value="Does Not Matter" ${userPartnerPreferances.materialStatus == 'Does Not Matter' ? 'selected' : ''}>Does Not Matter</option>
                                 </select>
                             </div>
                             <div class="ep-v3-field ep-v3-col-1">
-                                <label class="ep-v3-label">Age Range</label>
-                                <div style="display:flex; gap:4%;">
-                                    <select id="partnerAgeFrom" class="ep-v3-select" style="width:48%;">
-                                        <option value="18">18 Years</option>
-                                        <option value="21">21 Years</option>
-                                        <option value="24" selected>24 Years</option>
-                                        <option value="25">25 Years</option>
-                                    </select>
-                                    <select id="partnerAgeTo" class="ep-v3-select" style="width:48%;">
-                                        <option value="28">28 Years</option>
-                                        <option value="30">30 Years</option>
-                                        <option value="32" selected>32 Years</option>
-                                        <option value="35">35 Years</option>
-                                    </select>
-                                </div>
+                                <label class="ep-v3-label">Physical Status</label>
+                                <select id="physicalStatusPartner" name="physicalStatusPartner" class="ep-v3-select">
+                                    <option value="0">Physical Status</option>
+                                    <option value="Normal" ${userPartnerPreferances.physicalStatus == 'Normal' || empty userPartnerPreferances.physicalStatus ? 'selected' : ''}>Normal</option>
+                                    <option value="Physically challenged" ${userPartnerPreferances.physicalStatus == 'Physically challenged' || userPartnerPreferances.physicalStatus == 'Physically Challenged' ? 'selected' : ''}>Physically challenged</option>
+                                    <option value="Mentally Challenged" ${userPartnerPreferances.physicalStatus == 'Mentally Challenged' ? 'selected' : ''}>Mentally Challenged</option>
+                                    <option value="Deaf" ${userPartnerPreferances.physicalStatus == 'Deaf' ? 'selected' : ''}>Deaf</option>
+                                    <option value="Dumb" ${userPartnerPreferances.physicalStatus == 'Dumb' ? 'selected' : ''}>Dumb</option>
+                                    <option value="Other Disability" ${userPartnerPreferances.physicalStatus == 'Other Disability' ? 'selected' : ''}>Other Disability</option>
+                                    <option value="Blind" ${userPartnerPreferances.physicalStatus == 'Blind' ? 'selected' : ''}>Blind</option>
+                                </select>
                             </div>
                             <div class="ep-v3-field ep-v3-col-1">
-                                <label class="ep-v3-label">Height</label>
+                                <label class="ep-v3-label">Height Range (From - To)</label>
                                 <div style="display:flex; gap:4%;">
                                     <select id="heightSelectPartnerFirst" name="heightSelectPartnerFirst" class="ep-v3-select" style="width:48%;">
-                                        <option value="5' 0''">5' 0''</option>
-                                        <option value="5' 2''" selected>5' 2''</option>
-                                        <option value="5' 5''">5' 5''</option>
+                                        <option value="0">Select Height</option>
+                                        <option value="121.92">4 feet</option>
+                                        <option value="124.46">4 feet 1 inches</option>
+                                        <option value="127.00">4 feet 2 inches</option>
+                                        <option value="129.54">4 feet 3 inches</option>
+                                        <option value="132.08">4 feet 4 inches</option>
+                                        <option value="134.62">4 feet 5 inches</option>
+                                        <option value="137.16">4 feet 6 inches</option>
+                                        <option value="139.70">4 feet 7 inches</option>
+                                        <option value="142.24">4 feet 8 inches</option>
+                                        <option value="144.78">4 feet 9 inches</option>
+                                        <option value="147.32">4 feet 10 inches</option>
+                                        <option value="149.86">4 feet 11 inches</option>
+                                        <option value="152.40" selected>5 feet</option>
+                                        <option value="154.94">5 feet 1 inches</option>
+                                        <option value="157.48">5 feet 2 inches</option>
+                                        <option value="160.02">5 feet 3 inches</option>
+                                        <option value="162.56">5 feet 4 inches</option>
+                                        <option value="165.10">5 feet 5 inches</option>
+                                        <option value="167.64">5 feet 6 inches</option>
+                                        <option value="170.18">5 feet 7 inches</option>
+                                        <option value="172.72">5 feet 8 inches</option>
+                                        <option value="175.26">5 feet 9 inches</option>
+                                        <option value="177.80">5 feet 10 inches</option>
+                                        <option value="180.34">5 feet 11 inches</option>
+                                        <option value="182.88">6 feet</option>
+                                        <option value="185.42">6 feet 1 inches</option>
+                                        <option value="187.96">6 feet 2 inches</option>
+                                        <option value="190.50">6 feet 3 inches</option>
+                                        <option value="193.04">6 feet 4 inches</option>
+                                        <option value="195.58">6 feet 5 inches</option>
+                                        <option value="198.12">6 feet 6 inches</option>
+                                        <option value="200.66">6 feet 7 inches</option>
+                                        <option value="203.20">6 feet 8 inches</option>
+                                        <option value="205.74">6 feet 9 inches</option>
+                                        <option value="208.28">6 feet 10 inches</option>
+                                        <option value="210.82">6 feet 11 inches</option>
+                                        <option value="213.36">7 feet</option>
+                                        <option value="215.90">7 feet 1 inches</option>
+                                        <option value="218.44">7 feet 2 inches</option>
+                                        <option value="220.98">7 feet 3 inches</option>
+                                        <option value="223.52">7 feet 4 inches</option>
+                                        <option value="226.06">7 feet 5 inches</option>
+                                        <option value="228.60">7 feet 6 inches</option>
+                                        <option value="231.14">7 feet 7 inches</option>
+                                        <option value="233.68">7 feet 8 inches</option>
+                                        <option value="236.22">7 feet 9 inches</option>
+                                        <option value="238.76">7 feet 10 inches</option>
+                                        <option value="241.30">7 feet 11 inches</option>
                                     </select>
                                     <select id="heightSelectPartnerSecond" name="heightSelectPartnerSecond" class="ep-v3-select" style="width:48%;">
-                                        <option value="6' 0''">6' 0''</option>
-                                        <option value="6' 2''" selected>6' 2''</option>
-                                        <option value="6' 5''">6' 5''</option>
+                                        <option value="0">Select Height</option>
+                                        <option value="121.92">4 feet</option>
+                                        <option value="124.46">4 feet 1 inches</option>
+                                        <option value="127.00">4 feet 2 inches</option>
+                                        <option value="129.54">4 feet 3 inches</option>
+                                        <option value="132.08">4 feet 4 inches</option>
+                                        <option value="134.62">4 feet 5 inches</option>
+                                        <option value="137.16">4 feet 6 inches</option>
+                                        <option value="139.70">4 feet 7 inches</option>
+                                        <option value="142.24">4 feet 8 inches</option>
+                                        <option value="144.78">4 feet 9 inches</option>
+                                        <option value="147.32">4 feet 10 inches</option>
+                                        <option value="149.86">4 feet 11 inches</option>
+                                        <option value="152.40">5 feet</option>
+                                        <option value="154.94">5 feet 1 inches</option>
+                                        <option value="157.48">5 feet 2 inches</option>
+                                        <option value="160.02">5 feet 3 inches</option>
+                                        <option value="162.56">5 feet 4 inches</option>
+                                        <option value="165.10">5 feet 5 inches</option>
+                                        <option value="167.64">5 feet 6 inches</option>
+                                        <option value="170.18">5 feet 7 inches</option>
+                                        <option value="172.72">5 feet 8 inches</option>
+                                        <option value="175.26">5 feet 9 inches</option>
+                                        <option value="177.80">5 feet 10 inches</option>
+                                        <option value="180.34">5 feet 11 inches</option>
+                                        <option value="182.88" selected>6 feet</option>
+                                        <option value="185.42">6 feet 1 inches</option>
+                                        <option value="187.96">6 feet 2 inches</option>
+                                        <option value="190.50">6 feet 3 inches</option>
+                                        <option value="193.04">6 feet 4 inches</option>
+                                        <option value="195.58">6 feet 5 inches</option>
+                                        <option value="198.12">6 feet 6 inches</option>
+                                        <option value="200.66">6 feet 7 inches</option>
+                                        <option value="203.20">6 feet 8 inches</option>
+                                        <option value="205.74">6 feet 9 inches</option>
+                                        <option value="208.28">6 feet 10 inches</option>
+                                        <option value="210.82">6 feet 11 inches</option>
+                                        <option value="213.36">7 feet</option>
+                                        <option value="215.90">7 feet 1 inches</option>
+                                        <option value="218.44">7 feet 2 inches</option>
+                                        <option value="220.98">7 feet 3 inches</option>
+                                        <option value="223.52">7 feet 4 inches</option>
+                                        <option value="226.06">7 feet 5 inches</option>
+                                        <option value="228.60">7 feet 6 inches</option>
+                                        <option value="231.14">7 feet 7 inches</option>
+                                        <option value="233.68">7 feet 8 inches</option>
+                                        <option value="236.22">7 feet 9 inches</option>
+                                        <option value="238.76">7 feet 10 inches</option>
+                                        <option value="241.30">7 feet 11 inches</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="ep-v3-field ep-v3-col-1">
                                 <label class="ep-v3-label">Body Type</label>
                                 <select id="bodyTypePartner" name="bodyTypePartner" class="ep-v3-select">
-                                    <option value="Slim, Average" selected>Slim, Average</option>
-                                    <option value="Athletic">Athletic</option>
-                                    <option value="Heavy">Heavy</option>
-                                    <option value="Does Not Matter">Does Not Matter</option>
+                                    <option value="Slim" ${userPartnerPreferances.bodyType == 'Slim' ? 'selected' : ''}>Slim</option>
+                                    <option value="Average" ${userPartnerPreferances.bodyType == 'Average' ? 'selected' : ''}>Average</option>
+                                    <option value="Slim, Average" ${userPartnerPreferances.bodyType == 'Slim, Average' || empty userPartnerPreferances.bodyType ? 'selected' : ''}>Slim, Average</option>
+                                    <option value="Athletic" ${userPartnerPreferances.bodyType == 'Athletic' ? 'selected' : ''}>Athletic</option>
+                                    <option value="Heavy" ${userPartnerPreferances.bodyType == 'Heavy' ? 'selected' : ''}>Heavy</option>
+                                    <option value="Does Not Matter" ${userPartnerPreferances.bodyType == 'Does Not Matter' ? 'selected' : ''}>Does Not Matter</option>
                                 </select>
                             </div>
                         </div>
@@ -761,7 +1022,7 @@
                             <div class="ep-v3-field ep-v3-col-1">
                                 <label class="ep-v3-label">Other Location Preferences</label>
                                 <div style="display:flex; align-items:center; gap:8px; height:42px;">
-                                    <input type="checkbox" id="openToOtherCitiesPartner" value="Yes" checked style="accent-color:var(--primary); width:18px; height:18px;">
+                                    <input type="checkbox" id="openToOtherCitiesPartner" name="openToOtherCitiesPartner" value="Yes" ${userPartnerPreferances.openToOtherCities == 'Yes' || empty userPartnerPreferances.openToOtherCities ? 'checked' : ''} style="accent-color:var(--primary); width:18px; height:18px;">
                                     <span style="font-size:13px; font-weight:600;">Open to other cities in Maharashtra</span>
                                 </div>
                             </div>
@@ -777,35 +1038,35 @@
                             <div class="ep-v3-field ep-v3-col-1">
                                 <label class="ep-v3-label">Education</label>
                                 <select id="educationalCategorySelectPartner" name="educationalCategorySelectPartner" class="ep-v3-select">
-                                    <option value="0">Any</option>
+                                    <option value="0" ${selectedPartnerEduCatId == null || selectedPartnerEduCatId == 0 ? 'selected' : ''}>Any</option>
                                     <c:forEach var="eduCat" items="${educationCategories}">
-                                        <option value="${eduCat.edu_cat_id}">${eduCat.edu_cat_name}</option>
+                                        <option value="${eduCat.edu_cat_id}" ${selectedPartnerEduCatId != null && selectedPartnerEduCatId == eduCat.edu_cat_id ? 'selected' : ''}>${eduCat.edu_cat_name}</option>
                                     </c:forEach>
                                 </select>
                             </div>
                             <div class="ep-v3-field ep-v3-col-1">
                                 <label class="ep-v3-label">Occupation</label>
                                 <select id="occupationCategorySelectPartner" name="occupationCategorySelectPartner" class="ep-v3-select">
-                                    <option value="0">Any</option>
+                                    <option value="0" ${selectedPartnerOccCatId == null || selectedPartnerOccCatId == 0 ? 'selected' : ''}>Any</option>
                                     <c:forEach var="occCat" items="${occupationCategories}">
-                                        <option value="${occCat.occu_id}">${occCat.occu_name}</option>
+                                        <option value="${occCat.occu_id}" ${selectedPartnerOccCatId != null && selectedPartnerOccCatId == occCat.occu_id ? 'selected' : ''}>${occCat.occu_name}</option>
                                     </c:forEach>
                                 </select>
                             </div>
                             <div class="ep-v3-field ep-v3-col-1">
                                 <label class="ep-v3-label">Annual Income</label>
                                 <select id="incomeAmountPartner" name="incomeAmountPartner" class="ep-v3-select">
-                                    <option value="Any" selected>Any</option>
-                                    <option value="3-5 Lakhs">3-5 Lakhs</option>
-                                    <option value="5-10 Lakhs">5-10 Lakhs</option>
-                                    <option value="10-15 Lakhs">10-15 Lakhs</option>
-                                    <option value="15+ Lakhs">15+ Lakhs</option>
+                                    <option value="Any" ${userPartnerPreferances.incomeType == 'Any' || userPartnerPreferances.incomeAmount == null || userPartnerPreferances.incomeAmount == 0 ? 'selected' : ''}>Any</option>
+                                    <option value="3-5 Lakhs" ${userPartnerPreferances.incomeType == '3-5 Lakhs' || userPartnerPreferances.incomeAmount == 300000 ? 'selected' : ''}>3-5 Lakhs</option>
+                                    <option value="5-10 Lakhs" ${userPartnerPreferances.incomeType == '5-10 Lakhs' || userPartnerPreferances.incomeAmount == 500000 ? 'selected' : ''}>5-10 Lakhs</option>
+                                    <option value="10-15 Lakhs" ${userPartnerPreferances.incomeType == '10-15 Lakhs' || userPartnerPreferances.incomeAmount == 1000000 ? 'selected' : ''}>10-15 Lakhs</option>
+                                    <option value="15+ Lakhs" ${userPartnerPreferances.incomeType == '15+ Lakhs' || userPartnerPreferances.incomeAmount == 1500000 ? 'selected' : ''}>15+ Lakhs</option>
                                 </select>
                             </div>
                             <div class="ep-v3-field ep-v3-col-1">
                                 <label class="ep-v3-label">Self-Employed Preference</label>
                                 <div style="display:flex; align-items:center; gap:8px; height:42px;">
-                                    <input type="checkbox" id="openToSelfEmployed" value="Yes" checked style="accent-color:var(--primary); width:18px; height:18px;">
+                                    <input type="checkbox" id="openToSelfEmployed" name="openToSelfEmployed" value="Yes" ${userPartnerPreferances.openToSelfEmployed == 'Yes' || empty userPartnerPreferances.openToSelfEmployed ? 'checked' : ''} style="accent-color:var(--primary); width:18px; height:18px;">
                                     <span style="font-size:13px; font-weight:600;">Open to partner who is self-employed</span>
                                 </div>
                             </div>
@@ -838,11 +1099,11 @@
                             </div>
                             <div class="ep-v3-field ep-v3-col-1">
                                 <label class="ep-v3-label">Community (Optional)</label>
-                                <select id="communityPartner" class="ep-v3-select">
-                                    <option value="Any" selected>Any</option>
-                                    <option value="Marathi">Marathi</option>
-                                    <option value="Gujarati">Gujarati</option>
-                                    <option value="Hindi">Hindi</option>
+                                <select id="communityPartner" name="communityPartner" class="ep-v3-select">
+                                    <option value="Any" ${userPartnerPreferances.community == 'Any' || empty userPartnerPreferances.community ? 'selected' : ''}>Any</option>
+                                    <option value="Marathi" ${userPartnerPreferances.community == 'Marathi' ? 'selected' : ''}>Marathi</option>
+                                    <option value="Gujarati" ${userPartnerPreferances.community == 'Gujarati' ? 'selected' : ''}>Gujarati</option>
+                                    <option value="Hindi" ${userPartnerPreferances.community == 'Hindi' ? 'selected' : ''}>Hindi</option>
                                 </select>
                             </div>
                         </div>
@@ -868,7 +1129,7 @@
                                 </label>
                                 <div class="ep-v3-segmented-control">
                                     <label class="ep-v3-segmented-option">
-                                        <input type="radio" name="eatingPartner" value="Vegetarian" ${userPartnerPreferances.eating == 'Vegetarian' ? 'checked' : ''}>
+                                        <input type="radio" name="eatingPartner" value="vegetarian" ${userPartnerPreferances.eating == 'vegetarian' || userPartnerPreferances.eating == 'Vegetarian' ? 'checked' : ''}>
                                         <div class="ep-v3-chip-content">
                                             <span class="ep-v3-chip-icon veg-icon"><i class="fa fa-leaf"></i></span>
                                             <span class="ep-v3-chip-text">Vegetarian</span>
@@ -876,10 +1137,18 @@
                                         </div>
                                     </label>
                                     <label class="ep-v3-segmented-option">
-                                        <input type="radio" name="eatingPartner" value="Non-Vegetarian" ${userPartnerPreferances.eating == 'Non-Vegetarian' ? 'checked' : ''}>
+                                        <input type="radio" name="eatingPartner" value="Non vegetarian" ${userPartnerPreferances.eating == 'Non vegetarian' || userPartnerPreferances.eating == 'Non-Vegetarian' ? 'checked' : ''}>
                                         <div class="ep-v3-chip-content">
                                             <span class="ep-v3-chip-icon nonveg-icon"><i class="fa fa-cutlery"></i></span>
-                                            <span class="ep-v3-chip-text">Non-Vegetarian</span>
+                                            <span class="ep-v3-chip-text">Non vegetarian</span>
+                                            <i class="fa fa-check-circle ep-v3-chip-check"></i>
+                                        </div>
+                                    </label>
+                                    <label class="ep-v3-segmented-option">
+                                        <input type="radio" name="eatingPartner" value="Eggs Only" ${userPartnerPreferances.eating == 'Eggs Only' || userPartnerPreferances.eating == 'Eggetarian' ? 'checked' : ''}>
+                                        <div class="ep-v3-chip-content">
+                                            <span class="ep-v3-chip-icon nopref-icon"><i class="fa fa-cutlery"></i></span>
+                                            <span class="ep-v3-chip-text">Eggs Only</span>
                                             <i class="fa fa-check-circle ep-v3-chip-check"></i>
                                         </div>
                                     </label>
@@ -909,10 +1178,18 @@
                                         </div>
                                     </label>
                                     <label class="ep-v3-segmented-option">
-                                        <input type="radio" name="drinkPartner" value="Social Drinker" ${userPartnerPreferances.drink == 'Social Drinker' ? 'checked' : ''}>
+                                        <input type="radio" name="drinkPartner" value="Social drinker" ${userPartnerPreferances.drink == 'Social drinker' || userPartnerPreferances.drink == 'Social Drinker' ? 'checked' : ''}>
                                         <div class="ep-v3-chip-content">
                                             <span class="ep-v3-chip-icon social-icon"><i class="fa fa-glass"></i></span>
-                                            <span class="ep-v3-chip-text">Social Drinker</span>
+                                            <span class="ep-v3-chip-text">Social drinker</span>
+                                            <i class="fa fa-check-circle ep-v3-chip-check"></i>
+                                        </div>
+                                    </label>
+                                    <label class="ep-v3-segmented-option">
+                                        <input type="radio" name="drinkPartner" value="Regular drinker" ${userPartnerPreferances.drink == 'Regular drinker' || userPartnerPreferances.drink == 'Regular Drinker' ? 'checked' : ''}>
+                                        <div class="ep-v3-chip-content">
+                                            <span class="ep-v3-chip-icon social-icon"><i class="fa fa-glass"></i></span>
+                                            <span class="ep-v3-chip-text">Regular drinker</span>
                                             <i class="fa fa-check-circle ep-v3-chip-check"></i>
                                         </div>
                                     </label>
@@ -934,18 +1211,26 @@
                                 </label>
                                 <div class="ep-v3-segmented-control">
                                     <label class="ep-v3-segmented-option">
-                                        <input type="radio" name="smokePartner" value="Non Smoker" ${userPartnerPreferances.smoke == 'Non Smoker' ? 'checked' : ''}>
+                                        <input type="radio" name="smokePartner" value="Non-smoker" ${userPartnerPreferances.smoke == 'Non-smoker' || userPartnerPreferances.smoke == 'Non Smoker' ? 'checked' : ''}>
                                         <div class="ep-v3-chip-content">
                                             <span class="ep-v3-chip-icon never-icon"><i class="fa fa-shield"></i></span>
-                                            <span class="ep-v3-chip-text">Non Smoker</span>
+                                            <span class="ep-v3-chip-text">Non-smoker</span>
                                             <i class="fa fa-check-circle ep-v3-chip-check"></i>
                                         </div>
                                     </label>
                                     <label class="ep-v3-segmented-option">
-                                        <input type="radio" name="smokePartner" value="Social Smoker" ${userPartnerPreferances.smoke == 'Social Smoker' ? 'checked' : ''}>
+                                        <input type="radio" name="smokePartner" value="Social smoker" ${userPartnerPreferances.smoke == 'Social smoker' || userPartnerPreferances.smoke == 'Social Smoker' ? 'checked' : ''}>
                                         <div class="ep-v3-chip-content">
                                             <span class="ep-v3-chip-icon social-icon"><i class="fa fa-fire"></i></span>
-                                            <span class="ep-v3-chip-text">Social Smoker</span>
+                                            <span class="ep-v3-chip-text">Social smoker</span>
+                                            <i class="fa fa-check-circle ep-v3-chip-check"></i>
+                                        </div>
+                                    </label>
+                                    <label class="ep-v3-segmented-option">
+                                        <input type="radio" name="smokePartner" value="Chain smoker" ${userPartnerPreferances.smoke == 'Chain smoker' || userPartnerPreferances.smoke == 'Chain Smoker' ? 'checked' : ''}>
+                                        <div class="ep-v3-chip-content">
+                                            <span class="ep-v3-chip-icon social-icon"><i class="fa fa-fire"></i></span>
+                                            <span class="ep-v3-chip-text">Chain smoker</span>
                                             <i class="fa fa-check-circle ep-v3-chip-check"></i>
                                         </div>
                                     </label>
@@ -975,7 +1260,7 @@
                                             </div>
                                         </div>
                                         <div class="ep-v3-switch">
-                                            <input type="checkbox" name="relocatePartner">
+                                            <input type="checkbox" id="relocatePartner" name="relocatePartner" value="Yes" ${userPartnerPreferances.willingToRelocate == 'Yes' ? 'checked' : ''}>
                                             <span class="ep-v3-slider"></span>
                                         </div>
                                     </label>
@@ -989,7 +1274,7 @@
                                             </div>
                                         </div>
                                         <div class="ep-v3-switch">
-                                            <input type="checkbox" name="settleAbroadPartner">
+                                            <input type="checkbox" id="settleAbroadPartner" name="settleAbroadPartner" value="Yes" ${userPartnerPreferances.willingToSettleAbroad == 'Yes' ? 'checked' : ''}>
                                             <span class="ep-v3-slider"></span>
                                         </div>
                                     </label>
@@ -1003,7 +1288,7 @@
                                             </div>
                                         </div>
                                         <div class="ep-v3-switch">
-                                            <input type="checkbox" name="horoscopePartner" checked>
+                                            <input type="checkbox" id="horoscopePartner" name="horoscopePartner" value="Yes" ${userPartnerPreferances.horoscopeMatching == 'Yes' || empty userPartnerPreferances.horoscopeMatching ? 'checked' : ''}>
                                             <span class="ep-v3-slider"></span>
                                         </div>
                                     </label>
@@ -1091,6 +1376,39 @@
 <script>
     $(document).ready(function() {
         showStep(2); // Default to Step 2 (Personal Information)
+
+        // Pre-select saved numeric Height and Weight values accurately
+        function selectClosestNumericOption(selectId, rawVal) {
+            if (!rawVal || rawVal === 'null') return;
+            var numVal = parseFloat(rawVal);
+            if (isNaN(numVal) || numVal <= 0) return;
+            // Convert legacy feet.inches (< 10) to cm if needed
+            if (numVal < 10) {
+                var ft = Math.floor(numVal);
+                var inch = Math.round((numVal - ft) * 10);
+                numVal = (ft * 12 + inch) * 2.54;
+            }
+            var bestVal = null;
+            var minDiff = 9999;
+            $('#' + selectId + ' option').each(function() {
+                var optNum = parseFloat($(this).val());
+                if (!isNaN(optNum) && optNum > 0) {
+                    var diff = Math.abs(optNum - numVal);
+                    if (diff < minDiff) {
+                        minDiff = diff;
+                        bestVal = $(this).val();
+                    }
+                }
+            });
+            if (bestVal !== null && minDiff <= 2.0) {
+                $('#' + selectId).val(bestVal);
+            }
+        }
+
+        selectClosestNumericOption('heightSelect', '${modelDetails.height}');
+        selectClosestNumericOption('weightSelect', '${modelDetails.weight}');
+        selectClosestNumericOption('heightSelectPartnerFirst', '${userPartnerPreferances.heightFrom}');
+        selectClosestNumericOption('heightSelectPartnerSecond', '${userPartnerPreferances.heightTo}');
     });
 </script>
 

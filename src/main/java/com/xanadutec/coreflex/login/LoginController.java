@@ -628,6 +628,20 @@ public class LoginController {
 			String regDate = jsonObj.optString("regDate", "");
 			String dob = jsonObj.optString("dob", "");
 			String education = jsonObj.optString("education", "");
+			String stateSearch = jsonObj.optString("stateSearch", "");
+			String motherTongue = jsonObj.optString("motherTongue", "");
+			String incomeRange = jsonObj.optString("incomeRange", "");
+			String manglik = jsonObj.optString("manglik", "");
+			String diet = jsonObj.optString("diet", "");
+			String verifiedOnly = jsonObj.optString("verifiedOnly", "");
+			String onlineOnly = jsonObj.optString("onlineOnly", "");
+			request.setAttribute("advStateSearch", stateSearch);
+			request.setAttribute("advMotherTongue", motherTongue);
+			request.setAttribute("advIncomeRange", incomeRange);
+			request.setAttribute("advManglik", manglik);
+			request.setAttribute("advDiet", diet);
+			request.setAttribute("advVerifiedOnly", verifiedOnly);
+			request.setAttribute("advOnlineOnly", onlineOnly);
 			String RefineSearchProfile = jsonObj.optString("RefineSearchProfile", "[]");
 
 			List<UserModel> models = new ArrayList<>();
@@ -1395,6 +1409,10 @@ public class LoginController {
 					.getParameter("ProfileCreatedFor");
 			String gender = request.getParameter("gender");
 			String dob = request.getParameter("dob");
+			if (dob != null && dob.trim().matches("\\d{4}-\\d{2}-\\d{2}")) {
+				String[] dobParts = dob.trim().split("-");
+				dob = dobParts[2] + "/" + dobParts[1] + "/" + dobParts[0];
+			}
 			String email = request.getParameter("email");
 			String mobile = request.getParameter("mobile");
 			String userName = request.getParameter("userName");

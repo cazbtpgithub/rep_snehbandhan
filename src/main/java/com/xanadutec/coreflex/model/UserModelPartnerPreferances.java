@@ -104,6 +104,72 @@ public class UserModelPartnerPreferances{
 	@Column(name = "complexion")
 	private String complexion;
 
+	@Column(name = "openToOtherCities")
+	private String openToOtherCities;
+
+	@Column(name = "openToSelfEmployed")
+	private String openToSelfEmployed;
+
+	@Column(name = "community")
+	private String community;
+
+	@Column(name = "willingToRelocate")
+	private String willingToRelocate;
+
+	@Column(name = "willingToSettleAbroad")
+	private String willingToSettleAbroad;
+
+	@Column(name = "horoscopeMatching")
+	private String horoscopeMatching;
+
+	public String getOpenToOtherCities() {
+		return openToOtherCities;
+	}
+
+	public void setOpenToOtherCities(String openToOtherCities) {
+		this.openToOtherCities = openToOtherCities;
+	}
+
+	public String getOpenToSelfEmployed() {
+		return openToSelfEmployed;
+	}
+
+	public void setOpenToSelfEmployed(String openToSelfEmployed) {
+		this.openToSelfEmployed = openToSelfEmployed;
+	}
+
+	public String getCommunity() {
+		return community;
+	}
+
+	public void setCommunity(String community) {
+		this.community = community;
+	}
+
+	public String getWillingToRelocate() {
+		return willingToRelocate;
+	}
+
+	public void setWillingToRelocate(String willingToRelocate) {
+		this.willingToRelocate = willingToRelocate;
+	}
+
+	public String getWillingToSettleAbroad() {
+		return willingToSettleAbroad;
+	}
+
+	public void setWillingToSettleAbroad(String willingToSettleAbroad) {
+		this.willingToSettleAbroad = willingToSettleAbroad;
+	}
+
+	public String getHoroscopeMatching() {
+		return horoscopeMatching;
+	}
+
+	public void setHoroscopeMatching(String horoscopeMatching) {
+		this.horoscopeMatching = horoscopeMatching;
+	}
+
 	public Integer getUserDetailsId() {
 		return userDetailsId;
 	}

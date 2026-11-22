@@ -189,6 +189,75 @@ public class UserController {
 		model.addAttribute("educationCategories", educationCategories);
 		model.addAttribute("occupationCategories", occupationCategories);
 
+		// Populate Partner Education & Occupation selected IDs
+		try {
+			List<PartnerEducationAssociation> partnerEduList = userService.getPartnerEducationAssociationByUserModel(userModel);
+			Long selectedPartnerEduCatId = 0L;
+			if (partnerEduList != null && !partnerEduList.isEmpty() && partnerEduList.get(0).getEducationCategory() != null) {
+				selectedPartnerEduCatId = partnerEduList.get(0).getEducationCategory().getEdu_cat_id();
+			}
+			model.addAttribute("selectedPartnerEduCatId", selectedPartnerEduCatId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		try {
+			List<PartnerOccupationAssociation> partnerOccList = userService.getPartnerOccuptionAssociationByUserModel(userModel);
+			Long selectedPartnerOccCatId = 0L;
+			if (partnerOccList != null && !partnerOccList.isEmpty() && partnerOccList.get(0).getOccupationCategory() != null) {
+				selectedPartnerOccCatId = partnerOccList.get(0).getOccupationCategory().getOccu_id();
+			}
+			model.addAttribute("selectedPartnerOccCatId", selectedPartnerOccCatId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		// Populate dynamic sidebar activity counts & profile completeness
+		try {
+			long shortlistedMeCount = userService.getCountOfShortlistedMe(userModel);
+			long shortlistedCount = userService.getCountOfShortlistedByMe(userModel);
+			long inboxCount = userService.getCountOfInboxMessages(userModel);
+			long interestReceivedCount = userService.getCountOfInterestReceived(userModel);
+			long seenyet = userService.getCountOfWhoViewedMe(userModel);
+			long notificationCount = inboxCount + interestReceivedCount;
+
+			model.addAttribute("inboxCount", inboxCount);
+			model.addAttribute("interestReceivedCount", interestReceivedCount);
+			model.addAttribute("seenyet", seenyet);
+			model.addAttribute("shortlistedCount", shortlistedCount);
+			model.addAttribute("shortlistedMeCount", shortlistedMeCount);
+			model.addAttribute("notificationCount", notificationCount);
+
+			int filledFields = 0;
+			int totalFields = 20;
+			if (modelDetails != null) {
+				if (modelDetails.getProfileCreatedFor() != null && !modelDetails.getProfileCreatedFor().isEmpty()) filledFields++;
+				if (userModel.getFirstName() != null && !userModel.getFirstName().isEmpty()) filledFields++;
+				if (modelDetails.getGender() != null && !modelDetails.getGender().isEmpty()) filledFields++;
+				if (modelDetails.getDateOfBirth() != null) filledFields++;
+				if (modelDetails.getMobileNum() != null && !modelDetails.getMobileNum().isEmpty()) filledFields++;
+				if (userEmailId != null && !userEmailId.equals("-")) filledFields++;
+				if (modelDetails.getMaterialStatus() != null && !modelDetails.getMaterialStatus().equals("0")) filledFields++;
+				if (modelDetails.getAboutMe() != null && !modelDetails.getAboutMe().trim().isEmpty()) filledFields++;
+				if (modelDetails.getHeight() != null && modelDetails.getHeight() > 0) filledFields++;
+				if (modelDetails.getWeight() != null && modelDetails.getWeight() > 0) filledFields++;
+				if (modelDetails.getPhysicalStatus() != null && !modelDetails.getPhysicalStatus().equals("0")) filledFields++;
+				if (modelDetails.getBodyType() != null && !modelDetails.getBodyType().isEmpty()) filledFields++;
+				if (modelDetails.getComplexion() != null && !modelDetails.getComplexion().isEmpty()) filledFields++;
+				if (modelDetails.getState_Country() != null) filledFields++;
+				if (modelDetails.getDistricts() != null) filledFields++;
+				if (modelDetails.getLandmark() != null && !modelDetails.getLandmark().trim().isEmpty()) filledFields++;
+				if (modelDetails.getCaste() != null) filledFields++;
+				if (modelDetails.getEducation() != null) filledFields++;
+				if (modelDetails.getOccupation() != null) filledFields++;
+				if (modelDetails.getIncomeAmount() != null && modelDetails.getIncomeAmount() > 0) filledFields++;
+			}
+			int completeness = Math.min(100, Math.max(20, (int) Math.round((filledFields * 100.0) / totalFields)));
+			model.addAttribute("profileCompleteness", completeness);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 		return new ModelAndView("EditProfile");
 	}
 	
@@ -1014,13 +1083,24 @@ public class UserController {
 			String email = jsonObj.optString("email", "");
 			String employedIn = jsonObj.optString("employedIn", "Private");
 			String ProfileCreatedFor = jsonObj.optString("ProfileCreatedFor", "Self");
+			String userLandMark = jsonObj.optString("userLandMark", "");
 			UserModel userModel=new UserModel();
 			userModel.setUserId(Long.parseLong(userModelId));
 			
+			UserModelDetails existingDetails = null;
+			try {
+				existingDetails = userService.getUserdetails(userModel);
+			} catch (Exception ignored) {}
+
 			UserModelDetails userModelDetails = new UserModelDetails();
 			try {
 				userModelDetails.setUserDetailsId(Integer.parseInt(userModelDetailId));
 				userModelDetails.setUserModel(userModel);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			try {
+				userModelDetails.setLandmark(userLandMark);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -1190,27 +1270,58 @@ public class UserController {
 				e.printStackTrace();
 			}
 			try {
-				userModelDetails.setIncomeType(income);
+				if (income != null && !income.trim().isEmpty()) {
+					userModelDetails.setIncomeType(income);
+				} else if (existingDetails != null) {
+					userModelDetails.setIncomeType(existingDetails.getIncomeType());
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			try {
-				userModelDetails.setIncomeAmount(Long.parseLong(incomeAmount));
+				long parsedIncome = 0L;
+				if (incomeAmount != null && !incomeAmount.trim().isEmpty()) {
+					String cleanInc = incomeAmount.trim();
+					try {
+						parsedIncome = Long.parseLong(cleanInc);
+					} catch (NumberFormatException nfe) {
+						java.util.regex.Matcher m = java.util.regex.Pattern.compile("(\\d+)").matcher(cleanInc);
+						if (m.find()) {
+							parsedIncome = Long.parseLong(m.group(1));
+							if (cleanInc.toLowerCase().contains("lakh") && parsedIncome < 1000) {
+								parsedIncome = parsedIncome * 100000L;
+							}
+						}
+					}
+				}
+				userModelDetails.setIncomeAmount(parsedIncome);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			try {
-				userModelDetails.setFamilyClass(familyClassInfo);
+				if (familyClassInfo != null && !familyClassInfo.trim().isEmpty()) {
+					userModelDetails.setFamilyClass(familyClassInfo);
+				} else if (existingDetails != null) {
+					userModelDetails.setFamilyClass(existingDetails.getFamilyClass());
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			try {
-				userModelDetails.setFamilyType(familyTypeInfo);
+				if (familyTypeInfo != null && !familyTypeInfo.trim().isEmpty()) {
+					userModelDetails.setFamilyType(familyTypeInfo);
+				} else if (existingDetails != null) {
+					userModelDetails.setFamilyType(existingDetails.getFamilyType());
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			try {
-				userModelDetails.setFamilyValues(familyValueInfo);
+				if (familyValueInfo != null && !familyValueInfo.trim().isEmpty()) {
+					userModelDetails.setFamilyValues(familyValueInfo);
+				} else if (existingDetails != null) {
+					userModelDetails.setFamilyValues(existingDetails.getFamilyValues());
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -1795,11 +1906,24 @@ public class UserController {
 			String drinkPartner = jsonObj.optString("drinkPartner", "No Preference");
 			String smokePartner = jsonObj.optString("smokePartner", "No Preference");
 			String employedInPartner = jsonObj.optString("employedInPartner", "Private");
+			String openToOtherCitiesPartner = jsonObj.optString("openToOtherCitiesPartner", "No");
+			String openToSelfEmployed = jsonObj.optString("openToSelfEmployed", "No");
+			String communityPartner = jsonObj.optString("communityPartner", "Any");
+			String relocatePartner = jsonObj.optString("relocatePartner", "No");
+			String settleAbroadPartner = jsonObj.optString("settleAbroadPartner", "No");
+			String horoscopePartner = jsonObj.optString("horoscopePartner", "No");
+			String educationalCategorySelectPartner = jsonObj.optString("educationalCategorySelectPartner", "0");
+			String occupationCategorySelectPartner = jsonObj.optString("occupationCategorySelectPartner", "0");
 			
 			
 			
 			UserModel userModel=new UserModel();
 			userModel.setUserId(Long.parseLong(userModelId));
+			
+			UserModelPartnerPreferances existingPref = null;
+			try {
+				existingPref = userService.getUserModelPartnerPreferancesByUserModelId(userModel);
+			} catch (Exception ignored) {}
 			
 			
 			
@@ -1876,7 +2000,13 @@ public class UserController {
 			}
 
 			try {
-				userModelPartnerPreferances.setComplexion(complexionPartner);
+				if (jsonObj.has("complexionPartner") && !complexionPartner.trim().isEmpty()) {
+					userModelPartnerPreferances.setComplexion(complexionPartner);
+				} else if (existingPref != null && existingPref.getComplexion() != null) {
+					userModelPartnerPreferances.setComplexion(existingPref.getComplexion());
+				} else {
+					userModelPartnerPreferances.setComplexion("Fair");
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 
@@ -1912,29 +2042,62 @@ public class UserController {
 				e.printStackTrace();
 			}
 			try {
-				userModelPartnerPreferances.setIncomeType(incomePartner);
+				if (incomePartner != null && !incomePartner.trim().isEmpty() && !incomePartner.equals("Any")) {
+					userModelPartnerPreferances.setIncomeType(incomePartner);
+				} else if (incomeAmountPartner != null && !incomeAmountPartner.trim().isEmpty()) {
+					userModelPartnerPreferances.setIncomeType(incomeAmountPartner);
+				} else if (existingPref != null) {
+					userModelPartnerPreferances.setIncomeType(existingPref.getIncomeType());
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			try {
-				userModelPartnerPreferances.setIncomeAmount(Long.parseLong(incomeAmountPartner));
+				long parsedPartnerIncome = 0L;
+				if (incomeAmountPartner != null && !incomeAmountPartner.trim().isEmpty() && !incomeAmountPartner.equalsIgnoreCase("Any")) {
+					String cleanPInc = incomeAmountPartner.trim();
+					try {
+						parsedPartnerIncome = Long.parseLong(cleanPInc);
+					} catch (NumberFormatException nfe) {
+						java.util.regex.Matcher m = java.util.regex.Pattern.compile("(\\d+)").matcher(cleanPInc);
+						if (m.find()) {
+							parsedPartnerIncome = Long.parseLong(m.group(1));
+							if (cleanPInc.toLowerCase().contains("lakh") && parsedPartnerIncome < 1000) {
+								parsedPartnerIncome = parsedPartnerIncome * 100000L;
+							}
+						}
+					}
+				}
+				userModelPartnerPreferances.setIncomeAmount(parsedPartnerIncome);
 			} catch (Exception e) {
-				userModelPartnerPreferances.setIncomeAmount(Long.parseLong(0 + ""));
+				userModelPartnerPreferances.setIncomeAmount(0L);
 				e.printStackTrace();
 			}
 
 			try {
-				userModelPartnerPreferances.setFamilyClass(familyClassInfoPartner);
+				if (familyClassInfoPartner != null && !familyClassInfoPartner.trim().isEmpty()) {
+					userModelPartnerPreferances.setFamilyClass(familyClassInfoPartner);
+				} else if (existingPref != null) {
+					userModelPartnerPreferances.setFamilyClass(existingPref.getFamilyClass());
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			try {
-				userModelPartnerPreferances.setFamilyType(familyTypeInfoPartner);
+				if (familyTypeInfoPartner != null && !familyTypeInfoPartner.trim().isEmpty()) {
+					userModelPartnerPreferances.setFamilyType(familyTypeInfoPartner);
+				} else if (existingPref != null) {
+					userModelPartnerPreferances.setFamilyType(existingPref.getFamilyType());
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			try {
-				userModelPartnerPreferances.setFamilyValues(familyValueInfoPartner);
+				if (familyValueInfoPartner != null && !familyValueInfoPartner.trim().isEmpty()) {
+					userModelPartnerPreferances.setFamilyValues(familyValueInfoPartner);
+				} else if (existingPref != null) {
+					userModelPartnerPreferances.setFamilyValues(existingPref.getFamilyValues());
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -1954,7 +2117,23 @@ public class UserController {
 				e.printStackTrace();
 			}
 			try {
-				userModelPartnerPreferances.setEmployeedIn(employedInPartner);
+				if (jsonObj.has("employedInPartner") && !employedInPartner.trim().isEmpty()) {
+					userModelPartnerPreferances.setEmployeedIn(employedInPartner);
+				} else if (existingPref != null && existingPref.getEmployeedIn() != null) {
+					userModelPartnerPreferances.setEmployeedIn(existingPref.getEmployeedIn());
+				} else {
+					userModelPartnerPreferances.setEmployeedIn("Private");
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			try {
+				userModelPartnerPreferances.setOpenToOtherCities(openToOtherCitiesPartner);
+				userModelPartnerPreferances.setOpenToSelfEmployed(openToSelfEmployed);
+				userModelPartnerPreferances.setCommunity(communityPartner);
+				userModelPartnerPreferances.setWillingToRelocate(relocatePartner);
+				userModelPartnerPreferances.setWillingToSettleAbroad(settleAbroadPartner);
+				userModelPartnerPreferances.setHoroscopeMatching(horoscopePartner);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -1964,51 +2143,54 @@ public class UserController {
 				e.printStackTrace();
 			}
 					
-			StringBuffer builder = new StringBuffer(checkBoxEducationPartner);
-			builder.deleteCharAt(0);
-			builder.deleteCharAt(builder.toString().length() - 1);
-
 			try {
-				userService.deletePartnerEducationAssociationByUserModel(userModel);
-				for (String string : builder.toString().replaceAll("\"", "").split(",")) {
-					long l=Long.parseLong(string);
-					if(l==0)
-					{
-						l=1;
+				List<String> eduIds = new ArrayList<>();
+				if (educationalCategorySelectPartner != null && !educationalCategorySelectPartner.trim().isEmpty() && !educationalCategorySelectPartner.equals("0")) {
+					eduIds.add(educationalCategorySelectPartner.trim());
+				} else if (checkBoxEducationPartner != null && checkBoxEducationPartner.length() > 2) {
+					String cleaned = checkBoxEducationPartner.replaceAll("[\\[\\]\"]", "");
+					for (String s : cleaned.split(",")) {
+						if (!s.trim().isEmpty()) eduIds.add(s.trim());
 					}
-
-					EducationCategory educationCategory = new EducationCategory();
-					educationCategory.setEdu_cat_id(l);
-					PartnerEducationAssociation educationAssociation = new PartnerEducationAssociation();
-					educationAssociation.setUserModel(userModel);
-					educationAssociation.setEducationCategory(educationCategory);
-					userService.savePartnerEducationAssociation(educationAssociation);
+				}
+				userService.deletePartnerEducationAssociationByUserModel(userModel);
+				for (String string : eduIds) {
+					long l = Long.parseLong(string);
+					if (l > 0) {
+						EducationCategory educationCategory = new EducationCategory();
+						educationCategory.setEdu_cat_id(l);
+						PartnerEducationAssociation educationAssociation = new PartnerEducationAssociation();
+						educationAssociation.setUserModel(userModel);
+						educationAssociation.setEducationCategory(educationCategory);
+						userService.savePartnerEducationAssociation(educationAssociation);
+					}
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 
-			builder = new StringBuffer(checkBoxOccupationPartner);
-			builder.deleteCharAt(0);
-			builder.deleteCharAt(builder.toString().length() - 1);
 			try {
-				
-				userService.deletePartnerOccuptionAssociationByUserModel(userModel);
-				for (String string : builder.toString().replaceAll("\"", "").split(",")) {
-					
-					long l=Long.parseLong(string);
-					if(l==0)
-					{
-						l=1;
+				List<String> occIds = new ArrayList<>();
+				if (occupationCategorySelectPartner != null && !occupationCategorySelectPartner.trim().isEmpty() && !occupationCategorySelectPartner.equals("0")) {
+					occIds.add(occupationCategorySelectPartner.trim());
+				} else if (checkBoxOccupationPartner != null && checkBoxOccupationPartner.length() > 2) {
+					String cleaned = checkBoxOccupationPartner.replaceAll("[\\[\\]\"]", "");
+					for (String s : cleaned.split(",")) {
+						if (!s.trim().isEmpty()) occIds.add(s.trim());
 					}
-					OccupationCategory OccupationCategory = new OccupationCategory();
-					OccupationCategory.setOccu_id(l);
-					PartnerOccupationAssociation occupationAssociation = new PartnerOccupationAssociation();
-					occupationAssociation.setUserModel(userModel);
-					occupationAssociation.setOccupationCategory(OccupationCategory);
-					userService.savePartnerOccupationAssociation(occupationAssociation);
 				}
-
+				userService.deletePartnerOccuptionAssociationByUserModel(userModel);
+				for (String string : occIds) {
+					long l = Long.parseLong(string);
+					if (l > 0) {
+						OccupationCategory OccupationCategory = new OccupationCategory();
+						OccupationCategory.setOccu_id(l);
+						PartnerOccupationAssociation occupationAssociation = new PartnerOccupationAssociation();
+						occupationAssociation.setUserModel(userModel);
+						occupationAssociation.setOccupationCategory(OccupationCategory);
+						userService.savePartnerOccupationAssociation(occupationAssociation);
+					}
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

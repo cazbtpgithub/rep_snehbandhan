@@ -36,7 +36,7 @@
                 ${profile.name} <span class="online-dot"></span>
             </h3>
             <div class="profile-meta-line">
-                <span>${profile.age} yrs</span> &bull; <span>${profile.location}</span>
+                <span>${profile.age} yrs<c:if test="${not empty profile.height}">, ${profile.height}</c:if></span> &bull; <span>${profile.location}</span>
             </div>
             <div class="profile-meta-line">
                 <span>${profile.education}</span> &bull; <span>${profile.occupation}</span>

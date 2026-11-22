@@ -275,19 +275,19 @@
                                 <label class="ep-v3-label">Profile Created For <span class="ep-v3-req">*</span></label>
                                 <div class="ep-v3-segmented-control" style="grid-template-columns: repeat(4, 1fr);">
                                     <label class="ep-v3-segmented-option">
-                                        <input type="radio" id="pcf_self" name="ProfileCreatedFor" value="Self" checked>
+                                        <input type="radio" id="pcf_self" name="ProfileCreatedFor" value="Self" ${empty ProfileCreatedFor || ProfileCreatedFor == 'Self' ? 'checked' : ''}>
                                         <div class="ep-v3-chip-content"><span class="ep-v3-chip-text">Self</span></div>
                                     </label>
                                     <label class="ep-v3-segmented-option">
-                                        <input type="radio" id="pcf_son" name="ProfileCreatedFor" value="Son / Daughter">
+                                        <input type="radio" id="pcf_son" name="ProfileCreatedFor" value="Son / Daughter" ${ProfileCreatedFor == 'Son' || ProfileCreatedFor == 'Daughter' || ProfileCreatedFor == 'Son / Daughter' ? 'checked' : ''}>
                                         <div class="ep-v3-chip-content"><span class="ep-v3-chip-text">Son/Daughter</span></div>
                                     </label>
                                     <label class="ep-v3-segmented-option">
-                                        <input type="radio" id="pcf_brother" name="ProfileCreatedFor" value="Brother / Sister">
+                                        <input type="radio" id="pcf_brother" name="ProfileCreatedFor" value="Brother / Sister" ${ProfileCreatedFor == 'Brother' || ProfileCreatedFor == 'Sister' || ProfileCreatedFor == 'Brother / Sister' ? 'checked' : ''}>
                                         <div class="ep-v3-chip-content"><span class="ep-v3-chip-text">Sibling</span></div>
                                     </label>
                                     <label class="ep-v3-segmented-option">
-                                        <input type="radio" id="pcf_friend" name="ProfileCreatedFor" value="Relative / Friend">
+                                        <input type="radio" id="pcf_friend" name="ProfileCreatedFor" value="Relative / Friend" ${ProfileCreatedFor == 'Relative' || ProfileCreatedFor == 'Friend' || ProfileCreatedFor == 'Relative / Friend' ? 'checked' : ''}>
                                         <div class="ep-v3-chip-content"><span class="ep-v3-chip-text">Relative/Friend</span></div>
                                     </label>
                                 </div>
@@ -301,8 +301,8 @@
                             <div class="ep-v3-field ep-v3-col-1">
                                 <label class="ep-v3-label">Gender <span class="ep-v3-req">*</span></label>
                                 <div class="ep-v3-radio-group">
-                                    <label class="ep-v3-radio"><input type="radio" id="gender_male" name="gender" value="Male"> Male</label>
-                                    <label class="ep-v3-radio"><input type="radio" id="gender_female" name="gender" value="Female" checked> Female</label>
+                                    <label class="ep-v3-radio"><input type="radio" id="gender_male" name="gender" value="Male" ${empty gender || gender == 'Male' || gender == 'male' ? 'checked' : ''}> Male</label>
+                                    <label class="ep-v3-radio"><input type="radio" id="gender_female" name="gender" value="Female" ${gender == 'Female' || gender == 'female' ? 'checked' : ''}> Female</label>
                                 </div>
                             </div>
 
@@ -373,42 +373,162 @@
                             <div class="ep-v3-field ep-v3-col-1">
                                 <label class="ep-v3-label">Height <span class="ep-v3-req">*</span></label>
                                 <select id="heightSelect" name="heightSelect" class="ep-v3-select">
-                                    <option value="0">Select height</option>
-                                    <c:choose>
-                                        <c:when test="${not empty height}">
-                                            <c:forEach var="category" items="${height}">
-                                                <option value="${category.getHeight_id()}">${category.getHeight_name()}</option>
-                                            </c:forEach>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <option value="121.92">4 feet</option>
-                                            <option value="152.40">5 feet</option>
-                                            <option value="167.64" selected>5 feet 6 inches</option>
-                                            <option value="182.88">6 feet</option>
-                                            <option value="213.36">7 feet</option>
-                                        </c:otherwise>
-                                    </c:choose>
+                                    <option value="0">Select Height</option>
+                                    <option value="121.92">4 feet</option>
+                                    <option value="124.46">4 feet 1 inches</option>
+                                    <option value="127.00">4 feet 2 inches</option>
+                                    <option value="129.54">4 feet 3 inches</option>
+                                    <option value="132.08">4 feet 4 inches</option>
+                                    <option value="134.62">4 feet 5 inches</option>
+                                    <option value="137.16">4 feet 6 inches</option>
+                                    <option value="139.70">4 feet 7 inches</option>
+                                    <option value="142.24">4 feet 8 inches</option>
+                                    <option value="144.78">4 feet 9 inches</option>
+                                    <option value="147.32">4 feet 10 inches</option>
+                                    <option value="149.86">4 feet 11 inches</option>
+                                    <option value="152.40">5 feet</option>
+                                    <option value="154.94">5 feet 1 inches</option>
+                                    <option value="157.48">5 feet 2 inches</option>
+                                    <option value="160.02">5 feet 3 inches</option>
+                                    <option value="162.56">5 feet 4 inches</option>
+                                    <option value="165.10">5 feet 5 inches</option>
+                                    <option value="167.64">5 feet 6 inches</option>
+                                    <option value="170.18">5 feet 7 inches</option>
+                                    <option value="172.72">5 feet 8 inches</option>
+                                    <option value="175.26">5 feet 9 inches</option>
+                                    <option value="177.80">5 feet 10 inches</option>
+                                    <option value="180.34">5 feet 11 inches</option>
+                                    <option value="182.88">6 feet</option>
+                                    <option value="185.42">6 feet 1 inches</option>
+                                    <option value="187.96">6 feet 2 inches</option>
+                                    <option value="190.50">6 feet 3 inches</option>
+                                    <option value="193.04">6 feet 4 inches</option>
+                                    <option value="195.58">6 feet 5 inches</option>
+                                    <option value="198.12">6 feet 6 inches</option>
+                                    <option value="200.66">6 feet 7 inches</option>
+                                    <option value="203.20">6 feet 8 inches</option>
+                                    <option value="205.74">6 feet 9 inches</option>
+                                    <option value="208.28">6 feet 10 inches</option>
+                                    <option value="210.82">6 feet 11 inches</option>
+                                    <option value="213.36">7 feet</option>
+                                    <option value="215.90">7 feet 1 inches</option>
+                                    <option value="218.44">7 feet 2 inches</option>
+                                    <option value="220.98">7 feet 3 inches</option>
+                                    <option value="223.52">7 feet 4 inches</option>
+                                    <option value="226.06">7 feet 5 inches</option>
+                                    <option value="228.60">7 feet 6 inches</option>
+                                    <option value="231.14">7 feet 7 inches</option>
+                                    <option value="233.68">7 feet 8 inches</option>
+                                    <option value="236.22">7 feet 9 inches</option>
+                                    <option value="238.76">7 feet 10 inches</option>
+                                    <option value="241.30">7 feet 11 inches</option>
                                 </select>
                             </div>
 
                             <div class="ep-v3-field ep-v3-col-1">
                                 <label class="ep-v3-label">Weight <span class="ep-v3-req">*</span></label>
                                 <select id="weightSelect" name="weightSelect" class="ep-v3-select">
-                                    <option value="0">Select weight</option>
-                                    <c:choose>
-                                        <c:when test="${not empty weight}">
-                                            <c:forEach var="category" items="${weight}">
-                                                <option value="${category.getWeight_id()}">${category.getWeight_name()}</option>
-                                            </c:forEach>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <option value="50">50 kg</option>
-                                            <option value="60">60 kg</option>
-                                            <option value="65" selected>65 kg</option>
-                                            <option value="70">70 kg</option>
-                                            <option value="80">80 kg</option>
-                                        </c:otherwise>
-                                    </c:choose>
+                                    <option value="0">Select Weight</option>
+                                    <option value="41">41 kg</option>
+                                    <option value="42">42 kg</option>
+                                    <option value="43">43 kg</option>
+                                    <option value="44">44 kg</option>
+                                    <option value="45">45 kg</option>
+                                    <option value="46">46 kg</option>
+                                    <option value="47">47 kg</option>
+                                    <option value="48">48 kg</option>
+                                    <option value="49">49 kg</option>
+                                    <option value="50">50 kg</option>
+                                    <option value="51">51 kg</option>
+                                    <option value="52">52 kg</option>
+                                    <option value="53">53 kg</option>
+                                    <option value="54">54 kg</option>
+                                    <option value="55">55 kg</option>
+                                    <option value="56">56 kg</option>
+                                    <option value="57">57 kg</option>
+                                    <option value="58">58 kg</option>
+                                    <option value="59">59 kg</option>
+                                    <option value="60">60 kg</option>
+                                    <option value="61">61 kg</option>
+                                    <option value="62">62 kg</option>
+                                    <option value="63">63 kg</option>
+                                    <option value="64">64 kg</option>
+                                    <option value="65">65 kg</option>
+                                    <option value="66">66 kg</option>
+                                    <option value="67">67 kg</option>
+                                    <option value="68">68 kg</option>
+                                    <option value="69">69 kg</option>
+                                    <option value="70">70 kg</option>
+                                    <option value="71">71 kg</option>
+                                    <option value="72">72 kg</option>
+                                    <option value="73">73 kg</option>
+                                    <option value="74">74 kg</option>
+                                    <option value="75">75 kg</option>
+                                    <option value="76">76 kg</option>
+                                    <option value="77">77 kg</option>
+                                    <option value="78">78 kg</option>
+                                    <option value="79">79 kg</option>
+                                    <option value="80">80 kg</option>
+                                    <option value="81">81 kg</option>
+                                    <option value="82">82 kg</option>
+                                    <option value="83">83 kg</option>
+                                    <option value="84">84 kg</option>
+                                    <option value="85">85 kg</option>
+                                    <option value="86">86 kg</option>
+                                    <option value="87">87 kg</option>
+                                    <option value="88">88 kg</option>
+                                    <option value="89">89 kg</option>
+                                    <option value="90">90 kg</option>
+                                    <option value="91">91 kg</option>
+                                    <option value="92">92 kg</option>
+                                    <option value="93">93 kg</option>
+                                    <option value="94">94 kg</option>
+                                    <option value="95">95 kg</option>
+                                    <option value="96">96 kg</option>
+                                    <option value="97">97 kg</option>
+                                    <option value="98">98 kg</option>
+                                    <option value="99">99 kg</option>
+                                    <option value="100">100 kg</option>
+                                    <option value="101">101 kg</option>
+                                    <option value="102">102 kg</option>
+                                    <option value="103">103 kg</option>
+                                    <option value="104">104 kg</option>
+                                    <option value="105">105 kg</option>
+                                    <option value="106">106 kg</option>
+                                    <option value="107">107 kg</option>
+                                    <option value="108">108 kg</option>
+                                    <option value="109">109 kg</option>
+                                    <option value="110">110 kg</option>
+                                    <option value="111">111 kg</option>
+                                    <option value="112">112 kg</option>
+                                    <option value="113">113 kg</option>
+                                    <option value="114">114 kg</option>
+                                    <option value="115">115 kg</option>
+                                    <option value="116">116 kg</option>
+                                    <option value="117">117 kg</option>
+                                    <option value="118">118 kg</option>
+                                    <option value="119">119 kg</option>
+                                    <option value="120">120 kg</option>
+                                    <option value="121">121 kg</option>
+                                    <option value="122">122 kg</option>
+                                    <option value="123">123 kg</option>
+                                    <option value="124">124 kg</option>
+                                    <option value="125">125 kg</option>
+                                    <option value="126">126 kg</option>
+                                    <option value="127">127 kg</option>
+                                    <option value="128">128 kg</option>
+                                    <option value="129">129 kg</option>
+                                    <option value="130">130 kg</option>
+                                    <option value="131">131 kg</option>
+                                    <option value="132">132 kg</option>
+                                    <option value="133">133 kg</option>
+                                    <option value="134">134 kg</option>
+                                    <option value="135">135 kg</option>
+                                    <option value="136">136 kg</option>
+                                    <option value="137">137 kg</option>
+                                    <option value="138">138 kg</option>
+                                    <option value="139">139 kg</option>
+                                    <option value="140">140 kg</option>
                                 </select>
                             </div>
 
@@ -748,9 +868,53 @@
                                 <select id="heightSelectPartnerFirst" name="heightSelectPartnerFirst" class="ep-v3-select">
                                     <option value="0">Select Height</option>
                                     <option value="121.92">4 feet</option>
+                                    <option value="124.46">4 feet 1 inches</option>
+                                    <option value="127.00">4 feet 2 inches</option>
+                                    <option value="129.54">4 feet 3 inches</option>
+                                    <option value="132.08">4 feet 4 inches</option>
+                                    <option value="134.62">4 feet 5 inches</option>
+                                    <option value="137.16">4 feet 6 inches</option>
+                                    <option value="139.70">4 feet 7 inches</option>
+                                    <option value="142.24">4 feet 8 inches</option>
+                                    <option value="144.78">4 feet 9 inches</option>
+                                    <option value="147.32">4 feet 10 inches</option>
+                                    <option value="149.86">4 feet 11 inches</option>
                                     <option value="152.40" selected>5 feet</option>
+                                    <option value="154.94">5 feet 1 inches</option>
+                                    <option value="157.48">5 feet 2 inches</option>
+                                    <option value="160.02">5 feet 3 inches</option>
+                                    <option value="162.56">5 feet 4 inches</option>
+                                    <option value="165.10">5 feet 5 inches</option>
                                     <option value="167.64">5 feet 6 inches</option>
+                                    <option value="170.18">5 feet 7 inches</option>
+                                    <option value="172.72">5 feet 8 inches</option>
+                                    <option value="175.26">5 feet 9 inches</option>
+                                    <option value="177.80">5 feet 10 inches</option>
+                                    <option value="180.34">5 feet 11 inches</option>
                                     <option value="182.88">6 feet</option>
+                                    <option value="185.42">6 feet 1 inches</option>
+                                    <option value="187.96">6 feet 2 inches</option>
+                                    <option value="190.50">6 feet 3 inches</option>
+                                    <option value="193.04">6 feet 4 inches</option>
+                                    <option value="195.58">6 feet 5 inches</option>
+                                    <option value="198.12">6 feet 6 inches</option>
+                                    <option value="200.66">6 feet 7 inches</option>
+                                    <option value="203.20">6 feet 8 inches</option>
+                                    <option value="205.74">6 feet 9 inches</option>
+                                    <option value="208.28">6 feet 10 inches</option>
+                                    <option value="210.82">6 feet 11 inches</option>
+                                    <option value="213.36">7 feet</option>
+                                    <option value="215.90">7 feet 1 inches</option>
+                                    <option value="218.44">7 feet 2 inches</option>
+                                    <option value="220.98">7 feet 3 inches</option>
+                                    <option value="223.52">7 feet 4 inches</option>
+                                    <option value="226.06">7 feet 5 inches</option>
+                                    <option value="228.60">7 feet 6 inches</option>
+                                    <option value="231.14">7 feet 7 inches</option>
+                                    <option value="233.68">7 feet 8 inches</option>
+                                    <option value="236.22">7 feet 9 inches</option>
+                                    <option value="238.76">7 feet 10 inches</option>
+                                    <option value="241.30">7 feet 11 inches</option>
                                 </select>
                             </div>
 
@@ -758,10 +922,54 @@
                                 <label class="ep-v3-label">Height Range (To)</label>
                                 <select id="heightSelectPartnerSecond" name="heightSelectPartnerSecond" class="ep-v3-select">
                                     <option value="0">Select Height</option>
+                                    <option value="121.92">4 feet</option>
+                                    <option value="124.46">4 feet 1 inches</option>
+                                    <option value="127.00">4 feet 2 inches</option>
+                                    <option value="129.54">4 feet 3 inches</option>
+                                    <option value="132.08">4 feet 4 inches</option>
+                                    <option value="134.62">4 feet 5 inches</option>
+                                    <option value="137.16">4 feet 6 inches</option>
+                                    <option value="139.70">4 feet 7 inches</option>
+                                    <option value="142.24">4 feet 8 inches</option>
+                                    <option value="144.78">4 feet 9 inches</option>
+                                    <option value="147.32">4 feet 10 inches</option>
+                                    <option value="149.86">4 feet 11 inches</option>
                                     <option value="152.40">5 feet</option>
+                                    <option value="154.94">5 feet 1 inches</option>
+                                    <option value="157.48">5 feet 2 inches</option>
+                                    <option value="160.02">5 feet 3 inches</option>
+                                    <option value="162.56">5 feet 4 inches</option>
+                                    <option value="165.10">5 feet 5 inches</option>
                                     <option value="167.64">5 feet 6 inches</option>
+                                    <option value="170.18">5 feet 7 inches</option>
+                                    <option value="172.72">5 feet 8 inches</option>
+                                    <option value="175.26">5 feet 9 inches</option>
+                                    <option value="177.80">5 feet 10 inches</option>
+                                    <option value="180.34">5 feet 11 inches</option>
                                     <option value="182.88" selected>6 feet</option>
+                                    <option value="185.42">6 feet 1 inches</option>
+                                    <option value="187.96">6 feet 2 inches</option>
+                                    <option value="190.50">6 feet 3 inches</option>
+                                    <option value="193.04">6 feet 4 inches</option>
+                                    <option value="195.58">6 feet 5 inches</option>
+                                    <option value="198.12">6 feet 6 inches</option>
+                                    <option value="200.66">6 feet 7 inches</option>
+                                    <option value="203.20">6 feet 8 inches</option>
+                                    <option value="205.74">6 feet 9 inches</option>
+                                    <option value="208.28">6 feet 10 inches</option>
+                                    <option value="210.82">6 feet 11 inches</option>
                                     <option value="213.36">7 feet</option>
+                                    <option value="215.90">7 feet 1 inches</option>
+                                    <option value="218.44">7 feet 2 inches</option>
+                                    <option value="220.98">7 feet 3 inches</option>
+                                    <option value="223.52">7 feet 4 inches</option>
+                                    <option value="226.06">7 feet 5 inches</option>
+                                    <option value="228.60">7 feet 6 inches</option>
+                                    <option value="231.14">7 feet 7 inches</option>
+                                    <option value="233.68">7 feet 8 inches</option>
+                                    <option value="236.22">7 feet 9 inches</option>
+                                    <option value="238.76">7 feet 10 inches</option>
+                                    <option value="241.30">7 feet 11 inches</option>
                                 </select>
                             </div>
 

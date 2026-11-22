@@ -1,77 +1,6 @@
 <!DOCTYPE html>
 <html>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%
-	String userJson = (String) request.getAttribute("userModelDetailList");
-	if (userJson == null || userJson.trim().equals("[]") || userJson.trim().isEmpty()) {
-		try {
-			java.sql.Connection conn = null;
-			java.sql.PreparedStatement pstmt = null;
-			java.sql.ResultSet rs = null;
-			try {
-				try {
-					org.springframework.web.context.WebApplicationContext springContext = org.springframework.web.context.support.WebApplicationContextUtils.getWebApplicationContext(application);
-					if (springContext != null && springContext.containsBean("dataSource")) {
-						javax.sql.DataSource ds = (javax.sql.DataSource) springContext.getBean("dataSource");
-						conn = ds.getConnection();
-					}
-				} catch (Exception e) {}
-				
-				if (conn == null) {
-					java.util.Properties props = new java.util.Properties();
-					java.io.InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("database.properties");
-					if (in != null) {
-						props.load(in);
-						in.close();
-						Class.forName(props.getProperty("database.driver", "com.mysql.cj.jdbc.Driver"));
-						conn = java.sql.DriverManager.getConnection(props.getProperty("database.url"), props.getProperty("database.user"), props.getProperty("database.password"));
-					}
-				}
-				if (conn != null) {
-					String sql = "SELECT u.ID as userId, u.Full_Name as firstName, d.registrationDate, d.dateOfBirth, u.Kit_id as kit, d.mobileNum, d.gender "
-							   + "FROM usermodeldetails d "
-							   + "JOIN user u ON d.userModel_id = u.ID "
-							   + "WHERE (d.status IS NULL OR d.status = 1) "
-							   + "ORDER BY d.registrationDate DESC LIMIT 100";
-					pstmt = conn.prepareStatement(sql);
-					rs = pstmt.executeQuery();
-				org.json.JSONArray jsonArray = new org.json.JSONArray();
-				while (rs.next()) {
-					org.json.JSONObject obj = new org.json.JSONObject();
-					obj.put("userId", rs.getLong("userId"));
-					obj.put("firstName", rs.getString("firstName") != null ? rs.getString("firstName") : "");
-					obj.put("gender", rs.getString("gender") != null ? rs.getString("gender") : "");
-					obj.put("mobileNum", rs.getString("mobileNum") != null ? rs.getString("mobileNum") : "");
-					
-					java.sql.Timestamp regTs = rs.getTimestamp("registrationDate");
-					obj.put("registrationDate", regTs != null ? regTs.getTime() : org.json.JSONObject.NULL);
-					
-					java.sql.Timestamp dobTs = rs.getTimestamp("dateOfBirth");
-					obj.put("dateOfBirth", dobTs != null ? dobTs.getTime() : org.json.JSONObject.NULL);
-					
-					long kitVal = rs.getLong("kit");
-					if (rs.wasNull() || kitVal == 0) {
-						obj.put("kit", org.json.JSONObject.NULL);
-					} else {
-						org.json.JSONObject kitObj = new org.json.JSONObject();
-						kitObj.put("kit_id", kitVal);
-						obj.put("kit", kitObj);
-					}
-					jsonArray.put(obj);
-				}
-				userJson = jsonArray.toString();
-				request.setAttribute("userModelDetailList", userJson);
-			}
-			} finally {
-				if (rs != null) try { rs.close(); } catch(Exception e) {}
-				if (pstmt != null) try { pstmt.close(); } catch(Exception e) {}
-				if (conn != null) try { conn.close(); } catch(Exception e) {}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-%>
 <head>
 
 <title>Registered User</title>
@@ -213,21 +142,76 @@ label {
 								
 								
 								
-								<div class="box">
+								<div class="box" style="border-top: 3px solid #d23779;">
 									<div class="box-body">
 
+										<!-- LIVE DATABASE FILTER PANEL -->
+										<div class="well well-sm" style="background: #fdf6f9; border: 1px solid #f2c7d9; border-radius: 6px; padding: 14px 16px; margin-bottom: 16px;">
+											<div style="font-weight: bold; color: #d23779; font-size: 14px; margin-bottom: 10px;">
+												<i class="fa fa-filter"></i> Filter Registered Users (Live Database Search)
+											</div>
+											<div class="row" style="margin-bottom: 10px;">
+												<div class="col-sm-2">
+													<label style="font-weight: 600; font-size: 12px; color: #444; display: block; margin-bottom: 3px;">Id</label>
+													<input type="text" id="topFilterId" class="form-control input-sm" placeholder="e.g. 25049 or SB25049">
+												</div>
+												<div class="col-sm-3">
+													<label style="font-weight: 600; font-size: 12px; color: #444; display: block; margin-bottom: 3px;">Name</label>
+													<input type="text" id="topFilterName" class="form-control input-sm" placeholder="Enter Name">
+												</div>
+												<div class="col-sm-2">
+													<label style="font-weight: 600; font-size: 12px; color: #444; display: block; margin-bottom: 3px;">Gender</label>
+													<select id="topFilterGender" class="form-control input-sm">
+														<option value="">All Genders</option>
+														<option value="Male">Male</option>
+														<option value="Female">Female</option>
+													</select>
+												</div>
+												<div class="col-sm-3">
+													<label style="font-weight: 600; font-size: 12px; color: #444; display: block; margin-bottom: 3px;">Mobile</label>
+													<input type="text" id="topFilterMobile" class="form-control input-sm" placeholder="Enter Mobile Number">
+												</div>
+												<div class="col-sm-2">
+													<label style="font-weight: 600; font-size: 12px; color: #444; display: block; margin-bottom: 3px;">User Type</label>
+													<select id="topFilterUserType" class="form-control input-sm">
+														<option value="">All Types</option>
+														<option value="Free">Free</option>
+														<option value="Paid">Paid</option>
+													</select>
+												</div>
+											</div>
+											<div class="row" style="align-items: flex-end;">
+												<div class="col-sm-2">
+													<label style="font-weight: 600; font-size: 12px; color: #444; display: block; margin-bottom: 3px;">Registration Date</label>
+													<input type="date" id="topFilterRegDate" class="form-control input-sm" title="Exact Registration Date">
+												</div>
+												<div class="col-sm-2">
+													<label style="font-weight: 600; font-size: 12px; color: #444; display: block; margin-bottom: 3px;">Reg. From Date</label>
+													<input type="date" id="topFilterRegFromDate" class="form-control input-sm" title="Registration Date From">
+												</div>
+												<div class="col-sm-2">
+													<label style="font-weight: 600; font-size: 12px; color: #444; display: block; margin-bottom: 3px;">Reg. To Date</label>
+													<input type="date" id="topFilterRegToDate" class="form-control input-sm" title="Registration Date To">
+												</div>
+												<div class="col-sm-2">
+													<label style="font-weight: 600; font-size: 12px; color: #444; display: block; margin-bottom: 3px;">DOB</label>
+													<input type="date" id="topFilterDob" class="form-control input-sm" title="Date of Birth">
+												</div>
+												<div class="col-sm-2">
+													<label style="font-weight: 600; font-size: 12px; color: #444; display: block; margin-bottom: 3px;">Quick Keyword</label>
+													<input type="text" class="form-control input-sm" id="globalSearch" name="globalSearch" placeholder="Name / Mobile / ID">
+												</div>
+												<div class="col-sm-2" style="padding-top: 19px;">
+													<button type="button" class="btn btn-primary btn-sm" style="background-color: #d23779; border-color: #d23779;" onclick="applyLiveFilters()">
+														<i class="fa fa-search"></i> Filter
+													</button>
+													<button type="button" class="btn btn-default btn-sm" onclick="resetLiveFilters()">
+														<i class="fa fa-refresh"></i> Reset
+													</button>
+												</div>
+											</div>
+										</div>
 
-
-<br> <br>
-								<div class="col-sm-12 row">
-								      <div class="col-sm-6">
-								       <input type="text" class="form-control" id="globalSearch" name="globalSearch">
-								      </div>
-								      <div class="col-sm-6">
-								      <button class="btn-primary-sm" onclick="globalSearch()">Search</button>
-								      </div>
-								</div><br><br>
-								
 										<div id="SearchResult"></div>
 										<input type="hidden" name="hiddenUsermodelId" id="hiddenUsermodelId"  />
 										<input type="hidden" name="hiddenUserpartnerId" id="hiddenUserpartnerId"  />
@@ -252,13 +236,25 @@ label {
 
 												</tr>
 												<tr class="filters">
-													<th><input type="text" placeholder="Search Id" class="form-control input-sm" /></th>
-													<th><input type="text" placeholder="Search Name" class="form-control input-sm" /></th>
-													<th><input type="text" placeholder="Search Gender" class="form-control input-sm" /></th>
-													<th><input type="text" placeholder="Search Mobile" class="form-control input-sm" /></th>
-													<th><input type="text" placeholder="Search Reg Date" class="form-control input-sm" /></th>
-													<th><input type="text" placeholder="Search DOB" class="form-control input-sm" /></th>
-													<th><input type="text" placeholder="Search Type" class="form-control input-sm" /></th>
+													<th><input type="text" id="colFilterId" data-col="0" placeholder="Search Id" class="form-control input-sm col-filter-input" /></th>
+													<th><input type="text" id="colFilterName" data-col="1" placeholder="Search Name" class="form-control input-sm col-filter-input" /></th>
+													<th>
+														<select id="colFilterGender" data-col="2" class="form-control input-sm col-filter-input" style="padding: 2px 4px;">
+															<option value="">All</option>
+															<option value="Male">Male</option>
+															<option value="Female">Female</option>
+														</select>
+													</th>
+													<th><input type="text" id="colFilterMobile" data-col="3" placeholder="Search Mobile" class="form-control input-sm col-filter-input" /></th>
+													<th><input type="text" id="colFilterRegDate" data-col="4" placeholder="DD-MM-YYYY / YYYY-MM-DD" class="form-control input-sm col-filter-input" /></th>
+													<th><input type="text" id="colFilterDob" data-col="5" placeholder="DD-MM-YYYY / YYYY-MM-DD" class="form-control input-sm col-filter-input" /></th>
+													<th>
+														<select id="colFilterUserType" data-col="6" class="form-control input-sm col-filter-input" style="padding: 2px 4px;">
+															<option value="">All</option>
+															<option value="Free">Free</option>
+															<option value="Paid">Paid</option>
+														</select>
+													</th>
 													<th></th>
 													<th></th>
 												</tr>
@@ -1851,7 +1847,29 @@ label {
 		var table = $('#example1')
 				.DataTable(
 						{
-							"data": data,
+							"processing": true,
+							"serverSide": true,
+							"orderCellsTop": true,
+							"ajax": {
+								"url": "registeredUserServerSideData",
+								"type": "POST",
+								"data": function(d) {
+									d.filterId = ($("#topFilterId").val() || $("#colFilterId").val() || "").trim();
+									d.filterName = ($("#topFilterName").val() || $("#colFilterName").val() || "").trim();
+									d.filterGender = ($("#topFilterGender").val() || $("#colFilterGender").val() || "").trim();
+									d.filterMobile = ($("#topFilterMobile").val() || $("#colFilterMobile").val() || "").trim();
+									d.filterRegDate = ($("#topFilterRegDate").val() || $("#colFilterRegDate").val() || "").trim();
+									d.filterDob = ($("#topFilterDob").val() || $("#colFilterDob").val() || "").trim();
+									d.filterUserType = ($("#topFilterUserType").val() || $("#colFilterUserType").val() || "").trim();
+									d.regFromDate = ($("#topFilterRegFromDate").val() || "").trim();
+									d.regToDate = ($("#topFilterRegToDate").val() || "").trim();
+									var quickKeyword = ($("#globalSearch").val() || "").trim();
+									if (quickKeyword !== "" && (!d.search || !d.search.value)) {
+										if (!d.search) d.search = {};
+										d.search.value = quickKeyword;
+									}
+								}
+							},
 							"paging": true,
 							"pageLength": 25,
 							"lengthMenu": [[10, 25, 50, 100], [10, 25, 50, 100]],
@@ -1926,18 +1944,71 @@ label {
 										"orderable": false
 									}],
 							"language": {
-								"emptyTable": "No registered users found",
+								"emptyTable": "No registered users found matching your filter criteria",
 								"lengthMenu": "Show _MENU_ users per page",
-								"info": "Showing _START_ to _END_ of _TOTAL_ recent registered users",
+								"info": "Showing _START_ to _END_ of _TOTAL_ registered users",
 								"infoEmpty": "Showing 0 to 0 of 0 users",
-								"infoFiltered": "(filtered from _MAX_ total records)",
-								"search": "Filter users:"
+								"infoFiltered": "(filtered from _MAX_ total live database records)",
+								"search": "Quick Search:"
 							}
 						});
 
-		$('#example1 thead .filters input').on('keyup change', function() {
-			table.column($(this).parent().index()).search(this.value).draw();
+		var filterDebounceTimer = null;
+		function triggerDebouncedDraw() {
+			if (filterDebounceTimer) clearTimeout(filterDebounceTimer);
+			filterDebounceTimer = setTimeout(function() {
+				table.draw();
+			}, 300);
+		}
+
+		// Sync inline table column filters with top filter inputs and trigger live DB query
+		$('#example1 thead .filters .col-filter-input').on('keyup change', function(e) {
+			e.stopPropagation();
+			var colIdx = $(this).data('col');
+			var val = $(this).val();
+			if (colIdx === 0) $("#topFilterId").val(val);
+			else if (colIdx === 1) $("#topFilterName").val(val);
+			else if (colIdx === 2) $("#topFilterGender").val(val);
+			else if (colIdx === 3) $("#topFilterMobile").val(val);
+			else if (colIdx === 4) $("#topFilterRegDate").val("");
+			else if (colIdx === 5) $("#topFilterDob").val("");
+			else if (colIdx === 6) $("#topFilterUserType").val(val);
+			table.column(colIdx).search(val);
+			triggerDebouncedDraw();
 		});
+
+		// Sync top filter panel inputs and trigger live DB query
+		$('#topFilterId, #topFilterName, #topFilterMobile, #globalSearch').on('keyup', function() {
+			$("#colFilterId").val($("#topFilterId").val());
+			$("#colFilterName").val($("#topFilterName").val());
+			$("#colFilterMobile").val($("#topFilterMobile").val());
+			triggerDebouncedDraw();
+		});
+
+		$('#topFilterGender, #topFilterUserType, #topFilterRegDate, #topFilterRegFromDate, #topFilterRegToDate, #topFilterDob').on('change', function() {
+			$("#colFilterGender").val($("#topFilterGender").val());
+			$("#colFilterUserType").val($("#topFilterUserType").val());
+			if ($("#topFilterRegDate").val()) $("#colFilterRegDate").val($("#topFilterRegDate").val());
+			if ($("#topFilterDob").val()) $("#colFilterDob").val($("#topFilterDob").val());
+			table.draw();
+		});
+
+		function applyLiveFilters() {
+			$("#colFilterId").val($("#topFilterId").val());
+			$("#colFilterName").val($("#topFilterName").val());
+			$("#colFilterGender").val($("#topFilterGender").val());
+			$("#colFilterMobile").val($("#topFilterMobile").val());
+			$("#colFilterUserType").val($("#topFilterUserType").val());
+			table.draw();
+		}
+
+		function resetLiveFilters() {
+			$("#topFilterId, #topFilterName, #topFilterGender, #topFilterMobile, #topFilterUserType, #topFilterRegDate, #topFilterRegFromDate, #topFilterRegToDate, #topFilterDob, #globalSearch").val("");
+			$("#colFilterId, #colFilterName, #colFilterGender, #colFilterMobile, #colFilterRegDate, #colFilterDob, #colFilterUserType").val("");
+			table.search("");
+			table.columns().search("");
+			table.draw();
+		}
 
 				function selectClosestHeightOption(selectElem, heightVal) {
 			if (!heightVal) {
@@ -3132,34 +3203,7 @@ label {
 	}
 	
 	function globalSearch(){
-		var searchText = $("#globalSearch").val();
-		if (!searchText || searchText.trim() === "") {
-			return;
-		}
-		$.ajax({
-			dataType : 'json',
-			url : "globalSearch",
-			type : "GET",
-			data : "searchText=" + encodeURIComponent(searchText.trim()),
-			success : function(data) {
-				var list = [];
-				if (data && data.userModelDetailList) {
-					try {
-						list = JSON.parse(data.userModelDetailList);
-					} catch(e) {
-						list = eval(data.userModelDetailList);
-					}
-				} else if (Array.isArray(data)) {
-					list = data;
-				}
-				table.clear();
-				table.rows.add(list);
-				table.draw();
-			},
-			error : function(xhr, ajaxOptions, thrownError) {
-				alert("Search error: " + thrownError);
-			}
-		});
+		applyLiveFilters();
 	}
 
 	</script>

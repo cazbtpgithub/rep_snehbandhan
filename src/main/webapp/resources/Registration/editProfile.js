@@ -423,7 +423,7 @@ function updatePartner() {
 			.val();
 	var physicalStatusPartner = $('#physicalStatusPartner option:selected')
 			.val();
-	var bodyTypePartner = $("input[name=bodyTypePartner]:checked").val();
+	var bodyTypePartner = $('#bodyTypePartner option:selected').val() || $("input[name=bodyTypePartner]:checked").val();
 	var complexionPartner = $("input[name=complexionPartner]:checked").val();
 	var heightSelectPartnerFirst = $(
 			'#heightSelectPartnerFirst option:selected').val();
@@ -440,11 +440,19 @@ function updatePartner() {
 	$("input:checkbox[name=checkBoxEducationPartner]:checked").each(function() {
 		checkBoxEducationPartner.push($(this).val());
 	});
+	var educationalCategorySelectPartner = $('#educationalCategorySelectPartner option:selected').val() || "0";
+	if (educationalCategorySelectPartner !== "0" && checkBoxEducationPartner.length === 0) {
+		checkBoxEducationPartner.push(educationalCategorySelectPartner);
+	}
 	var checkBoxOccupationPartner = [];
 	$("input:checkbox[name=checkBoxOccupationPartner]:checked").each(
 			function() {
 				checkBoxOccupationPartner.push($(this).val());
 			});
+	var occupationCategorySelectPartner = $('#occupationCategorySelectPartner option:selected').val() || "0";
+	if (occupationCategorySelectPartner !== "0" && checkBoxOccupationPartner.length === 0) {
+		checkBoxOccupationPartner.push(occupationCategorySelectPartner);
+	}
 
 	var incomePartner = $("input[name=incomePartner]:checked").val();
 	var incomeAmountPartner = $("#incomeAmountPartner").val();
@@ -457,6 +465,12 @@ function updatePartner() {
 	var eatingPartner = $("input[name=eatingPartner]:checked").val();
 	var drinkPartner = $("input[name=drinkPartner]:checked").val();
 	var smokePartner = $("input[name=smokePartner]:checked").val();
+	var openToOtherCitiesPartner = $("#openToOtherCitiesPartner").is(":checked") ? "Yes" : "No";
+	var openToSelfEmployed = $("#openToSelfEmployed").is(":checked") ? "Yes" : "No";
+	var communityPartner = $('#communityPartner option:selected').val() || "Any";
+	var relocatePartner = $("input[name=relocatePartner]").is(":checked") ? "Yes" : "No";
+	var settleAbroadPartner = $("input[name=settleAbroadPartner]").is(":checked") ? "Yes" : "No";
+	var horoscopePartner = $("input[name=horoscopePartner]").is(":checked") ? "Yes" : "No";
 
 	var arr = {
 
@@ -473,6 +487,8 @@ function updatePartner() {
 		casteSelectPartner : casteSelectPartner,
 		checkBoxEducationPartner : checkBoxEducationPartner,
 		checkBoxOccupationPartner : checkBoxOccupationPartner,
+		educationalCategorySelectPartner : educationalCategorySelectPartner,
+		occupationCategorySelectPartner : occupationCategorySelectPartner,
 		incomePartner : incomePartner,
 		incomeAmountPartner : incomeAmountPartner,
 		familyClassInfoPartner : familyClassInfoPartner,
@@ -481,6 +497,12 @@ function updatePartner() {
 		eatingPartner : eatingPartner,
 		drinkPartner : drinkPartner,
 		smokePartner : smokePartner,
+		openToOtherCitiesPartner : openToOtherCitiesPartner,
+		openToSelfEmployed : openToSelfEmployed,
+		communityPartner : communityPartner,
+		relocatePartner : relocatePartner,
+		settleAbroadPartner : settleAbroadPartner,
+		horoscopePartner : horoscopePartner,
 		userModelId : userModelId,
 		hiddenUserpartnerId : hiddenUserpartnerId,
 		employedInPartner : employedInPartner

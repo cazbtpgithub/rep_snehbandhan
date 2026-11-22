@@ -797,14 +797,56 @@
                     <div class="filter-group">
                         <%-- Height: values are numeric decimals (feet.inches) that the DAO can parse --%>
                         <label>Height</label>
-                        <select id="filterHeight" style="min-width: 100px;">
-                            <option value="">Any Height</option>
-                            <option value="4.0|4.6">4'0" to 4'6"</option>
-                            <option value="4.6|5.0">4'6" to 5'0"</option>
-                            <option value="5.0|5.3">5'0" to 5'3"</option>
-                            <option value="5.3|5.6">5'3" to 5'6"</option>
-                            <option value="5.6|6.0">5'6" to 6'0"</option>
-                            <option value="6.0|7.0">6'0" &amp; Above</option>
+                        <select id="filterHeight" style="min-width: 140px;">
+                            <option value="0">Select Height</option>
+                            <option value="121.92">4 feet</option>
+                            <option value="124.46">4 feet 1 inches</option>
+                            <option value="127.00">4 feet 2 inches</option>
+                            <option value="129.54">4 feet 3 inches</option>
+                            <option value="132.08">4 feet 4 inches</option>
+                            <option value="134.62">4 feet 5 inches</option>
+                            <option value="137.16">4 feet 6 inches</option>
+                            <option value="139.70">4 feet 7 inches</option>
+                            <option value="142.24">4 feet 8 inches</option>
+                            <option value="144.78">4 feet 9 inches</option>
+                            <option value="147.32">4 feet 10 inches</option>
+                            <option value="149.86">4 feet 11 inches</option>
+                            <option value="152.40">5 feet</option>
+                            <option value="154.94">5 feet 1 inches</option>
+                            <option value="157.48">5 feet 2 inches</option>
+                            <option value="160.02">5 feet 3 inches</option>
+                            <option value="162.56">5 feet 4 inches</option>
+                            <option value="165.10">5 feet 5 inches</option>
+                            <option value="167.64">5 feet 6 inches</option>
+                            <option value="170.18">5 feet 7 inches</option>
+                            <option value="172.72">5 feet 8 inches</option>
+                            <option value="175.26">5 feet 9 inches</option>
+                            <option value="177.80">5 feet 10 inches</option>
+                            <option value="180.34">5 feet 11 inches</option>
+                            <option value="182.88">6 feet</option>
+                            <option value="185.42">6 feet 1 inches</option>
+                            <option value="187.96">6 feet 2 inches</option>
+                            <option value="190.50">6 feet 3 inches</option>
+                            <option value="193.04">6 feet 4 inches</option>
+                            <option value="195.58">6 feet 5 inches</option>
+                            <option value="198.12">6 feet 6 inches</option>
+                            <option value="200.66">6 feet 7 inches</option>
+                            <option value="203.20">6 feet 8 inches</option>
+                            <option value="205.74">6 feet 9 inches</option>
+                            <option value="208.28">6 feet 10 inches</option>
+                            <option value="210.82">6 feet 11 inches</option>
+                            <option value="213.36">7 feet</option>
+                            <option value="215.90">7 feet 1 inches</option>
+                            <option value="218.44">7 feet 2 inches</option>
+                            <option value="220.98">7 feet 3 inches</option>
+                            <option value="223.52">7 feet 4 inches</option>
+                            <option value="226.06">7 feet 5 inches</option>
+                            <option value="228.60">7 feet 6 inches</option>
+                            <option value="231.14">7 feet 7 inches</option>
+                            <option value="233.68">7 feet 8 inches</option>
+                            <option value="236.22">7 feet 9 inches</option>
+                            <option value="238.76">7 feet 10 inches</option>
+                            <option value="241.30">7 feet 11 inches</option>
                         </select>
                     </div>
 
@@ -845,7 +887,9 @@
                             <label>Marital Status</label>
                             <select id="advMaritalStatus">
                                 <option value="">Any Marital Status</option>
-                                <option value="Never Married">Never Married</option>
+                                <option value="Never Married">Never Married / Single</option>
+                                <option value="Single">Single</option>
+                                <option value="Married">Married</option>
                                 <option value="Divorced">Divorced</option>
                                 <option value="Widowed">Widowed</option>
                                 <option value="Awaiting Divorce">Awaiting Divorce</option>
@@ -869,12 +913,15 @@
                             <label>Education Level</label>
                             <select id="advEducation">
                                 <option value="">Any Education</option>
-                                <option value="Engineering">B.E / B.Tech / M.Tech</option>
-                                <option value="Medical">MBBS / MD / Dental</option>
-                                <option value="Post Graduate">Master's / M.Sc / M.Com</option>
-                                <option value="Graduate">Bachelor's / B.Com / B.Sc</option>
-                                <option value="Management">MBA / PGDM</option>
+                                <option value="Engineering">B.E / B.Tech / M.Tech (Engineering)</option>
+                                <option value="Medical">MBBS / MD / Dental (Medical)</option>
+                                <option value="Post Graduate">Master's / M.Sc / M.Com (Post Graduate)</option>
+                                <option value="Graduate">Bachelor's / B.Com / B.Sc (Graduate)</option>
+                                <option value="Management">MBA / PGDM / BBA (Management)</option>
                                 <option value="Doctorate">Doctorate / Ph.D</option>
+                                <c:forEach var="eduCat" items="${educationCategories}">
+                                    <option value="${eduCat.edu_cat_name}">${eduCat.edu_cat_name}</option>
+                                </c:forEach>
                             </select>
                         </div>
 
@@ -884,10 +931,13 @@
                                 <option value="">Any Profession</option>
                                 <option value="Software Engineer">Software / IT Professional</option>
                                 <option value="Doctor">Doctor / Healthcare</option>
-                                <option value="Civil Services">Govt / Civil Services</option>
-                                <option value="Banking">Banking & Finance</option>
+                                <option value="Civil Services">Govt / Civil Services / Defence</option>
+                                <option value="Banking">Banking &amp; Finance</option>
                                 <option value="Business">Business / Entrepreneur</option>
                                 <option value="Teacher">Teaching / Education</option>
+                                <c:forEach var="occ" items="${occupationCategories}">
+                                    <option value="${occ.occupation_name}">${occ.occupation_name}</option>
+                                </c:forEach>
                             </select>
                         </div>
 
@@ -899,7 +949,7 @@
                                 <option value="3 - 5 Lakhs">₹3 - ₹5 Lakhs</option>
                                 <option value="5 - 10 Lakhs">₹5 - ₹10 Lakhs</option>
                                 <option value="10 - 20 Lakhs">₹10 - ₹20 Lakhs</option>
-                                <option value="20+ Lakhs">₹20 Lakhs & Above</option>
+                                <option value="20+ Lakhs">₹20 Lakhs &amp; Above</option>
                             </select>
                         </div>
 
@@ -919,7 +969,7 @@
                                 <option value="">Any Diet</option>
                                 <option value="Vegetarian">Vegetarian</option>
                                 <option value="Non-Vegetarian">Non-Vegetarian</option>
-                                <option value="Eggetarian">Eggetarian</option>
+                                <option value="Eggetarian">Eggetarian (Eggs Only)</option>
                                 <option value="Jain">Jain</option>
                             </select>
                         </div>
@@ -928,11 +978,22 @@
                             <label>State</label>
                             <select id="advState">
                                 <option value="">Any State</option>
-                                <option value="Maharashtra">Maharashtra</option>
-                                <option value="Karnataka">Karnataka</option>
-                                <option value="Gujarat">Gujarat</option>
-                                <option value="Goa">Goa</option>
-                                <option value="Delhi">Delhi</option>
+                                <c:choose>
+                                    <c:when test="${not empty state_Countries}">
+                                        <c:forEach var="st" items="${state_Countries}">
+                                            <c:if test="${st.state_Name != 'Doesn\\'t Matter'}">
+                                                <option value="${st.state_Name}">${st.state_Name}</option>
+                                            </c:if>
+                                        </c:forEach>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <option value="Maharashtra">Maharashtra</option>
+                                        <option value="Karnataka">Karnataka</option>
+                                        <option value="Gujarat">Gujarat</option>
+                                        <option value="Goa">Goa</option>
+                                        <option value="Delhi">Delhi</option>
+                                    </c:otherwise>
+                                </c:choose>
                             </select>
                         </div>
 
@@ -1041,7 +1102,7 @@
                                 ${profile.name} <span class="online-dot"></span>
                             </h3>
                             <div class="profile-meta-line">
-                                <span>${profile.age} yrs, 5'4"</span> &bull; <span>${profile.location}</span>
+                                <span>${profile.age} yrs<c:if test="${not empty profile.height}">, ${profile.height}</c:if></span> &bull; <span>${profile.location}</span>
                             </div>
                             <div class="profile-meta-line">
                                 <span>${profile.education}</span> &bull; <span>${profile.occupation}</span>
@@ -1862,14 +1923,19 @@
             var ageMax = $('#filterAgeMax').val();
             if (ageMin || ageMax) chips.push({ key: 'Age', label: 'Age: ' + (ageMin || 'Any') + '-' + (ageMax || 'Any') });
 
-            // FIX: Height uses pipe-separated numeric format "4.6|5.0" now
+            // Height supports single cm selection (e.g. "167.64") or pipe-separated range
             var heightVal = $('#filterHeight').val();
             var heightFirst = '';
             var heightSecond = '';
-            if (heightVal) {
-                var hParts = heightVal.split('|');
-                heightFirst = hParts[0] || '';
-                heightSecond = hParts[1] || '';
+            if (heightVal && heightVal !== '0') {
+                if (heightVal.indexOf('|') !== -1) {
+                    var hParts = heightVal.split('|');
+                    heightFirst = hParts[0] || '';
+                    heightSecond = hParts[1] || '';
+                } else {
+                    heightFirst = heightVal;
+                    heightSecond = heightVal;
+                }
                 chips.push({ key: 'filterHeight', label: 'Height: ' + $('#filterHeight option:selected').text() });
             }
 
@@ -1879,26 +1945,22 @@
             var caste = $('#filterCaste').val();
             if (caste) chips.push({ key: 'filterCaste', label: 'Caste: ' + $('#filterCaste option:selected').text() });
 
-            var location = $('#filterLocation').val();
-            var advState = $('#advState').val();
-            var combinedLoc = location;
-            if (advState) {
-                combinedLoc = combinedLoc ? (combinedLoc + ' ' + advState) : advState;
-            }
+            var location = ($('#filterLocation').val() || '').trim();
+            var advState = ($('#advState').val() || '').trim();
             if (location) chips.push({ key: 'filterLocation', label: 'Loc: ' + location });
             if (advState) chips.push({ key: 'advState', label: 'State: ' + advState });
 
             var marital = $('#advMaritalStatus').val();
-            if (marital) chips.push({ key: 'advMaritalStatus', label: 'Status: ' + marital });
+            if (marital) chips.push({ key: 'advMaritalStatus', label: 'Status: ' + $('#advMaritalStatus option:selected').text() });
 
             var lang = $('#advMotherTongue').val();
             if (lang) chips.push({ key: 'advMotherTongue', label: 'Language: ' + lang });
 
             var edu = $('#advEducation').val();
-            if (edu) chips.push({ key: 'advEducation', label: 'Edu: ' + edu });
+            if (edu) chips.push({ key: 'advEducation', label: 'Edu: ' + $('#advEducation option:selected').text() });
 
             var occ = $('#advOccupation').val();
-            if (occ) chips.push({ key: 'advOccupation', label: 'Occ: ' + occ });
+            if (occ) chips.push({ key: 'advOccupation', label: 'Occ: ' + $('#advOccupation option:selected').text() });
 
             var income = $('#advIncome').val();
             if (income) chips.push({ key: 'advIncome', label: 'Income: ' + income });
@@ -1909,20 +1971,22 @@
             var diet = $('#advDiet').val();
             if (diet) chips.push({ key: 'advDiet', label: 'Diet: ' + diet });
 
-            var profId = $('#searchProfileId').val();
+            var profId = ($('#searchProfileId').val() || '').trim();
             if (profId) chips.push({ key: 'searchProfileId', label: 'ID: ' + profId });
 
-            var profName = $('#searchName').val();
+            var profName = ($('#searchName').val() || '').trim();
             if (profName) chips.push({ key: 'searchName', label: 'Name: ' + profName });
 
-            var regDate = $('#searchRegDate').val();
+            var regDate = ($('#searchRegDate').val() || '').trim();
             if (regDate) chips.push({ key: 'searchRegDate', label: 'Reg: ' + regDate });
 
-            var dob = $('#searchDob').val();
+            var dob = ($('#searchDob').val() || '').trim();
             if (dob) chips.push({ key: 'searchDob', label: 'DOB: ' + dob });
 
-            if ($('#chkVerifiedOnly').is(':checked')) chips.push({ key: 'chkVerifiedOnly', label: 'Verified Only' });
-            if ($('#chkOnlineOnly').is(':checked')) chips.push({ key: 'chkOnlineOnly', label: 'Online Only' });
+            var verifiedOnly = $('#chkVerifiedOnly').is(':checked');
+            var onlineOnly = $('#chkOnlineOnly').is(':checked');
+            if (verifiedOnly) chips.push({ key: 'chkVerifiedOnly', label: 'Verified Only' });
+            if (onlineOnly) chips.push({ key: 'chkOnlineOnly', label: 'Online Only' });
 
             // Render Chips
             var $chipsList = $('#chipsList');
@@ -1952,7 +2016,14 @@
                 refinereligionSelectPartner: religion || '',
                 casteSelect: caste || '',
                 refineoccupationCategorySelect: occ || '',
-                checkBoxDistrict: combinedLoc || '',
+                checkBoxDistrict: location || '',
+                stateSearch: advState || '',
+                motherTongue: lang || '',
+                incomeRange: income || '',
+                manglik: manglik || '',
+                diet: diet || '',
+                verifiedOnly: verifiedOnly ? 'true' : '',
+                onlineOnly: onlineOnly ? 'true' : '',
                 profileId: profId || '',
                 nameSearch: profName || '',
                 regDate: regDate || '',
@@ -2004,6 +2075,8 @@
             if (key === 'Age') {
                 $('#filterAgeMin').val('');
                 $('#filterAgeMax').val('');
+            } else if (key === 'filterHeight') {
+                $('#filterHeight').val('0');
             } else if (key.startsWith('chk')) {
                 $('#' + key).prop('checked', false);
             } else {
@@ -2019,7 +2092,7 @@
         window.clearAllAdvanceFilters = function() {
             $('#filterAgeMin').val('');
             $('#filterAgeMax').val('');
-            $('#filterHeight').val('');
+            $('#filterHeight').val('0');
             $('#filterReligion').val('');
             // FIX: Reset caste and reload empty options
             $('#filterCaste').html('<option value="">Any Caste</option>');
@@ -2114,8 +2187,8 @@
                 }
             });
 
-            // Pressing Enter in location input triggers search
-            $('#filterLocation').on('keypress', function(e) {
+            // Pressing Enter in location or Search by Details inputs triggers search
+            $('#filterLocation, #searchProfileId, #searchName, #searchRegDate, #searchDob').on('keypress', function(e) {
                 if (e.which === 13) {
                     e.preventDefault();
                     applyAdvanceSearch();

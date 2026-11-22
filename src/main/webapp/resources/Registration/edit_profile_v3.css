@@ -410,25 +410,27 @@ body.ep-v3-body {
 /* FORM FIELDS GRID */
 .ep-v3-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 16px 20px;
 }
 
-.ep-v3-col-1 { grid-column: span 1; }
-.ep-v3-col-2 { grid-column: span 2; }
-.ep-v3-col-3 { grid-column: span 3; }
-.ep-v3-col-4 { grid-column: span 4; }
+.ep-v3-col-1 { grid-column: span 1; min-width: 0; }
+.ep-v3-col-2 { grid-column: span 2; min-width: 0; }
+.ep-v3-col-3 { grid-column: span 3; min-width: 0; }
+.ep-v3-col-4 { grid-column: span 4; min-width: 0; }
 
 .ep-v3-field {
   display: flex;
   flex-direction: column;
   gap: 5px;
+  min-width: 0;
 }
 
 .ep-v3-label {
   font-size: 12px;
   font-weight: 600;
   color: var(--text-dark);
+  white-space: nowrap;
 }
 
 .ep-v3-req {
@@ -482,8 +484,9 @@ body.ep-v3-body {
 .ep-v3-radio-group {
   display: flex;
   align-items: center;
-  gap: 20px;
-  height: 42px;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  min-height: 42px;
 }
 
 .ep-v3-radio {
@@ -492,6 +495,7 @@ body.ep-v3-body {
   gap: 6px;
   font-size: 13px;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .ep-v3-radio input[type="radio"] {
@@ -583,7 +587,7 @@ body.ep-v3-body {
 /* SEGMENTED CONTROL OPTIONS */
 .ep-v3-segmented-control {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 12px;
 }
 

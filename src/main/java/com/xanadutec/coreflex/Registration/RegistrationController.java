@@ -214,7 +214,10 @@ public class RegistrationController {
 			@RequestParam(value = "kitId", required = false, defaultValue = "") String kitId,
 			@RequestParam(value = "kitPassword", required = false, defaultValue = "") String kitPassword,
 			@RequestParam(value = "ladmark", required = false, defaultValue = "") String landmark,
-			@RequestParam(value = "kundaliImg", required = false, defaultValue = "") String kundaliImg) {
+			@RequestParam(value = "kundaliImg", required = false, defaultValue = "") String kundaliImg,
+			@RequestParam(value = "relocatePartner", required = false, defaultValue = "No") String relocatePartner,
+			@RequestParam(value = "settleAbroadPartner", required = false, defaultValue = "No") String settleAbroadPartner,
+			@RequestParam(value = "horoscopePartner", required = false, defaultValue = "Yes") String horoscopePartner) {
 
 //	@RequestMapping(value="registrationLoginNew",method=RequestMethod.POST)
 //	public @ResponseBody ResponseEntity<String> registrationLoginNew( 
@@ -778,6 +781,9 @@ public class RegistrationController {
 			}
 			try {
 				userModelPartnerPreferances.setEmployeedIn(employedInPartner);
+				userModelPartnerPreferances.setWillingToRelocate(relocatePartner);
+				userModelPartnerPreferances.setWillingToSettleAbroad(settleAbroadPartner);
+				userModelPartnerPreferances.setHoroscopeMatching(horoscopePartner);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

@@ -192,6 +192,7 @@ public class UserDaoImpl implements UserDao {
 			UserProfileView profileView = new UserProfileView();
 			profileView.setAboutHer(userModelDetails2.getAboutMe());
 			profileView.setName(userModelDetails2.getUserModel().getFirstName());
+			profileView.setHeight(formatHeightDisplay(userModelDetails2.getHeight()));
 			profileView.setLocation(userModelDetails2.getDistricts().getDistrict_Name() + ","
 					+ userModelDetails2.getState_Country().getState_Name());
 			try {
@@ -725,6 +726,7 @@ public class UserDaoImpl implements UserDao {
 			UserProfileView profileView = new UserProfileView();
 			profileView.setAboutHer(userModelDetails2.getAboutMe());
 			profileView.setName(userModelDetails2.getUserModel().getFirstName());
+			profileView.setHeight(formatHeightDisplay(userModelDetails2.getHeight()));
 			profileView.setLocation(userModelDetails2.getDistricts().getDistrict_Name() + ","
 					+ userModelDetails2.getState_Country().getState_Name());
 			try {
@@ -974,6 +976,7 @@ public class UserDaoImpl implements UserDao {
 			UserProfileView profileView = new UserProfileView();
 			profileView.setAboutHer(userModelDetails2.getAboutMe());
 			profileView.setName(userModelDetails2.getUserModel().getFirstName());
+			profileView.setHeight(formatHeightDisplay(userModelDetails2.getHeight()));
 			profileView.setLocation(userModelDetails2.getDistricts().getDistrict_Name() + ","
 					+ userModelDetails2.getState_Country().getState_Name());
 			try {
@@ -2413,6 +2416,34 @@ public class UserDaoImpl implements UserDao {
 				excludeUserModelsRefineSearch);
 	}
 
+	private String formatHeightDisplay(Double heightCm) {
+		if (heightCm == null || heightCm <= 0) {
+			return "";
+		}
+		if (heightCm < 10.0) {
+			int ft = (int) Math.floor(heightCm);
+			int in = (int) Math.round((heightCm - ft) * 10.0);
+			return ft + "'" + in + "\"";
+		}
+		int totalInches = (int) Math.round(heightCm / 2.54);
+		int ft = totalInches / 12;
+		int in = totalInches % 12;
+		return ft + "'" + in + "\"";
+	}
+
+	private String normalizeToIsoDate(String raw) {
+		if (raw == null) return null;
+		String s = raw.trim();
+		if (s.matches("\\d{4}-\\d{2}-\\d{2}")) {
+			return s;
+		}
+		if (s.matches("\\d{2}[/-]\\d{2}[/-]\\d{4}")) {
+			String[] parts = s.split("[/-]");
+			return parts[2] + "-" + parts[1] + "-" + parts[0];
+		}
+		return s;
+	}
+
 	@Override
 	public List<UserProfileView> getlistOfRefineSearchByUserExcludeUserModels(HttpServletRequest request,
 			UserModel userModel, String gender, String refineheightSelectPartnerFirst,
@@ -2423,7 +2454,13 @@ public class UserDaoImpl implements UserDao {
 			List<UserModel> excludeUserModelsRefineSearch) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(UserModelDetails.class);
-		criteria.add(Restrictions.eq("gender", gender));
+
+		String cleanProfileId = (profileId != null) ? profileId.trim().replaceAll("[^0-9]", "") : "";
+		boolean hasExplicitProfileId = !cleanProfileId.isEmpty();
+
+		if (!hasExplicitProfileId && gender != null && !gender.trim().isEmpty()) {
+			criteria.add(Restrictions.eq("gender", gender).ignoreCase());
+		}
 		criteria.addOrder(Order.desc("registrationDate"));
 		// FIX: Guard against empty list to prevent Hibernate crash
 		if (excludeUserModelsRefineSearch != null && !excludeUserModelsRefineSearch.isEmpty()) {
@@ -2431,25 +2468,31 @@ public class UserDaoImpl implements UserDao {
 		}
 
 		// Alias for userModel to filter by Profile ID or Name if needed
-		boolean needUserAlias = (profileId != null && !profileId.trim().isEmpty())
+		boolean needUserAlias = hasExplicitProfileId
 				|| (nameSearch != null && !nameSearch.trim().isEmpty());
 		if (needUserAlias) {
 			criteria.createAlias("userModel", "um");
-			if (profileId != null && !profileId.trim().isEmpty()) {
+			if (hasExplicitProfileId) {
 				try {
-					criteria.add(Restrictions.eq("um.userId", Long.parseLong(profileId.trim())));
+					criteria.add(Restrictions.eq("um.userId", Long.parseLong(cleanProfileId)));
 				} catch (NumberFormatException ignored) {}
 			}
 			if (nameSearch != null && !nameSearch.trim().isEmpty()) {
-				criteria.add(Restrictions.ilike("um.firstName", "%" + nameSearch.trim() + "%"));
+				String[] words = nameSearch.trim().split("\\s+");
+				for (String w : words) {
+					if (!w.isEmpty()) {
+						criteria.add(Restrictions.ilike("um.firstName", "%" + w + "%"));
+					}
+				}
 			}
 		}
 
 		// Registration date filter
 		if (regDate != null && !regDate.trim().isEmpty()) {
 			try {
+				String isoRegDate = normalizeToIsoDate(regDate);
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-				Date rDate = sdf.parse(regDate.trim());
+				Date rDate = sdf.parse(isoRegDate);
 				Calendar cal = Calendar.getInstance();
 				cal.setTime(rDate);
 				cal.set(Calendar.HOUR_OF_DAY, 0);
@@ -2460,15 +2503,19 @@ public class UserDaoImpl implements UserDao {
 				cal.set(Calendar.MINUTE, 59);
 				cal.set(Calendar.SECOND, 59);
 				Date end = cal.getTime();
-				criteria.add(Restrictions.between("registrationDate", start, end));
+				criteria.add(Restrictions.or(
+						Restrictions.between("registrationDate", start, end),
+						Restrictions.sqlRestriction("DATE({alias}.registrationDate) = ?", isoRegDate, org.hibernate.type.StandardBasicTypes.STRING)
+				));
 			} catch (Exception ignored) {}
 		}
 
 		// Exact DOB filter
 		if (dob != null && !dob.trim().isEmpty()) {
 			try {
+				String isoDob = normalizeToIsoDate(dob);
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-				Date bDate = sdf.parse(dob.trim());
+				Date bDate = sdf.parse(isoDob);
 				Calendar cal = Calendar.getInstance();
 				cal.setTime(bDate);
 				cal.set(Calendar.HOUR_OF_DAY, 0);
@@ -2479,16 +2526,76 @@ public class UserDaoImpl implements UserDao {
 				cal.set(Calendar.MINUTE, 59);
 				cal.set(Calendar.SECOND, 59);
 				Date end = cal.getTime();
-				criteria.add(Restrictions.between("dateOfBirth", start, end));
+				criteria.add(Restrictions.or(
+						Restrictions.between("dateOfBirth", start, end),
+						Restrictions.sqlRestriction("DATE({alias}.dateOfBirth) = ?", isoDob, org.hibernate.type.StandardBasicTypes.STRING)
+				));
 			} catch (Exception ignored) {}
 		}
 
 		// Education filter
 		if (education != null && !education.trim().isEmpty() && !education.equalsIgnoreCase("0")) {
-			criteria.createAlias("education", "edu");
-			criteria.add(Restrictions.ilike("edu.education_name", "%" + education.trim() + "%"));
+			String eduVal = education.trim();
+			criteria.createAlias("education", "edu", org.hibernate.criterion.CriteriaSpecification.LEFT_JOIN);
+			criteria.createAlias("edu.edu_cat_id", "eduCat", org.hibernate.criterion.CriteriaSpecification.LEFT_JOIN);
+			Disjunction eduOr = Restrictions.disjunction();
+			eduOr.add(Restrictions.ilike("edu.education_name", "%" + eduVal + "%"));
+			eduOr.add(Restrictions.ilike("eduCat.edu_cat_name", "%" + eduVal + "%"));
+			if ("Engineering".equalsIgnoreCase(eduVal)) {
+				eduOr.add(Restrictions.ilike("eduCat.edu_cat_name", "%Engineering%"));
+				eduOr.add(Restrictions.ilike("eduCat.edu_cat_name", "%Computer%"));
+				eduOr.add(Restrictions.ilike("edu.education_name", "%B.Tech%"));
+				eduOr.add(Restrictions.ilike("edu.education_name", "%M.Tech%"));
+				eduOr.add(Restrictions.eq("edu.education_name", "BE"));
+				eduOr.add(Restrictions.eq("edu.education_name", "ME"));
+				eduOr.add(Restrictions.eq("edu.education_name", "BCA"));
+				eduOr.add(Restrictions.eq("edu.education_name", "MCA"));
+			} else if ("Medical".equalsIgnoreCase(eduVal)) {
+				eduOr.add(Restrictions.ilike("eduCat.edu_cat_name", "%Medicine%"));
+				eduOr.add(Restrictions.ilike("edu.education_name", "%MBBS%"));
+				eduOr.add(Restrictions.ilike("edu.education_name", "%BDS%"));
+				eduOr.add(Restrictions.ilike("edu.education_name", "%BHMS%"));
+				eduOr.add(Restrictions.ilike("edu.education_name", "%B.A.M.S%"));
+				eduOr.add(Restrictions.ilike("edu.education_name", "%MD%"));
+				eduOr.add(Restrictions.ilike("edu.education_name", "%Pharm%"));
+			} else if ("Post Graduate".equalsIgnoreCase(eduVal)) {
+				eduOr.add(Restrictions.ilike("eduCat.edu_cat_name", "%Masters%"));
+				eduOr.add(Restrictions.ilike("edu.education_name", "%M.Sc%"));
+				eduOr.add(Restrictions.ilike("edu.education_name", "%MCom%"));
+				eduOr.add(Restrictions.ilike("edu.education_name", "%M.A.%"));
+				eduOr.add(Restrictions.ilike("edu.education_name", "%MBA%"));
+				eduOr.add(Restrictions.ilike("edu.education_name", "%MCA%"));
+			} else if ("Graduate".equalsIgnoreCase(eduVal)) {
+				eduOr.add(Restrictions.ilike("eduCat.edu_cat_name", "%Bachelors%"));
+				eduOr.add(Restrictions.ilike("edu.education_name", "%B.Com%"));
+				eduOr.add(Restrictions.ilike("edu.education_name", "%B.Sc%"));
+				eduOr.add(Restrictions.ilike("edu.education_name", "%B.A.%"));
+			} else if ("Management".equalsIgnoreCase(eduVal)) {
+				eduOr.add(Restrictions.ilike("eduCat.edu_cat_name", "%Management%"));
+				eduOr.add(Restrictions.ilike("edu.education_name", "%MBA%"));
+				eduOr.add(Restrictions.ilike("edu.education_name", "%BBA%"));
+				eduOr.add(Restrictions.ilike("edu.education_name", "%PGDM%"));
+			} else if ("Doctorate".equalsIgnoreCase(eduVal)) {
+				eduOr.add(Restrictions.ilike("eduCat.edu_cat_name", "%Ph.D%"));
+				eduOr.add(Restrictions.ilike("edu.education_name", "%Ph.D%"));
+			}
+			criteria.add(eduOr);
 		}
 
+		String advStateSearch = (request != null && request.getAttribute("advStateSearch") != null)
+				? String.valueOf(request.getAttribute("advStateSearch")).trim() : "";
+		String advMotherTongue = (request != null && request.getAttribute("advMotherTongue") != null)
+				? String.valueOf(request.getAttribute("advMotherTongue")).trim() : "";
+		String advIncomeRange = (request != null && request.getAttribute("advIncomeRange") != null)
+				? String.valueOf(request.getAttribute("advIncomeRange")).trim() : "";
+		String advManglik = (request != null && request.getAttribute("advManglik") != null)
+				? String.valueOf(request.getAttribute("advManglik")).trim() : "";
+		String advDiet = (request != null && request.getAttribute("advDiet") != null)
+				? String.valueOf(request.getAttribute("advDiet")).trim() : "";
+		String advOnlineOnly = (request != null && request.getAttribute("advOnlineOnly") != null)
+				? String.valueOf(request.getAttribute("advOnlineOnly")).trim() : "";
+
+		boolean locAliasesCreated = false;
 		List<State_Districts> districtList = new ArrayList<>();
 		if (refineDistrict != null && !refineDistrict.trim().isEmpty())
 		{
@@ -2516,9 +2623,13 @@ public class UserDaoImpl implements UserDao {
 				if (!parsedAsIds && !trimmedDistrict.isEmpty()) {
 					criteria.createAlias("districts", "distAlias", org.hibernate.criterion.CriteriaSpecification.LEFT_JOIN);
 					criteria.createAlias("state_Country", "stateAlias", org.hibernate.criterion.CriteriaSpecification.LEFT_JOIN);
+					criteria.createAlias("subDistricts", "subDistAlias", org.hibernate.criterion.CriteriaSpecification.LEFT_JOIN);
+					locAliasesCreated = true;
 					criteria.add(Restrictions.or(
 						Restrictions.ilike("distAlias.district_Name", "%" + trimmedDistrict + "%"),
-						Restrictions.ilike("stateAlias.state_Name", "%" + trimmedDistrict + "%")
+						Restrictions.ilike("stateAlias.state_Name", "%" + trimmedDistrict + "%"),
+						Restrictions.ilike("subDistAlias.subdistricts_Name", "%" + trimmedDistrict + "%"),
+						Restrictions.ilike("landmark", "%" + trimmedDistrict + "%")
 					));
 				}
 			} catch (Exception e) {
@@ -2527,6 +2638,40 @@ public class UserDaoImpl implements UserDao {
 		}
 		if (!districtList.isEmpty()) {
 			criteria.add(Restrictions.in("districts", districtList));
+		}
+		if (!advStateSearch.isEmpty()) {
+			if (!locAliasesCreated) {
+				criteria.createAlias("state_Country", "stateAlias", org.hibernate.criterion.CriteriaSpecification.LEFT_JOIN);
+				locAliasesCreated = true;
+			}
+			criteria.add(Restrictions.ilike("stateAlias.state_Name", "%" + advStateSearch + "%"));
+		}
+		if (!advMotherTongue.isEmpty()) {
+			if (!locAliasesCreated) {
+				criteria.createAlias("state_Country", "stateAlias", org.hibernate.criterion.CriteriaSpecification.LEFT_JOIN);
+				locAliasesCreated = true;
+			}
+			Disjunction langOr = Restrictions.disjunction();
+			langOr.add(Restrictions.ilike("aboutMe", "%" + advMotherTongue + "%"));
+			if ("Marathi".equalsIgnoreCase(advMotherTongue)) {
+				langOr.add(Restrictions.ilike("stateAlias.state_Name", "%Maharashtra%"));
+				langOr.add(Restrictions.ilike("stateAlias.state_Name", "%Goa%"));
+			} else if ("Gujarati".equalsIgnoreCase(advMotherTongue)) {
+				langOr.add(Restrictions.ilike("stateAlias.state_Name", "%Gujarat%"));
+			} else if ("Kannada".equalsIgnoreCase(advMotherTongue)) {
+				langOr.add(Restrictions.ilike("stateAlias.state_Name", "%Karnataka%"));
+			} else if ("Telugu".equalsIgnoreCase(advMotherTongue)) {
+				langOr.add(Restrictions.ilike("stateAlias.state_Name", "%Telangana%"));
+				langOr.add(Restrictions.ilike("stateAlias.state_Name", "%Andhra Pradesh%"));
+			} else if ("Hindi".equalsIgnoreCase(advMotherTongue)) {
+				langOr.add(Restrictions.ilike("stateAlias.state_Name", "%Madhya Pradesh%"));
+				langOr.add(Restrictions.ilike("stateAlias.state_Name", "%Uttar Pradesh%"));
+				langOr.add(Restrictions.ilike("stateAlias.state_Name", "%Delhi%"));
+				langOr.add(Restrictions.ilike("stateAlias.state_Name", "%Rajasthan%"));
+				langOr.add(Restrictions.ilike("stateAlias.state_Name", "%Bihar%"));
+				langOr.add(Restrictions.ilike("stateAlias.state_Name", "%Haryana%"));
+			}
+			criteria.add(langOr);
 		}
 		// FIX: Height - safely parse double and convert feet (<20) to cm if needed
 		if (refineheightSelectPartnerFirst != null && !refineheightSelectPartnerFirst.trim().isEmpty()
@@ -2541,13 +2686,12 @@ public class UserDaoImpl implements UserDao {
 					h1 = h2;
 					h2 = temp;
 				}
-				criteria.add(Restrictions.ge("height", h1));
-				criteria.add(Restrictions.le("height", h2));
+				criteria.add(Restrictions.between("height", h1 - 0.5, h2 + 0.5));
 			} catch (NumberFormatException e) {
 				// Ignore non-numeric height strings
 			}
 		}
-		// FIX: Age - handles Min-only, Max-only, and Min-to-Max; uses Calendar.MONTH + 1
+		// FIX: Age - handles Min-only, Max-only, and Min-to-Max
 		boolean hasFrom = refineageFrom != null && !refineageFrom.trim().isEmpty() && !refineageFrom.equalsIgnoreCase("0");
 		boolean hasTo = refineageTo != null && !refineageTo.trim().isEmpty() && !refineageTo.equalsIgnoreCase("0");
 		if (hasFrom || hasTo) {
@@ -2558,25 +2702,65 @@ public class UserDaoImpl implements UserDao {
 				fromAge = toAge;
 				toAge = temp;
 			}
-			Calendar now = Calendar.getInstance();
-			Date actFromDate = null;
-			Date actToDate = null;
-			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			try {
-				now.add(Calendar.YEAR, -fromAge);
-				actFromDate = df.parse(now.get(Calendar.YEAR) + "-" + (now.get(Calendar.MONTH) + 1) + "-"
-						+ now.get(Calendar.DATE) + " 23:59:59");
-				now = Calendar.getInstance();
-				now.add(Calendar.YEAR, -toAge);
-				actToDate = df.parse(now.get(Calendar.YEAR) + "-" + (now.get(Calendar.MONTH) + 1) + "-"
-						+ now.get(Calendar.DATE) + " 00:00:00");
-				criteria.add(Restrictions.between("dateOfBirth", actToDate, actFromDate));
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
+			Date today = new Date();
+			long minDays = (long) fromAge * 365L;
+			long maxDays = ((long) (toAge + 1) * 365L) - 1L;
+			Date latestDob = new Date(today.getTime() - (minDays * 24L * 60L * 60L * 1000L));
+			Date earliestDob = new Date(today.getTime() - ((maxDays + 1L) * 24L * 60L * 60L * 1000L));
+			criteria.add(Restrictions.between("dateOfBirth", earliestDob, latestDob));
 		}
 		if (refinematerialStatus != null && !refinematerialStatus.trim().isEmpty() && !refinematerialStatus.equalsIgnoreCase("0")) {
-			criteria.add(Restrictions.eq("materialStatus", refinematerialStatus));
+			String ms = refinematerialStatus.trim();
+			if ("Never Married".equalsIgnoreCase(ms) || "Single".equalsIgnoreCase(ms)) {
+				criteria.add(Restrictions.in("materialStatus", Arrays.asList("Single", "Never Married")));
+			} else {
+				criteria.add(Restrictions.eq("materialStatus", ms).ignoreCase());
+			}
+		}
+		if (!advDiet.isEmpty()) {
+			if ("Vegetarian".equalsIgnoreCase(advDiet)) {
+				criteria.add(Restrictions.eq("eating", "vegetarian").ignoreCase());
+			} else if ("Non-Vegetarian".equalsIgnoreCase(advDiet) || "Non vegetarian".equalsIgnoreCase(advDiet)) {
+				criteria.add(Restrictions.in("eating", Arrays.asList("Non vegetarian", "Non-Vegetarian")));
+			} else if ("Eggetarian".equalsIgnoreCase(advDiet) || "Eggs Only".equalsIgnoreCase(advDiet)) {
+				criteria.add(Restrictions.in("eating", Arrays.asList("Eggs Only", "Eggetarian")));
+			} else if ("Jain".equalsIgnoreCase(advDiet)) {
+				criteria.add(Restrictions.or(
+						Restrictions.ilike("eating", "%Jain%"),
+						Restrictions.ilike("aboutMe", "%Jain%"),
+						Restrictions.eq("eating", "vegetarian").ignoreCase()
+				));
+			}
+		}
+		if (!advIncomeRange.isEmpty()) {
+			String annualExpr = "(CASE WHEN {alias}.incomeType = 'Monthly' AND {alias}.incomeAmount > 0 AND {alias}.incomeAmount < 100000 THEN {alias}.incomeAmount * 12 ELSE COALESCE({alias}.incomeAmount, 0) END)";
+			if ("Up to 3 Lakhs".equalsIgnoreCase(advIncomeRange)) {
+				criteria.add(Restrictions.sqlRestriction(annualExpr + " <= 300000"));
+			} else if ("3 - 5 Lakhs".equalsIgnoreCase(advIncomeRange)) {
+				criteria.add(Restrictions.sqlRestriction(annualExpr + " BETWEEN 300000 AND 500000"));
+			} else if ("5 - 10 Lakhs".equalsIgnoreCase(advIncomeRange)) {
+				criteria.add(Restrictions.sqlRestriction(annualExpr + " BETWEEN 500000 AND 1000000"));
+			} else if ("10 - 20 Lakhs".equalsIgnoreCase(advIncomeRange)) {
+				criteria.add(Restrictions.sqlRestriction(annualExpr + " BETWEEN 1000000 AND 2000000"));
+			} else if ("20+ Lakhs".equalsIgnoreCase(advIncomeRange)) {
+				criteria.add(Restrictions.sqlRestriction(annualExpr + " >= 2000000"));
+			}
+		}
+		if (!advManglik.isEmpty()) {
+			if ("Manglik".equalsIgnoreCase(advManglik) || "Anshik Manglik".equalsIgnoreCase(advManglik)) {
+				criteria.add(Restrictions.or(
+						Restrictions.ilike("aboutMe", "%Manglik%"),
+						Restrictions.sqlRestriction("EXISTS (SELECT 1 FROM usermodelimagesname img WHERE img.userid = {alias}.userModel_id AND img.kundaliImage IS NOT NULL AND img.kundaliImage <> '')")
+				));
+			} else if ("Non-Manglik".equalsIgnoreCase(advManglik)) {
+				criteria.add(Restrictions.or(
+						Restrictions.isNull("aboutMe"),
+						Restrictions.not(Restrictions.ilike("aboutMe", "%Manglik%"))
+				));
+			}
+		}
+		if ("true".equalsIgnoreCase(advOnlineOnly)) {
+			criteria.add(Restrictions.sqlRestriction("EXISTS (SELECT 1 FROM onlineuser ou WHERE ou.userModel_id = {alias}.userModel_id)"));
 		}
 		// FIX: Religion - safely parse Long or search by name; support Caste inside
 		if (refinereligionSelectPartner != null && !refinereligionSelectPartner.trim().isEmpty()
@@ -2621,15 +2805,50 @@ public class UserDaoImpl implements UserDao {
 				criteria.add(Restrictions.ilike("c.caste_name", "%" + casteSelect.trim() + "%"));
 			}
 		}
-		// FIX: Occupation - safely parse Long or match occupation_name
+		// FIX: Occupation - safely parse Long or match occupation_name / category / employeedIn
 		if (refineoccupationCategorySelect != null && !refineoccupationCategorySelect.trim().isEmpty() && !refineoccupationCategorySelect.equalsIgnoreCase("0")) {
+			String occVal = refineoccupationCategorySelect.trim();
 			try {
 				Occupation category = new Occupation();
-				category.setOccupation_id(Long.parseLong(refineoccupationCategorySelect.trim()));
+				category.setOccupation_id(Long.parseLong(occVal));
 				criteria.add(Restrictions.eq("occupation", category));
 			} catch (NumberFormatException e) {
-				criteria.createAlias("occupation", "occ");
-				criteria.add(Restrictions.ilike("occ.occupation_name", "%" + refineoccupationCategorySelect.trim() + "%"));
+				criteria.createAlias("occupation", "occ", org.hibernate.criterion.CriteriaSpecification.LEFT_JOIN);
+				criteria.createAlias("occ.occ_cat_id", "occCat", org.hibernate.criterion.CriteriaSpecification.LEFT_JOIN);
+				Disjunction occOr = Restrictions.disjunction();
+				occOr.add(Restrictions.ilike("occ.occupation_name", "%" + occVal + "%"));
+				occOr.add(Restrictions.ilike("occCat.occu_name", "%" + occVal + "%"));
+				if ("Software Engineer".equalsIgnoreCase(occVal)) {
+					occOr.add(Restrictions.ilike("occCat.occu_name", "%IT%"));
+					occOr.add(Restrictions.ilike("occ.occupation_name", "%Software%"));
+					occOr.add(Restrictions.ilike("occ.occupation_name", "%Hardware%"));
+					occOr.add(Restrictions.ilike("occ.occupation_name", "%Engineer%"));
+				} else if ("Doctor".equalsIgnoreCase(occVal)) {
+					occOr.add(Restrictions.ilike("occCat.occu_name", "%MEDICAL%"));
+					occOr.add(Restrictions.ilike("occ.occupation_name", "%Doctor%"));
+					occOr.add(Restrictions.ilike("occ.occupation_name", "%Health%"));
+					occOr.add(Restrictions.ilike("occ.occupation_name", "%Nurse%"));
+				} else if ("Civil Services".equalsIgnoreCase(occVal)) {
+					occOr.add(Restrictions.ilike("occCat.occu_name", "%CIVIL SERVICES%"));
+					occOr.add(Restrictions.ilike("occCat.occu_name", "%DEFENCE%"));
+					occOr.add(Restrictions.ilike("occCat.occu_name", "%POLICE%"));
+					occOr.add(Restrictions.ilike("occ.occupation_name", "%Government%"));
+					occOr.add(Restrictions.in("employeedIn", Arrays.asList("Government", "Defence")));
+				} else if ("Banking".equalsIgnoreCase(occVal)) {
+					occOr.add(Restrictions.ilike("occCat.occu_name", "%BANKING%"));
+					occOr.add(Restrictions.ilike("occ.occupation_name", "%Bank%"));
+					occOr.add(Restrictions.ilike("occ.occupation_name", "%Finance%"));
+					occOr.add(Restrictions.ilike("occ.occupation_name", "%Account%"));
+				} else if ("Business".equalsIgnoreCase(occVal)) {
+					occOr.add(Restrictions.ilike("occ.occupation_name", "%Business%"));
+					occOr.add(Restrictions.eq("employeedIn", "Business").ignoreCase());
+				} else if ("Teacher".equalsIgnoreCase(occVal)) {
+					occOr.add(Restrictions.ilike("occCat.occu_name", "%EDUCATION%"));
+					occOr.add(Restrictions.ilike("occ.occupation_name", "%Teach%"));
+					occOr.add(Restrictions.ilike("occ.occupation_name", "%Professor%"));
+					occOr.add(Restrictions.ilike("occ.occupation_name", "%Education%"));
+				}
+				criteria.add(occOr);
 			}
 		}
 		
@@ -2649,8 +2868,10 @@ public class UserDaoImpl implements UserDao {
 				UserProfileView profileView = new UserProfileView();
 				profileView.setAboutHer(details2.getAboutMe());
 				profileView.setName(details2.getUserModel().getFirstName());
+				profileView.setHeight(formatHeightDisplay(details2.getHeight()));
 				profileView.setLocation(
-						details2.getDistricts().getDistrict_Name() + "," + details2.getState_Country().getState_Name());
+						(details2.getDistricts() != null ? details2.getDistricts().getDistrict_Name() : "") + ","
+						+ (details2.getState_Country() != null ? details2.getState_Country().getState_Name() : ""));
 				try {
 					Date date = details2.getDateOfBirth();
 					Calendar calendar = new GregorianCalendar();
@@ -3352,6 +3573,34 @@ public class UserDaoImpl implements UserDao {
 		return list;
 	}
 	
+	private Date parseFlexibleFilterDate(String rawDate, boolean endOfDay) {
+		if (rawDate == null || rawDate.trim().isEmpty()) return null;
+		String s = rawDate.trim();
+		String[] formats = new String[] { "yyyy-MM-dd", "dd-MM-yyyy", "dd/MM/yyyy", "MM/dd/yyyy" };
+		for (String fmt : formats) {
+			try {
+				SimpleDateFormat sdf = new SimpleDateFormat(fmt);
+				sdf.setLenient(false);
+				Date parsed = sdf.parse(s);
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(parsed);
+				if (endOfDay) {
+					cal.set(Calendar.HOUR_OF_DAY, 23);
+					cal.set(Calendar.MINUTE, 59);
+					cal.set(Calendar.SECOND, 59);
+					cal.set(Calendar.MILLISECOND, 999);
+				} else {
+					cal.set(Calendar.HOUR_OF_DAY, 0);
+					cal.set(Calendar.MINUTE, 0);
+					cal.set(Calendar.SECOND, 0);
+					cal.set(Calendar.MILLISECOND, 0);
+				}
+				return cal.getTime();
+			} catch (Exception ignored) {}
+		}
+		return null;
+	}
+
 	private void addDataTablesFilters(Criteria cr, String search, Map<Integer, String> columnFilters) {
 		Status stat = new Status();
 		stat.setStatus_id(1);
@@ -3361,37 +3610,87 @@ public class UserDaoImpl implements UserDao {
 		cr.add(or);
 
 		if (search != null && !search.trim().isEmpty()) {
+			String s = search.trim();
 			Disjunction searchOr = Restrictions.disjunction();
-			searchOr.add(Restrictions.like("u.firstName", "%" + search + "%"));
-			searchOr.add(Restrictions.like("mobileNum", "%" + search + "%"));
+			searchOr.add(Restrictions.ilike("u.firstName", "%" + s + "%"));
+			searchOr.add(Restrictions.ilike("mobileNum", "%" + s + "%"));
+			searchOr.add(Restrictions.ilike("gender", s + "%"));
+			String cleanId = s.replaceAll("(?i)^sb", "").trim();
 			try {
-				searchOr.add(Restrictions.eq("u.userId", Long.parseLong(search)));
+				searchOr.add(Restrictions.eq("u.userId", Long.parseLong(cleanId)));
 			} catch(Exception e) {}
 			cr.add(searchOr);
 		}
 
 		if (columnFilters != null) {
+			Date regRangeStart = null;
+			Date regRangeEnd = null;
+
 			for (Map.Entry<Integer, String> entry : columnFilters.entrySet()) {
 				int col = entry.getKey();
 				String val = entry.getValue();
 				if (val == null || val.trim().isEmpty()) continue;
 				val = val.trim();
 				
-				if (col == 0) { // Id
-					try { cr.add(Restrictions.eq("u.userId", Long.parseLong(val))); } catch(Exception e) {}
+				if (col == 0) { // Id (supports numeric ID or SB-prefixed ID)
+					String cleanId = val.replaceAll("(?i)^sb", "").replaceAll("[^0-9]", "").trim();
+					if (!cleanId.isEmpty()) {
+						try {
+							cr.add(Restrictions.eq("u.userId", Long.parseLong(cleanId)));
+						} catch(Exception e) {}
+					}
 				} else if (col == 1) { // Name
-					cr.add(Restrictions.like("u.firstName", "%" + val + "%"));
+					String[] words = val.split("\\s+");
+					for (String w : words) {
+						if (!w.isEmpty()) {
+							cr.add(Restrictions.ilike("u.firstName", "%" + w + "%"));
+						}
+					}
 				} else if (col == 2) { // Gender
-					cr.add(Restrictions.like("gender", val + "%"));
+					if (val.equalsIgnoreCase("m") || val.equalsIgnoreCase("male")) {
+						cr.add(Restrictions.eq("gender", "Male").ignoreCase());
+					} else if (val.equalsIgnoreCase("f") || val.equalsIgnoreCase("female")) {
+						cr.add(Restrictions.eq("gender", "Female").ignoreCase());
+					} else {
+						cr.add(Restrictions.ilike("gender", val + "%"));
+					}
 				} else if (col == 3) { // Mobile
-					cr.add(Restrictions.like("mobileNum", "%" + val + "%"));
+					cr.add(Restrictions.ilike("mobileNum", "%" + val + "%"));
+				} else if (col == 4) { // Registration Date (exact date or partial string)
+					Date startDay = parseFlexibleFilterDate(val, false);
+					Date endDay = parseFlexibleFilterDate(val, true);
+					if (startDay != null && endDay != null) {
+						cr.add(Restrictions.between("registrationDate", startDay, endDay));
+					} else {
+						cr.add(Restrictions.sqlRestriction("DATE_FORMAT({alias}.registrationDate, '%d-%m-%Y %Y-%m-%d') LIKE ?", "%" + val + "%", org.hibernate.type.StandardBasicTypes.STRING));
+					}
+				} else if (col == 5) { // DOB (exact date or partial string)
+					Date startDob = parseFlexibleFilterDate(val, false);
+					Date endDob = parseFlexibleFilterDate(val, true);
+					if (startDob != null && endDob != null) {
+						cr.add(Restrictions.between("dateOfBirth", startDob, endDob));
+					} else {
+						cr.add(Restrictions.sqlRestriction("DATE_FORMAT({alias}.dateOfBirth, '%d-%m-%Y %Y-%m-%d') LIKE ?", "%" + val + "%", org.hibernate.type.StandardBasicTypes.STRING));
+					}
 				} else if (col == 6) { // User Type (Free/Paid)
-					if (val.equalsIgnoreCase("free")) {
+					if (val.toLowerCase().startsWith("free")) {
 						cr.add(Restrictions.isNull("u.kit"));
-					} else if (val.equalsIgnoreCase("paid")) {
+					} else if (val.toLowerCase().startsWith("paid")) {
 						cr.add(Restrictions.isNotNull("u.kit"));
 					}
+				} else if (col == 10) { // Registration Date From
+					regRangeStart = parseFlexibleFilterDate(val, false);
+				} else if (col == 11) { // Registration Date To
+					regRangeEnd = parseFlexibleFilterDate(val, true);
 				}
+			}
+
+			if (regRangeStart != null && regRangeEnd != null) {
+				cr.add(Restrictions.between("registrationDate", regRangeStart, regRangeEnd));
+			} else if (regRangeStart != null) {
+				cr.add(Restrictions.ge("registrationDate", regRangeStart));
+			} else if (regRangeEnd != null) {
+				cr.add(Restrictions.le("registrationDate", regRangeEnd));
 			}
 		}
 	}

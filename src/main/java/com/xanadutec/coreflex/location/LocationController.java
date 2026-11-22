@@ -458,19 +458,7 @@ public class LocationController {
 		try {
 
 			long maxCount = userService.getMaxCountOfUserDetails();
-			
-			ObjectMapper mapper = new ObjectMapper();
-			try {
-				List<AdminUserModel> list = userService.getListOfUserModelDetailsForAdminPanel();
-				if (list != null && !list.isEmpty()) {
-					model.addAttribute("userModelDetailList", mapper.writeValueAsString(list).replaceAll("'", " ").replaceAll(" ,", ""));
-				} else {
-					model.addAttribute("userModelDetailList", "[]");
-				}
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				model.addAttribute("userModelDetailList", "[]");
-			}
+			model.addAttribute("userModelDetailList", "[]");
 		    List<Country> countries = locationservice.getListOfcountry();
 			List<State_Country> state_Countries = locationservice.getListOfStateByCountryId(1 + "");
 
@@ -518,12 +506,12 @@ public class LocationController {
 	}
 	
 	@ResponseBody
-	@RequestMapping(value = "/registeredUserServerSideData", method = RequestMethod.POST)
+	@RequestMapping(value = "/registeredUserServerSideData", method = {RequestMethod.POST, RequestMethod.GET})
 	public String registeredUserServerSideData(HttpServletRequest request) {
 		try {
 			int draw = Integer.parseInt(request.getParameter("draw") == null ? "1" : request.getParameter("draw"));
 			int start = Integer.parseInt(request.getParameter("start") == null ? "0" : request.getParameter("start"));
-			int length = Integer.parseInt(request.getParameter("length") == null ? "100" : request.getParameter("length"));
+			int length = Integer.parseInt(request.getParameter("length") == null ? "25" : request.getParameter("length"));
 			String search = request.getParameter("search[value]");
 			
 			String orderColumnStr = request.getParameter("order[0][column]");
@@ -535,8 +523,47 @@ public class LocationController {
 			for (int i = 0; i < 7; i++) {
 				String colSearch = request.getParameter("columns[" + i + "][search][value]");
 				if (colSearch != null && !colSearch.trim().isEmpty()) {
-					columnFilters.put(i, colSearch);
+					columnFilters.put(i, colSearch.trim());
 				}
+			}
+
+			// Also support direct filter parameters from top filter panel or inline inputs
+			String filterId = request.getParameter("filterId");
+			String filterName = request.getParameter("filterName");
+			String filterGender = request.getParameter("filterGender");
+			String filterMobile = request.getParameter("filterMobile");
+			String filterRegDate = request.getParameter("filterRegDate");
+			String filterDob = request.getParameter("filterDob");
+			String filterUserType = request.getParameter("filterUserType");
+			String regFromDate = request.getParameter("regFromDate");
+			String regToDate = request.getParameter("regToDate");
+
+			if (filterId != null && !filterId.trim().isEmpty() && !columnFilters.containsKey(0)) {
+				columnFilters.put(0, filterId.trim());
+			}
+			if (filterName != null && !filterName.trim().isEmpty() && !columnFilters.containsKey(1)) {
+				columnFilters.put(1, filterName.trim());
+			}
+			if (filterGender != null && !filterGender.trim().isEmpty() && !columnFilters.containsKey(2)) {
+				columnFilters.put(2, filterGender.trim());
+			}
+			if (filterMobile != null && !filterMobile.trim().isEmpty() && !columnFilters.containsKey(3)) {
+				columnFilters.put(3, filterMobile.trim());
+			}
+			if (filterRegDate != null && !filterRegDate.trim().isEmpty() && !columnFilters.containsKey(4)) {
+				columnFilters.put(4, filterRegDate.trim());
+			}
+			if (filterDob != null && !filterDob.trim().isEmpty() && !columnFilters.containsKey(5)) {
+				columnFilters.put(5, filterDob.trim());
+			}
+			if (filterUserType != null && !filterUserType.trim().isEmpty() && !columnFilters.containsKey(6)) {
+				columnFilters.put(6, filterUserType.trim());
+			}
+			if (regFromDate != null && !regFromDate.trim().isEmpty()) {
+				columnFilters.put(10, regFromDate.trim());
+			}
+			if (regToDate != null && !regToDate.trim().isEmpty()) {
+				columnFilters.put(11, regToDate.trim());
 			}
 
 			List<AdminUserModel> data = userService.getRegisteredUsersForDataTable(start, length, search, columnFilters, orderColumn, orderDir);
