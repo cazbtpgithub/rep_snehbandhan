@@ -14,7 +14,7 @@
 </script>
 <title>Snehbandhan - View Profile</title>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1," shrink-to-fit=no">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta http-equiv="x-ua-compatible" content="ie=edge">
 
 <!-- Stylesheets -->
@@ -226,6 +226,8 @@ body {
     border-radius: 14px;
     overflow: hidden;
     margin-bottom: 12px;
+    background: linear-gradient(180deg, #fff5f8 0%, #f8fafc 100%);
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
 }
 .main-profile-img-container img {
     width: 100%;
@@ -234,12 +236,18 @@ body {
     object-position: top center;
     display: block;
     cursor: pointer;
+    transition: transform 0.35s ease;
+}
+.main-profile-img-container:hover img {
+    transform: scale(1.03);
 }
 .badge-verified-top {
     position: absolute;
-    top: 14px;
+    bottom: 14px;
     left: 14px;
-    background: var(--green-success);
+    top: auto;
+    background: rgba(22, 163, 74, 0.94);
+    backdrop-filter: blur(4px);
     color: #fff;
     font-size: 12px;
     font-weight: 600;
@@ -248,12 +256,16 @@ body {
     display: flex;
     align-items: center;
     gap: 6px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    z-index: 2;
 }
 .badge-photos-count {
     position: absolute;
     bottom: 14px;
-    left: 14px;
-    background: rgba(0, 0, 0, 0.7);
+    right: 14px;
+    left: auto;
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(4px);
     color: #fff;
     font-size: 12px;
     font-weight: 500;
@@ -262,6 +274,7 @@ body {
     display: flex;
     align-items: center;
     gap: 6px;
+    z-index: 2;
 }
 .gallery-thumbs-row {
     display: flex;
@@ -271,16 +284,18 @@ body {
     padding: 4px 0;
 }
 .thumb-item img {
-    width: 54px;
-    height: 54px;
+    width: 58px;
+    height: 58px;
     border-radius: 10px;
     object-fit: cover;
+    object-position: top center;
     cursor: pointer;
     border: 2px solid transparent;
     transition: all 0.2s;
 }
 .thumb-item img:hover {
     border-color: var(--primary);
+    transform: translateY(-1px);
 }
 
 .protected-contact-box {
@@ -317,6 +332,13 @@ body {
 }
 
 /* Middle Column Header */
+.profile-title-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+}
 .user-name-title {
     font-size: 26px;
     font-weight: 800;
@@ -324,6 +346,7 @@ body {
     display: flex;
     align-items: center;
     gap: 10px;
+    line-height: 1.25;
 }
 .status-dot-online {
     width: 10px;
@@ -331,11 +354,26 @@ body {
     background: var(--green-success);
     border-radius: 50%;
     display: inline-block;
+    flex-shrink: 0;
 }
 .user-specs-subtitle {
     font-size: 14px;
     color: var(--text-muted);
     margin: 6px 0 14px;
+    line-height: 1.55;
+}
+.user-last-active {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--text-muted);
+    background: #f8fafc;
+    border: 1px solid var(--border-color);
+    padding: 6px 12px;
+    border-radius: 20px;
+    white-space: nowrap;
 }
 .verification-badges-row {
     display: flex;
@@ -369,6 +407,11 @@ body {
     flex-wrap: wrap;
     gap: 20px;
 }
+.comp-left-gauge {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
 .gauge-ring-box {
     width: 72px;
     height: 72px;
@@ -382,6 +425,7 @@ body {
     font-weight: 800;
     color: var(--primary);
     flex-shrink: 0;
+    background: #ffffff;
 }
 .comp-text-title {
     font-size: 16px;
@@ -392,6 +436,16 @@ body {
     font-size: 13px;
     color: var(--text-muted);
     margin: 4px 0 6px;
+}
+.comp-link-details {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--primary);
+    text-decoration: none !important;
+}
+.comp-link-details:hover {
+    color: var(--primary-hover);
+    text-decoration: underline !important;
 }
 .top-matches-grid {
     display: grid;
@@ -502,43 +556,60 @@ body {
 }
 
 /* Right Widgets */
-.member-list-item {
+.member-list-item,
+.similar-profile-card-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 10px;
     padding: 10px 0;
     border-bottom: 1px solid var(--border-color);
 }
-.member-list-item:last-child {
+.member-list-item:last-child,
+.similar-profile-card-item:last-child {
     border-bottom: none;
 }
 .member-info-left {
     display: flex;
     align-items: center;
     gap: 12px;
+    min-width: 0;
+    flex: 1;
 }
 .member-avatar {
-    width: 42px;
-    height: 42px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
     object-fit: cover;
+    object-position: top center;
+    flex-shrink: 0;
+    border: 2px solid #ffe4ec;
 }
 .member-name-text {
     font-size: 13px;
     font-weight: 600;
     color: var(--text-main);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.member-name-text a:hover {
+    color: var(--primary) !important;
 }
 .member-sub-text {
     font-size: 11px;
     color: var(--text-muted);
+    line-height: 1.35;
 }
 .similar-match-pill {
     background: #fce7f3;
     color: var(--primary);
     font-size: 11px;
     font-weight: 700;
-    padding: 4px 8px;
+    padding: 4px 9px;
     border-radius: 12px;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .btn-view-more-full {
@@ -612,9 +683,288 @@ body {
 }
 .jconfirm .jconfirm-box-container, .jconfirm .jconfirm-box {
     width: 70% !important;
-    max-width: none !important;
+    max-width: 520px !important;
     margin: auto !important;
-    border-radius: 12px !important;
+    border-radius: 14px !important;
+}
+
+/* ==========================================================================
+   RESPONSIVE TABLET & PREMIUM MOBILE VIEW DESIGN (UI ONLY)
+   ========================================================================== */
+@media (max-width: 1100px) {
+    .modern-navbar {
+        padding: 10px 18px;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    .modern-nav-center {
+        gap: 8px;
+    }
+    .modern-nav-item {
+        padding: 7px 10px;
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 768px) {
+    html, body {
+        overflow-x: hidden !important;
+        width: 100% !important;
+    }
+
+    /* 1. Sticky Mobile Header + Scrollable App Navigation Pills */
+    .modern-navbar {
+        padding: 10px 14px !important;
+        flex-wrap: wrap !important;
+        gap: 10px !important;
+    }
+    .modern-navbar .brand-logo {
+        order: 1 !important;
+    }
+    .modern-navbar .brand-logo img {
+        height: 36px !important;
+    }
+    .modern-nav-right {
+        order: 2 !important;
+        gap: 10px !important;
+        margin-left: auto !important;
+    }
+    .btn-upgrade-plan {
+        padding: 7px 12px !important;
+        font-size: 11.5px !important;
+        border-radius: 18px !important;
+        gap: 5px !important;
+        white-space: nowrap !important;
+    }
+    .nav-user-avatar img {
+        width: 34px !important;
+        height: 34px !important;
+        object-position: top center !important;
+    }
+    .nav-user-avatar span {
+        display: none !important;
+    }
+    .modern-nav-center {
+        order: 3 !important;
+        display: flex !important;
+        width: 100% !important;
+        flex: 0 0 100% !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        scrollbar-width: none !important;
+        gap: 8px !important;
+        padding: 6px 2px 2px 2px !important;
+        border-top: 1px solid #f1f5f9 !important;
+    }
+    .modern-nav-center::-webkit-scrollbar {
+        display: none !important;
+    }
+    .modern-nav-item {
+        flex: 0 0 auto !important;
+        padding: 7px 13px !important;
+        font-size: 12.5px !important;
+        border-radius: 20px !important;
+        background: #faf6f8 !important;
+        border: 1px solid #f0e4e8 !important;
+        white-space: nowrap !important;
+    }
+    .modern-nav-item.active {
+        background: var(--primary) !important;
+        color: #ffffff !important;
+        border-color: var(--primary) !important;
+        box-shadow: 0 3px 10px rgba(225, 29, 72, 0.25) !important;
+    }
+    .modern-nav-item.active .modern-nav-badge {
+        background: #ffffff !important;
+        color: var(--primary) !important;
+    }
+
+    /* 2. Sub-header & Main Container */
+    .sub-header-bar {
+        padding: 12px 14px 8px !important;
+    }
+    .back-link {
+        font-size: 13px !important;
+        background: #ffffff !important;
+        border: 1px solid #f0e4e8 !important;
+        padding: 7px 14px !important;
+        border-radius: 20px !important;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03) !important;
+    }
+    .profile-container {
+        padding: 4px 12px 28px !important;
+    }
+    .profile-container > .row {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+    .profile-container > .row > [class*="col-"] {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+
+    /* 3. Modern Card & Profile Photo Framing */
+    .modern-card {
+        padding: 16px 14px !important;
+        border-radius: 18px !important;
+        margin-bottom: 14px !important;
+        box-shadow: 0 6px 20px rgba(15, 23, 42, 0.05) !important;
+    }
+    .main-profile-img-container {
+        border-radius: 14px !important;
+    }
+    .main-profile-img-container img {
+        height: 330px !important;
+        object-fit: cover !important;
+        object-position: top center !important;
+    }
+    .badge-verified-top {
+        bottom: 12px !important;
+        left: 12px !important;
+        top: auto !important;
+        font-size: 11px !important;
+        padding: 4px 11px !important;
+    }
+    .badge-photos-count {
+        bottom: 12px !important;
+        right: 12px !important;
+        left: auto !important;
+        font-size: 11px !important;
+        padding: 4px 11px !important;
+    }
+    .thumb-item img {
+        width: 60px !important;
+        height: 60px !important;
+        border-radius: 10px !important;
+        object-position: top center !important;
+    }
+    .protected-contact-box {
+        padding: 14px !important;
+        margin-bottom: 14px !important;
+        border-radius: 14px !important;
+    }
+    .ads-placeholder-box {
+        display: none !important;
+    }
+
+    /* 4. Profile Header, Verification Badges & Compatibility Banner */
+    .profile-title-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 6px !important;
+        margin-bottom: 12px !important;
+    }
+    .user-name-title {
+        font-size: 21px !important;
+        flex-wrap: wrap !important;
+    }
+    .user-specs-subtitle {
+        font-size: 13px !important;
+        margin: 4px 0 4px !important;
+    }
+    .verification-badges-row {
+        gap: 6px !important;
+        margin-bottom: 16px !important;
+    }
+    .v-badge-item {
+        font-size: 11px !important;
+        padding: 4px 10px !important;
+    }
+    .compatibility-banner-card {
+        padding: 16px 14px !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 14px !important;
+        border-radius: 16px !important;
+    }
+    .comp-left-gauge {
+        width: 100% !important;
+        gap: 14px !important;
+    }
+    .gauge-ring-box {
+        width: 64px !important;
+        height: 64px !important;
+        font-size: 16px !important;
+    }
+    .top-matches-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px 14px !important;
+        width: 100% !important;
+    }
+
+    /* 5. Action Buttons Row (Express Interest full-width, Shortlist + Send Message paired) */
+    .action-buttons-row {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10px !important;
+        margin-bottom: 20px !important;
+    }
+    .btn-express-main {
+        grid-column: 1 / -1 !important;
+        padding: 12px 16px !important;
+        font-size: 14px !important;
+        border-radius: 12px !important;
+        box-shadow: 0 4px 14px rgba(225, 29, 72, 0.25) !important;
+    }
+    .btn-action-outline {
+        padding: 10px 12px !important;
+        font-size: 13px !important;
+        border-radius: 12px !important;
+    }
+
+    /* 6. Details Cards & Kundali Box */
+    .detail-card-item {
+        padding: 15px 14px !important;
+        border-radius: 14px !important;
+    }
+    .detail-kv-row {
+        gap: 12px !important;
+        align-items: flex-start !important;
+    }
+    .detail-v-val {
+        text-align: right !important;
+        word-break: break-word !important;
+    }
+
+    /* 7. Modals & Confirm Dialog on Mobile */
+    .jconfirm .jconfirm-box-container,
+    .jconfirm .jconfirm-box {
+        width: 92% !important;
+        max-width: 92% !important;
+    }
+    #myModal .modal-dialog,
+    #imgSlider .modal-dialog {
+        max-width: calc(100% - 20px) !important;
+        margin: 20px auto !important;
+    }
+    .custom-breadcrumb {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 6px !important;
+        text-align: center !important;
+        border-radius: 10px !important;
+    }
+    .custom-breadcrumb > div {
+        width: 100% !important;
+        max-width: 100% !important;
+        flex: 0 0 100% !important;
+    }
+
+    /* 8. Footer */
+    .modern-footer {
+        padding: 22px 16px !important;
+        margin-top: 24px !important;
+    }
+    .footer-inner {
+        flex-direction: column !important;
+        text-align: center !important;
+        gap: 14px !important;
+    }
+    .footer-links {
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+        gap: 10px 18px !important;
+    }
 }
 </style>
 </head>
@@ -854,22 +1204,22 @@ body {
                 </div>
                 
                 <!-- Kundali & Compatibility Card -->
-                <div class="detail-card-item" style="margin-top: 16px;">
+                <div class="detail-card-item" id="preferenceMatchSec" style="margin-top: 16px;">
                     <div class="detail-card-title"><i class="fa fa-sun-o"></i> Kundali & Compatibility</div>
                     <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
                         <div>
                             <div style="color: var(--green-success); font-weight: 700; font-size: 13px; display: flex; align-items: center; gap: 6px;">
                                 <i class="fa fa-check-circle"></i> Kundali Available
                             </div>
-                            <div style="font-size: 12px; color: var(--text-muted); margin: 4px 0" 12px;">Kundali matched by expert astrologers.</div>
-                            <div style="display: flex; gap: 10px;">
-                                <button class="btn-action-outline" style="padding: 6px 14px; font-size: 12px;" onclick="kundaliSlider('${compareUserProfileView.visitorUserId}');"><i class="fa fa-eye"></i> View Kundali</button>
-                                <button class="btn-action-outline" style="padding: 6px 14px; font-size: 12px;"><i class="fa fa-download"></i> Download</button>
+                            <div style="font-size: 12px; color: var(--text-muted); margin: 4px 0 12px;">Kundali matched by expert astrologers.</div>
+                            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                <button class="btn-action-outline" style="padding: 6px 14px; font-size: 12px; flex: 0 0 auto;" onclick="kundaliSlider('${compareUserProfileView.visitorUserId}');"><i class="fa fa-eye"></i> View Kundali</button>
+                                <button class="btn-action-outline" style="padding: 6px 14px; font-size: 12px; flex: 0 0 auto;"><i class="fa fa-download"></i> Download</button>
                             </div>
                         </div>
                         <div style="text-align: center;">
                             <div style="font-size: 12px; color: var(--text-muted); font-weight: 500;">Kundali Compatibility</div>
-                            <div style="font-size: 24px; font-weight: 800; color: var(--primary); margin: 4px" 0;">8/10</div>
+                            <div style="font-size: 24px; font-weight: 800; color: var(--primary); margin: 4px 0;">8/10</div>
                             <div style="font-size: 12px; font-weight: 700; color: var(--text-main);">Good Match</div>
                             <div style="width: 100px; height: 4px; background: #fbcfe8; border-radius: 2px; margin: 6px auto 0; overflow: hidden;">
                                 <div style="width: 80%; height: 100%; background: var(--primary);"></div>
@@ -927,7 +1277,7 @@ body {
                             <div class="member-info-left">
                                 <img src="resources/UserImages/${sImg}" class="member-avatar" alt="Avatar" onerror="this.onerror=null; this.src='resources/UserImages/userImage.png';">
                                 <div>
-                                    <div class="member-name-text"><a href="<c:url value='ViewProfileWithPartner'><c:param name='userId' value="${profile.visitorUserId}"/></c:url> style="color: inherit; text-decoration: none;">${profile.name}</a></div>
+                                    <div class="member-name-text"><a href="<c:url value='ViewProfileWithPartner'><c:param name='userId' value='${profile.visitorUserId}'/></c:url>" style="color: inherit; text-decoration: none;">${profile.name}</a></div>
                                     <div class="member-sub-text">${profile.age} Yrs, ${profile.caste}<br>${profile.location}</div>
                                 </div>
                             </div>
@@ -945,7 +1295,7 @@ body {
 
 <!-- Modal & Hidden Form Containers -->
 <div id="imgSlider" class="modal fade" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog modal-lg custom-slider-modal" style="margin: 30px" auto;">
+    <div class="modal-dialog modal-lg custom-slider-modal" style="margin: 30px auto;">
         <div class="modal-content">
             <div class="modal-body">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="float: right; font-size: 24px; border: none; background: none;">&times;</button>
@@ -964,14 +1314,14 @@ body {
                 <h4 class="modal-title" style="color: var(--green-success);">You have shortlisted successfully...</h4>
             </div>
             <div class="modal-body">
-                <nav class="breadcrumb custom-breadcrumb" style="background-color: var(--primary); color: #ffffff; padding: 10px;;">
-                    <div class=col-sm-4>
-                        <a class=;"breadcrumb-item" style="color:#fff;" href="#menu1" id="imenu1" onclick="show1('menu1');">Send Sms</a>
+                <nav class="breadcrumb custom-breadcrumb" style="background-color: var(--primary); color: #ffffff; padding: 10px;">
+                    <div class="col-sm-4">
+                        <a class="breadcrumb-item" style="color:#fff;" href="#menu1" id="imenu1" onclick="show1('menu1');">Send Sms</a>
                     </div>
-                    <div class='col-sm-4'>
+                    <div class="col-sm-4">
                         <a class="breadcrumb-item" style="color:#fff;" href="#menu2" id="imenu2" onclick="show1('menu2');">Send Email</a>
                     </div>
-                    <div class='col-sm-4'>
+                    <div class="col-sm-4">
                         <span class="breadcrumb-item active" style="color:#fff;" id="imenu3" href="#menu3" onclick="show1('menu3');">Contact Details</span>
                     </div>
                 </nav>

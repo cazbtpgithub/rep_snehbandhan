@@ -98,6 +98,7 @@ body.ep-v3-body {
   height: 36px;
   border-radius: 50%;
   object-fit: cover;
+  object-position: top center;
   border: 2px solid var(--primary-border);
 }
 
@@ -138,6 +139,7 @@ body.ep-v3-body {
   height: 64px;
   border-radius: 50%;
   object-fit: cover;
+  object-position: top center;
   margin: 0 auto 10px;
   border: 3px solid var(--primary-light);
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
@@ -816,6 +818,7 @@ body.ep-v3-body {
   width: 100%;
   height: 280px;
   object-fit: cover;
+  object-position: top center;
 }
 
 .ep-v3-main-badge {
@@ -885,6 +888,7 @@ body.ep-v3-body {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: top center;
 }
 
 .ep-v3-thumb-check {
@@ -1073,4 +1077,493 @@ body.ep-v3-body {
   margin-top: 20px;
   display: flex;
   justify-content: space-between;
+}
+
+/* ============================================================
+   RESPONSIVE TABLET & PREMIUM MOBILE VIEW DESIGN (UI ONLY)
+   ============================================================ */
+
+@media (max-width: 1024px) {
+  .ep-v3-header {
+    padding: 12px 20px;
+  }
+
+  .ep-v3-wrapper {
+    grid-template-columns: 230px 1fr;
+    gap: 18px;
+    padding: 0 16px;
+    margin: 18px auto 32px;
+  }
+
+  .ep-v3-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .ep-v3-col-1 { grid-column: span 1; }
+  .ep-v3-col-2,
+  .ep-v3-col-3,
+  .ep-v3-col-4 { grid-column: span 2; }
+
+  .ep-v3-photo-container {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .ep-v3-photo-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .ep-v3-trust-bar {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+}
+
+@media (max-width: 768px) {
+  html, body.ep-v3-body {
+    overflow-x: hidden !important;
+    width: 100% !important;
+  }
+
+  /* 1. Sticky Mobile Header */
+  .ep-v3-header {
+    padding: 10px 14px !important;
+  }
+
+  .ep-v3-logo {
+    height: 36px !important;
+  }
+
+  .ep-v3-nav-right {
+    gap: 12px !important;
+  }
+
+  .ep-v3-bell-btn {
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  .ep-v3-user-avatar {
+    width: 34px !important;
+    height: 34px !important;
+  }
+
+  .ep-v3-user-name {
+    max-width: 110px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    font-size: 12.5px !important;
+  }
+
+  /* 2. Single Column Mobile Flow */
+  .ep-v3-wrapper {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 14px !important;
+    margin: 12px auto 28px !important;
+    padding: 0 12px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* 3. Mobile User Profile Banner + Scrollable App-Tab Navigation */
+  .ep-v3-sidebar {
+    width: 100% !important;
+    gap: 12px !important;
+  }
+
+  .ep-v3-profile-card {
+    display: grid !important;
+    grid-template-columns: 60px minmax(0, 1fr) !important;
+    grid-template-areas:
+      "avatar name"
+      "avatar id"
+      "progress progress" !important;
+    align-items: center !important;
+    text-align: left !important;
+    column-gap: 14px !important;
+    row-gap: 3px !important;
+    padding: 14px 16px !important;
+    border-radius: 16px !important;
+    background: linear-gradient(135deg, #ffffff 0%, #fff8fb 100%) !important;
+    border: 1px solid #f5d8e2 !important;
+    box-shadow: 0 6px 18px rgba(217, 30, 104, 0.07) !important;
+  }
+
+  .ep-v3-profile-img {
+    grid-area: avatar !important;
+    width: 60px !important;
+    height: 60px !important;
+    margin: 0 !important;
+    border: 2.5px solid var(--primary) !important;
+    object-fit: cover !important;
+    object-position: top center !important;
+  }
+
+  .ep-v3-profile-name {
+    grid-area: name !important;
+    font-size: 16px !important;
+    margin: 0 !important;
+    align-self: end !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .ep-v3-profile-id {
+    grid-area: id !important;
+    font-size: 11.5px !important;
+    margin: 0 !important;
+    align-self: start !important;
+    color: var(--primary) !important;
+    font-weight: 600 !important;
+  }
+
+  .ep-v3-progress-wrapper {
+    grid-area: progress !important;
+    margin-top: 10px !important;
+    padding-top: 10px !important;
+    border-top: 1px solid #f5e8ed !important;
+  }
+
+  .ep-v3-nav-card {
+    padding: 10px 12px !important;
+    border-radius: 16px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+  }
+
+  .ep-v3-nav-card::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  .ep-v3-menu-group {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    margin-bottom: 0 !important;
+    flex-shrink: 0 !important;
+  }
+
+  .ep-v3-menu-title {
+    display: none !important;
+  }
+
+  .ep-v3-menu-item {
+    padding: 8px 14px !important;
+    border-radius: 22px !important;
+    font-size: 12.5px !important;
+    white-space: nowrap !important;
+    background: #faf6f8 !important;
+    border: 1px solid #f0e4e8 !important;
+    gap: 8px !important;
+  }
+
+  .ep-v3-menu-item i {
+    width: auto !important;
+    margin-right: 5px !important;
+  }
+
+  .ep-v3-menu-item.active {
+    background: var(--primary) !important;
+    color: #ffffff !important;
+    border-color: var(--primary) !important;
+    box-shadow: 0 4px 12px rgba(217, 30, 104, 0.25) !important;
+  }
+
+  .ep-v3-help-card {
+    display: none !important;
+  }
+
+  /* 4. Compact 3-Step Mobile Stepper Bar */
+  .ep-v3-stepper-card {
+    padding: 12px 10px !important;
+    margin-bottom: 14px !important;
+    border-radius: 16px !important;
+    gap: 6px !important;
+    justify-content: space-between !important;
+  }
+
+  .ep-v3-step-item {
+    flex: 1 1 0 !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    gap: 6px !important;
+    min-width: 0 !important;
+  }
+
+  .ep-v3-step-num {
+    width: 32px !important;
+    height: 32px !important;
+    font-size: 13px !important;
+  }
+
+  .ep-v3-step-title {
+    font-size: 11.5px !important;
+    line-height: 1.2 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    max-width: 100% !important;
+  }
+
+  .ep-v3-step-sub {
+    display: none !important;
+  }
+
+  .ep-v3-step-divider {
+    width: 22px !important;
+    flex-shrink: 0 !important;
+    margin-bottom: 18px !important;
+  }
+
+  /* 5. Main Form Card & Form Fields on Mobile */
+  .ep-v3-main-card {
+    padding: 18px 14px !important;
+    border-radius: 18px !important;
+  }
+
+  .ep-v3-card-title {
+    font-size: 18px !important;
+  }
+
+  .ep-v3-card-sub {
+    font-size: 12px !important;
+    margin-bottom: 16px !important;
+  }
+
+  .ep-v3-section {
+    margin-bottom: 22px !important;
+    padding-bottom: 4px !important;
+  }
+
+  .ep-v3-sec-header {
+    font-size: 14px !important;
+    margin-bottom: 14px !important;
+    padding-bottom: 10px !important;
+  }
+
+  .ep-v3-grid {
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+
+  .ep-v3-col-1,
+  .ep-v3-col-2,
+  .ep-v3-col-3,
+  .ep-v3-col-4 {
+    grid-column: 1 / -1 !important;
+  }
+
+  .ep-v3-label {
+    font-size: 12.5px !important;
+    white-space: normal !important;
+  }
+
+  .ep-v3-input,
+  .ep-v3-select {
+    height: 44px !important;
+    font-size: 14px !important;
+    border-radius: 10px !important;
+    padding-left: 13px !important;
+  }
+
+  .ep-v3-textarea {
+    font-size: 14px !important;
+    border-radius: 10px !important;
+    min-height: 100px !important;
+  }
+
+  /* Touch-friendly Pill Radio Groups (Gender, Body Type, Complexion, Employed In) */
+  .ep-v3-radio-group {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    min-height: 0 !important;
+  }
+
+  .ep-v3-radio {
+    background: #F9FAFB !important;
+    border: 1.5px solid #E5E7EB !important;
+    border-radius: 10px !important;
+    padding: 9px 13px !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    flex: 1 1 auto !important;
+    justify-content: flex-start !important;
+    transition: all 0.2s ease !important;
+  }
+
+  .ep-v3-radio:has(input:checked) {
+    background: var(--primary-light) !important;
+    border-color: var(--primary) !important;
+    color: var(--primary) !important;
+    font-weight: 700 !important;
+  }
+
+  /* 6. Lifestyle Preferences Section on Mobile */
+  .ep-v3-lifestyle-section {
+    padding: 18px 14px !important;
+    border-radius: 16px !important;
+    margin-bottom: 22px !important;
+  }
+
+  .ep-v3-sec-icon-wrapper {
+    width: 38px !important;
+    height: 38px !important;
+    font-size: 16px !important;
+  }
+
+  .ep-v3-sec-title {
+    font-size: 15.5px !important;
+  }
+
+  .ep-v3-sec-subtitle {
+    font-size: 11.5px !important;
+  }
+
+  .ep-v3-segmented-control {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+
+  .ep-v3-chip-content {
+    padding: 10px 10px !important;
+    font-size: 12.5px !important;
+    border-radius: 10px !important;
+    justify-content: flex-start !important;
+  }
+
+  .ep-v3-toggles-container {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  .ep-v3-toggle-card {
+    padding: 12px 14px !important;
+  }
+
+  /* 7. Step 1: Profile Images Tab on Mobile */
+  .ep-v3-photo-container {
+    grid-template-columns: 1fr !important;
+    gap: 18px !important;
+  }
+
+  .ep-v3-main-photo-box {
+    border-radius: 14px !important;
+  }
+
+  .ep-v3-main-photo-img {
+    height: 300px !important;
+    object-fit: cover !important;
+    object-position: top center !important;
+  }
+
+  .ep-v3-arrow-btn {
+    width: 34px !important;
+    height: 34px !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.18) !important;
+  }
+
+  .ep-v3-crop-btn {
+    height: 42px !important;
+    border-radius: 10px !important;
+    font-size: 13.5px !important;
+  }
+
+  .ep-v3-photo-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+  }
+
+  .ep-v3-thumb-box,
+  .ep-v3-upload-dropzone {
+    height: 130px !important;
+    border-radius: 12px !important;
+  }
+
+  .ep-v3-thumb-remove,
+  .ep-v3-thumb-check {
+    width: 24px !important;
+    height: 24px !important;
+    font-size: 12px !important;
+  }
+
+  #tabthree input.ep-v3-btn-primary {
+    width: 100% !important;
+    justify-content: center !important;
+    height: 44px !important;
+    border-radius: 10px !important;
+  }
+
+  /* 8. Action Bar (Back / Save & Next / Save & Finish) */
+  .ep-v3-action-bar {
+    gap: 12px !important;
+    margin-top: 22px !important;
+    padding-top: 16px !important;
+  }
+
+  .ep-v3-btn-outline {
+    flex: 1 1 38% !important;
+    padding: 12px 14px !important;
+    height: 46px !important;
+    border-radius: 10px !important;
+    font-size: 14px !important;
+    text-align: center !important;
+    justify-content: center !important;
+  }
+
+  .ep-v3-btn-primary {
+    flex: 1 1 62% !important;
+    padding: 12px 18px !important;
+    height: 46px !important;
+    border-radius: 10px !important;
+    font-size: 14px !important;
+    text-align: center !important;
+    justify-content: center !important;
+  }
+
+  /* 9. Trust Badges Bar & Footer & Crop Modal */
+  .ep-v3-trust-bar {
+    grid-template-columns: repeat(2, 1fr) !important;
+    padding: 14px !important;
+    gap: 12px !important;
+    margin-top: 16px !important;
+    border-radius: 16px !important;
+  }
+
+  .ep-v3-footer-text {
+    flex-direction: column !important;
+    gap: 6px !important;
+    align-items: center !important;
+    margin-top: 16px !important;
+  }
+
+  #myModal .modal-dialog {
+    max-width: calc(100% - 20px) !important;
+    margin: 20px auto !important;
+  }
+
+  #myModal .model-images img {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+}
+
+@media (max-width: 400px) {
+  .ep-v3-segmented-control {
+    grid-template-columns: 1fr !important;
+  }
+
+  .ep-v3-trust-bar {
+    grid-template-columns: 1fr !important;
+  }
 }

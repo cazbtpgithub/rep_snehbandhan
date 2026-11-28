@@ -257,8 +257,9 @@
 
         .verified-badge {
             position: absolute !important;
-            top: 6px !important;
+            bottom: 6px !important;
             left: 6px !important;
+            top: auto !important;
             background: rgba(16, 185, 129, 0.92) !important;
             backdrop-filter: blur(4px) !important;
             color: #ffffff !important;
@@ -542,6 +543,161 @@
             color: #333333;
             line-height: 2.1;
             padding: 5px 0 10px 0;
+        }
+
+        /* Mobile Responsive Overrides for Inline Photo, User Card & Modal Rules */
+        @media (max-width: 768px) {
+            .sidebar-user-card {
+                position: relative !important;
+                display: grid !important;
+                grid-template-columns: 56px minmax(0, 1fr) auto !important;
+                grid-template-areas:
+                    "avatar name btn"
+                    "avatar badge btn" !important;
+                align-items: center !important;
+                text-align: left !important;
+                padding: 12px 14px !important;
+                column-gap: 12px !important;
+                row-gap: 4px !important;
+                border-radius: 16px !important;
+                background: linear-gradient(135deg, #ffffff 0%, #fff8fa 100%) !important;
+                border: 1px solid #f5d8e2 !important;
+                box-shadow: 0 6px 18px rgba(210, 26, 90, 0.08) !important;
+            }
+            .sidebar-user-card img {
+                grid-area: avatar !important;
+                width: 56px !important;
+                height: 56px !important;
+                min-width: 56px !important;
+                min-height: 56px !important;
+                border-radius: 50% !important;
+                margin: 0 !important;
+                border: 2.5px solid #d21a5a !important;
+                object-fit: cover !important;
+                object-position: top center !important;
+            }
+            .sidebar-user-card h3 {
+                grid-area: name !important;
+                font-size: 15px !important;
+                font-weight: 700 !important;
+                margin: 0 !important;
+                align-self: end !important;
+                line-height: 1.25 !important;
+                white-space: nowrap !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+            }
+            .sidebar-user-card .badge-premium {
+                grid-area: badge !important;
+                margin: 0 !important;
+                justify-self: start !important;
+                align-self: start !important;
+                display: inline-flex !important;
+                align-items: center !important;
+                gap: 4px !important;
+                font-size: 10.5px !important;
+                font-weight: 600 !important;
+                color: #d21a5a !important;
+                background: #fdf0f4 !important;
+                border: 1px solid #f7cddb !important;
+                padding: 2px 9px !important;
+                border-radius: 20px !important;
+            }
+            .sidebar-user-card .btn-edit-profile-sidebar {
+                grid-area: btn !important;
+                justify-self: end !important;
+                align-self: center !important;
+                margin: 0 !important;
+                width: auto !important;
+                display: inline-flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                gap: 5px !important;
+                padding: 6px 11px !important;
+                font-size: 11px !important;
+                font-weight: 600 !important;
+                border-radius: 16px !important;
+                white-space: nowrap !important;
+                box-shadow: 0 3px 8px rgba(210, 26, 90, 0.25) !important;
+            }
+            .sidebar-user-card .btn-edit-profile-sidebar i {
+                font-size: 11px !important;
+            }
+            /* Hide all filters by default on mobile until user clicks More Filters */
+            .filter-card .filter-row {
+                display: none !important;
+            }
+            .filter-card.mobile-filters-open .filter-row {
+                display: grid !important;
+            }
+            .filter-card:not(.mobile-filters-open) .filter-actions > div {
+                display: none !important;
+            }
+            .filter-card:not(.mobile-filters-open) {
+                display: flex !important;
+                align-items: center !important;
+                justify-content: space-between !important;
+                flex-wrap: wrap !important;
+                padding: 12px 14px !important;
+                gap: 8px !important;
+            }
+            .filter-card:not(.mobile-filters-open) > h3 {
+                margin: 0 !important;
+                font-size: 14.5px !important;
+            }
+            .filter-card:not(.mobile-filters-open) .filter-actions {
+                margin-top: 0 !important;
+                padding-top: 0 !important;
+                border-top: none !important;
+                margin-left: auto !important;
+            }
+            .filter-card:not(.mobile-filters-open) .filter-chips-container {
+                width: 100% !important;
+                order: 3 !important;
+            }
+            .profile-photos {
+                width: 100% !important;
+            }
+            .main-photo-wrapper {
+                width: 100% !important;
+                height: 300px !important;
+                border-radius: 14px !important;
+            }
+            .main-photo-wrapper img {
+                object-position: top center !important;
+            }
+            .verified-badge {
+                bottom: 10px !important;
+                left: 10px !important;
+                top: auto !important;
+                font-size: 11px !important;
+                padding: 4px 10px !important;
+                border-radius: 14px !important;
+            }
+            .thumb-photos {
+                width: 100% !important;
+            }
+            .thumb-photos img {
+                width: 64px !important;
+                height: 64px !important;
+                border-radius: 10px !important;
+            }
+            #myModal .modal-dialog {
+                max-width: calc(100% - 24px) !important;
+                margin: 24px auto !important;
+            }
+            #myModal .modal-body {
+                padding: 16px !important;
+            }
+            .custom-shortlist-breadcrumb {
+                flex-direction: column !important;
+                gap: 6px !important;
+            }
+            .custom-shortlist-breadcrumb > div {
+                width: 100% !important;
+                max-width: 100% !important;
+                flex: 0 0 100% !important;
+            }
         }
     </style>
 </head>
@@ -1904,11 +2060,14 @@
         // Advance Filter Toggle
         window.toggleAdvanceFilter = function() {
             var $panel = $('#advanceFilterPanel');
+            var $card = $panel.closest('.filter-card');
             if ($panel.is(':visible')) {
                 $panel.slideUp(250);
+                $card.removeClass('mobile-filters-open');
                 $('#advanceBtnText').text('More Filters');
                 $('#btnToggleAdvance i').removeClass('fa-angle-up').addClass('fa-sliders');
             } else {
+                $card.addClass('mobile-filters-open');
                 $panel.slideDown(300);
                 $('#advanceBtnText').text('Fewer Filters');
                 $('#btnToggleAdvance i').removeClass('fa-sliders').addClass('fa-angle-up');

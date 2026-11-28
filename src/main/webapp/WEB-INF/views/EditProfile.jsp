@@ -37,6 +37,8 @@
             $('.ep-v3-step-item').removeClass('active completed');
             $('.ep-v3-step-divider').removeClass('active');
             $('.ep-v3-step-pane').hide();
+            $('.ep-v3-menu-item[data-step]').removeClass('active');
+            $('.ep-v3-menu-item[data-step="' + stepNum + '"]').addClass('active');
 
             if (stepNum === 1) {
                 $('#step1-nav').addClass('active');
@@ -124,16 +126,16 @@
 
             <div class="ep-v3-menu-group">
                 <div class="ep-v3-menu-title">MANAGE PROFILE</div>
-                <a onclick="showStep(2);" class="ep-v3-menu-item active">
+                <a onclick="showStep(2);" data-step="2" class="ep-v3-menu-item active">
                     <span><i class="fa fa-user"></i> Edit Profile</span>
                 </a>
                 <a href="#" class="ep-v3-menu-item">
                     <span><i class="fa fa-eye"></i> Profile Preview</span>
                 </a>
-                <a onclick="showStep(1);" class="ep-v3-menu-item">
+                <a onclick="showStep(1);" data-step="1" class="ep-v3-menu-item">
                     <span><i class="fa fa-picture-o"></i> Photos</span>
                 </a>
-                <a onclick="showStep(3);" class="ep-v3-menu-item">
+                <a onclick="showStep(3);" data-step="3" class="ep-v3-menu-item">
                     <span><i class="fa fa-heart"></i> Partner Preferences</span>
                 </a>
             </div>
